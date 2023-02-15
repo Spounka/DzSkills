@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="set authentication module user to be the default in settings.py">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="changed host in settings.py to simplify debugging">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +106,7 @@
       <option name="presentableId" value="Default" />
       <updated>1676449471724</updated>
       <workItem from="1676449501133" duration="1081000" />
-      <workItem from="1676450873231" duration="2468000" />
+      <workItem from="1676450873231" duration="2760000" />
     </task>
     <task id="LOCAL-00001" summary="Pycharm .idea files">
       <created>1676450443168</created>
@@ -263,7 +262,35 @@
       <option name="project" value="LOCAL" />
       <updated>1676453246191</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="fixed db host in settings.py">
+      <created>1676453379823</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1676453379823</updated>
+    </task>
+    <task id="LOCAL-00024" summary="added migration file">
+      <created>1676453389267</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1676453389267</updated>
+    </task>
+    <task id="LOCAL-00025" summary="pycharm files">
+      <created>1676453394215</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1676453394215</updated>
+    </task>
+    <task id="LOCAL-00026" summary="changed host in settings.py to simplify debugging">
+      <created>1676453611075</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1676453611075</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -314,7 +341,11 @@
     <MESSAGE value="pycharm being weird" />
     <MESSAGE value="added user model" />
     <MESSAGE value="set authentication module user to be the default in settings.py" />
-    <option name="LAST_COMMIT_MESSAGE" value="set authentication module user to be the default in settings.py" />
+    <MESSAGE value="fixed db host in settings.py" />
+    <MESSAGE value="added migration file" />
+    <MESSAGE value="pycharm files" />
+    <MESSAGE value="changed host in settings.py to simplify debugging" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed host in settings.py to simplify debugging" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
