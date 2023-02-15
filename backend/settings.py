@@ -64,7 +64,7 @@ SITE_ID = 1
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
+    'google':   {
         'SCOPE':              [
             'profile',
             'email',
