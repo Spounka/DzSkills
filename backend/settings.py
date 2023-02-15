@@ -62,6 +62,20 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE':              [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS':        {
+            'access_type': 'offline',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    }
+}
+
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
