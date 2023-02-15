@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="pycharm doing its thing">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="google provider settings">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +107,7 @@
       <option name="presentableId" value="Default" />
       <updated>1676449471724</updated>
       <workItem from="1676449501133" duration="1081000" />
-      <workItem from="1676450873231" duration="1074000" />
+      <workItem from="1676450873231" duration="2124000" />
     </task>
     <task id="LOCAL-00001" summary="Pycharm .idea files">
       <created>1676450443168</created>
@@ -138,7 +137,98 @@
       <option name="project" value="LOCAL" />
       <updated>1676451198458</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="pycharm doing its thing">
+      <created>1676451966430</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1676451966430</updated>
+    </task>
+    <task id="LOCAL-00006" summary="added dotenv configs">
+      <created>1676452008032</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452008032</updated>
+    </task>
+    <task id="LOCAL-00007" summary="database setup">
+      <created>1676452043231</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452043231</updated>
+    </task>
+    <task id="LOCAL-00008" summary="static and media folders confgi">
+      <created>1676452056440</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452056440</updated>
+    </task>
+    <task id="LOCAL-00009" summary="File formatting fixes">
+      <created>1676452090838</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452090838</updated>
+    </task>
+    <task id="LOCAL-00010" summary="added new authentication app">
+      <created>1676452146040</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452146040</updated>
+    </task>
+    <task id="LOCAL-00011" summary="added auth app to installed apps in settings.py">
+      <created>1676452269019</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452269019</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Added auth backends with all auth support">
+      <created>1676452339970</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452339970</updated>
+    </task>
+    <task id="LOCAL-00013" summary="all auth to installed apps">
+      <created>1676452433572</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452433572</updated>
+    </task>
+    <task id="LOCAL-00014" summary="added social account providers">
+      <created>1676452514840</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452514840</updated>
+    </task>
+    <task id="LOCAL-00015" summary="file formatting">
+      <created>1676452526669</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452526669</updated>
+    </task>
+    <task id="LOCAL-00016" summary="added site">
+      <created>1676452689189</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452689189</updated>
+    </task>
+    <task id="LOCAL-00017" summary="google provider settings">
+      <created>1676452967389</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1676452967389</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,7 +245,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="dev" />
+                        <option value="authentication" />
                       </list>
                     </value>
                   </entry>
@@ -172,7 +262,19 @@
     <MESSAGE value="renamed project name in pycharm display" />
     <MESSAGE value="added dotenv dependency" />
     <MESSAGE value="pycharm doing its thing" />
-    <option name="LAST_COMMIT_MESSAGE" value="pycharm doing its thing" />
+    <MESSAGE value="added dotenv configs" />
+    <MESSAGE value="database setup" />
+    <MESSAGE value="static and media folders config" />
+    <MESSAGE value="File formatting fixes" />
+    <MESSAGE value="added new authentication app" />
+    <MESSAGE value="added auth app to installed apps in settings.py" />
+    <MESSAGE value="Added auth backends with all auth support" />
+    <MESSAGE value="all auth to installed apps" />
+    <MESSAGE value="added social account providers" />
+    <MESSAGE value="file formatting" />
+    <MESSAGE value="added site" />
+    <MESSAGE value="google provider settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="google provider settings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
