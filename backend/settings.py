@@ -104,6 +104,27 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+ACCOUNT_EMAIL_VERIFICATION = False
+REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+
+REST_AUTH = {
+    'LOGIN_SERIALIZER': 'authentication.serializers.LoginSerializer'
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES':         [
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+
+}
+
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
