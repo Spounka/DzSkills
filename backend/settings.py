@@ -43,12 +43,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'corsheaders',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Rest framework
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
 
     # All Auth
-    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'dj_rest_auth.registration',
 
     # My Apps
     'authentication',
@@ -57,7 +63,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.discord',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.linkedin',
     'allauth.socialaccount.providers.linkedin_oauth2',
 ]
 
