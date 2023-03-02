@@ -104,12 +104,17 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = False
+ACCOUNT_EMAIL_VERIFICATION = 'None'
 REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
 REST_AUTH = {
-    'LOGIN_SERIALIZER': 'authentication.serializers.LoginSerializer'
+    # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
+    'REGISTER_SERIALIZER':     'authentication.serializers.RegistrationSerializer',
+    'SESSION_LOGIN':           False,
+    'USE_JWT':                 True,
+    'JWT_AUTH_COOKIE':         'dz-skills-token',
+    'JWT_AUTH_REFRESH_COOKIE': 'dz-skills-refresh',
 }
 
 REST_FRAMEWORK = {
@@ -120,7 +125,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ]
 
 }
