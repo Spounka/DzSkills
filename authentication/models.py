@@ -4,7 +4,7 @@ from django.db import models
 
 # Create your models here.
 def get_image_directory(instance, filename):
-    return f'users/{instance.user.username}/images/profile_{filename}'
+    return f'users/{instance.username}/images/profile_{filename}'
 
 
 class User(AbstractUser):

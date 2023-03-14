@@ -1,4 +1,6 @@
 from dj_rest_auth import serializers as dj_serializers
+from dj_rest_auth.serializers import UserDetailsSerializer
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -14,6 +16,8 @@ try:
     from allauth.account.adapter import get_adapter
 except ImportError:
     raise ImportError('allauth needs to be added to INSTALLED_APPS.')
+
+UserModel = get_user_model()
 
 
 class LoginSerializer(dj_serializers.LoginSerializer):
@@ -83,9 +87,15 @@ class RegistrationSerializer(serializers.Serializer):
                 adapter.clean_password(self.cleaned_data['password1'], user=user)
             except DjangoValidationError as exc:
                 raise serializers.ValidationError(
-                    detail=serializers.as_serializer_error(exc)
+                    detail=serializers.as_s60erializer_error(exc)
                 )
         user.save()
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
+
+
+class UserDetails(UserDetailsSerializer):
+    class Meta:
+        model = UserModel
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'profile_image')
