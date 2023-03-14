@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os.path
+from datetime import timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -35,6 +36,10 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:3000',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -58,6 +63,8 @@ INSTALLED_APPS = [
 
     # My Apps
     'authentication',
+    'student',
+    'courses',
 
     # Social Accounts
     'allauth.socialaccount.providers.discord',
@@ -108,13 +115,20 @@ ACCOUNT_EMAIL_VERIFICATION = 'None'
 REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME":  timedelta(weeks=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+}
+
 REST_AUTH = {
     # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
+    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserDetails',
     'REGISTER_SERIALIZER':     'authentication.serializers.RegistrationSerializer',
     'SESSION_LOGIN':           False,
     'USE_JWT':                 True,
     'JWT_AUTH_COOKIE':         'dz-skills-token',
     'JWT_AUTH_REFRESH_COOKIE': 'dz-skills-refresh',
+    'JWT_AUTH_HTTPONLY':       False,
 }
 
 REST_FRAMEWORK = {
@@ -123,10 +137,10 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.JSONParser',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        # 'rest_framework.authentication.TokenAuthentication',
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
     ]
 
 }
@@ -230,4 +244,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
-CORS_ALLOW_ALL_ORIGINS = True
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024**3
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000'
+]
