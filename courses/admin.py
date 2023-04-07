@@ -5,7 +5,7 @@ from . import models
 
 # Register your models here.
 class VideoInline(admin.StackedInline):
-    model = models.ChapterVideo
+    model = models.Video
     extra = 1
 
 
@@ -28,4 +28,4 @@ class CourseAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Course, CourseAdmin)
 admin.site.register(models.Chapter, ChapterAdmin)
-admin.site.register(models.ChapterVideo, admin.ModelAdmin)
+admin.site.register(models.Video, admin.ModelAdmin)

@@ -38,6 +38,8 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    'http://192.168.1.12/',
+    'http://192.168.1.12:3000/',
 ]
 
 INSTALLED_APPS = [
@@ -63,8 +65,12 @@ INSTALLED_APPS = [
 
     # My Apps
     'authentication',
+    'user_profile',
+    'admin_dashboard',
+
     'student',
     'courses',
+    'course_buying',
 
     # Social Accounts
     'allauth.socialaccount.providers.discord',
@@ -170,8 +176,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND':  'django.template.backends.django.DjangoTemplates',
-        'DIRS':     [BASE_DIR / 'templates']
-        ,
+        'DIRS':     [],
         'APP_DIRS': True,
         'OPTIONS':  {
             'context_processors': [
@@ -245,6 +250,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024**3
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost',
+#     'http://192.168.1.12',
+#     'http://192.168.1.12:3000',
+# ]
+
+CORS_ALLOW_ALL_ORIGINS = True

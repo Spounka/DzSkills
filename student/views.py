@@ -4,12 +4,11 @@ from . import serializers, models
 
 
 # Create your views here.
-class StudentAPI(generics.RetrieveUpdateDestroyAPIView):
+class StudentAPI(generics.RetrieveUpdateDestroyAPIView, mixins.ListModelMixin):
     serializer_class = serializers.StudentSerializer
-    queryset = models.Student.objects.filter
+    queryset = models.Student.objects.filter()
 
     def get(self, request, *args, **kwargs):
         if kwargs.get('pk'):
             return self.retrieve(request, *args, **kwargs)
-        serializer = self.get_serializer(models.Student.objects.all().first())
-        return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+        return self.list(request, args, **kwargs)

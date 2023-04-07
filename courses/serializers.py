@@ -11,15 +11,15 @@ UserModel = get_user_model()
 
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = main.ChapterVideo
+        model = main.Video
         fields = "__all__"
         depth = 0
 
 
 class ChapterVideoSerializer(serializers.ModelSerializer):
     class Meta:
-        model = main.ChapterVideo
-        fields = ['title', 'description', 'video']
+        model = main.Video
+        fields = ['title', 'description', 'video', 'duration']
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
         chapter = main.Chapter.objects.create(**validated_data)
-        videos = [main.ChapterVideo.objects.create(chapter=chapter, **data) for data in videos_data]
+        videos = [main.Video.objects.create(chapter=chapter, **data) for data in videos_data]
         chapter.videos.set(videos)
         return chapter
 
@@ -41,9 +41,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     chapters = CourseChapterSerializer(many=True)
     owner = authentication.serializers.UserDetails(read_only=True)
-
-    def serialize(self):
-        return
+    videos_count = serializers.ReadOnlyField()
 
     def create(self, validated_data):
         chapters_data = validated_data.pop('chapters', None)
@@ -54,24 +52,24 @@ class CourseSerializer(serializers.ModelSerializer):
         for chapter_data in chapters_data:
             videos_data = chapter_data.pop('videos')
             chapter = main.Chapter.objects.create(course=course, **chapter_data)
-            videos = [main.ChapterVideo.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
+            videos = [main.Video.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
             chapter.videos.set(videos)
             chapters.append(chapter)
-        chapters = [main.Chapter.objects.create(course=course, **data) for data in chapters_data]
         course.chapters.set(chapters)
+        course.chapters.first().unlock()
+        course.chapters.first().videos.first().unlock()
         return course
 
     class Meta:
         model = main.Course
-        fields = ['pk', 'title', 'description', 'thumbnail', 'price', 'owner', 'chapters', 'presentation_file']
+        fields = "__all__"
         depth = 2
 
 
 class ChapterSerializer(serializers.ModelSerializer):
     videos = VideoSerializer(many=True, read_only=True)
-    course = CourseSerializer()
 
     class Meta:
         model = main.Chapter
         depth = 2
-        fields = ['pk', 'title', 'description', 'thumbnail', 'videos', 'course']
+        fields = ['pk', 'title', 'description', 'thumbnail', 'locked', 'videos']

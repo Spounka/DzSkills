@@ -23,33 +23,55 @@ def get_chapter_upload_directory(instance, filename):
 
 class Course(models.Model):
     PENDING = 'pend'
-    ACCEPTED = 'acc'
-    REFUSED = 'ref'
+    ACCEPTED = 'app'
+    REFUSED = 'rej'
+
+    BEGINNER = 'beg'
+    INTERMEDIATE = 'interm'
+    ADVANCED = 'advanced'
 
     STATUS_CHOICES = [
         (PENDING, _("Pending")),
-        (ACCEPTED, _("Accepted")),
-        (REFUSED, _("Refused")),
+        (ACCEPTED, _("Approved")),
+        (REFUSED, _("Rejected")),
+    ]
+
+    LEVEL_CHOICES = [
+        (BEGINNER, _("Beginner")),
+        (INTERMEDIATE, _("Intermediate")),
+        (ADVANCED, _("Advanced")),
     ]
 
     title = models.CharField(max_length=300)
-    description = models.CharField(max_length=150)
+    description = models.CharField(max_length=300)
     thumbnail = models.ImageField(upload_to=get_course_image_upload_directory)
     price = models.PositiveIntegerField()
-    hastags = models.CharField(max_length=100)
+    hashtags = models.CharField(max_length=100)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=PENDING)
-
+    trending = models.BooleanField(default=False)
     presentation_file = models.FileField(upload_to=get_course_file_upload_directory, blank=True, null=True)
+
+    course_level = models.CharField(max_length=30, choices=LEVEL_CHOICES, default=BEGINNER)
+    duration = models.CharField(max_length=10, default="1h")
+    used_programs = models.CharField(max_length=300, default="")
+    language = models.CharField(max_length=30, default="Arabic")
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses")
 
-    def accept_course(self):
+    def approve(self):
         self.status = self.ACCEPTED
         self.save()
 
-    def refuse_title(self):
+    def reject(self):
         self.status = self.REFUSED
         self.save()
+
+    @property
+    def videos_count(self):
+        videos = 0
+        for chapter in self.chapters.all():
+            videos += chapter.videos.count()
+        return videos
 
     def __str__(self):
         return self.title
@@ -57,20 +79,76 @@ class Course(models.Model):
 
 class Chapter(models.Model):
     title = models.CharField(max_length=300)
-    description = models.CharField(max_length=150)
+    description = models.CharField(max_length=300)
     thumbnail = models.ImageField(upload_to=get_chapter_upload_directory)
+    locked = models.BooleanField(default=True)
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
+
+    def unlock(self):
+        self.locked = False
+
+    class Meta:
+        ordering = ['pk']
 
     def __str__(self):
         return f'{self.course.title}/{self.title}'
 
 
-class ChapterVideo(models.Model):
+def get_duration(video: 'Video'):
+    from moviepy.video.io.VideoFileClip import VideoFileClip
+
+    clip = VideoFileClip(video.video.path)
+    duration_seconds = int(clip.duration)
+    duration_minutes, duration_seconds = divmod(duration_seconds, 60)
+    duration_hours, duration_minutes = divmod(duration_minutes, 60)
+    clip.close()
+    return f'{duration_hours:02}:{duration_minutes:02}:{duration_seconds:02}'
+
+
+def set_video_duration(video: 'Video'):
+    video.duration = get_duration(video)
+    video.save()
+
+
+def set_videos_duration():
+    for course in Course.objects.all():
+        for chapter in course.chapters.all():
+            for video in chapter.videos.all():
+                if video.duration == "":
+                    continue
+                set_video_duration(video)
+
+
+class Video(models.Model):
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=150)
     video = models.FileField(upload_to=get_video_upload_directory)
+    duration = models.CharField(default="", blank=True, max_length=10)
+    locked = models.BooleanField(default=True)
 
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
 
+    class Meta:
+        ordering = ['pk']
+
     def __str__(self):
         return f'{self.chapter.course.title}/{self.chapter.title}/{self.title}'
+
+    def unlock(self):
+        self.locked = False
+
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            update_fields=update_fields,
+            using=using)
+        self.duration = get_duration(self)
+        super().save(
+            force_insert=force_insert,
+            force_update=force_update,
+            update_fields=update_fields,
+            using=using)
