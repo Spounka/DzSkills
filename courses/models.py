@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -81,12 +82,8 @@ class Chapter(models.Model):
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=300)
     thumbnail = models.ImageField(upload_to=get_chapter_upload_directory)
-    locked = models.BooleanField(default=True)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
-
-    def unlock(self):
-        self.locked = False
 
     class Meta:
         ordering = ['pk']
@@ -108,7 +105,6 @@ def get_duration(video: 'Video'):
 
 def set_video_duration(video: 'Video'):
     video.duration = get_duration(video)
-    video.save()
 
 
 def set_videos_duration():
@@ -125,7 +121,6 @@ class Video(models.Model):
     description = models.CharField(max_length=150)
     video = models.FileField(upload_to=get_video_upload_directory)
     duration = models.CharField(default="", blank=True, max_length=10)
-    locked = models.BooleanField(default=True)
 
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
 
@@ -135,20 +130,17 @@ class Video(models.Model):
     def __str__(self):
         return f'{self.chapter.course.title}/{self.chapter.title}/{self.title}'
 
-    def unlock(self):
-        self.locked = False
 
-    def save(
-            self, force_insert=False, force_update=False, using=None, update_fields=None
-    ):
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            update_fields=update_fields,
-            using=using)
-        self.duration = get_duration(self)
-        super().save(
-            force_insert=force_insert,
-            force_update=force_update,
-            update_fields=update_fields,
-            using=using)
+UserModel = get_user_model()
+
+
+class StudentProgress(models.Model):
+    user: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    course: Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    last_video_index = models.SmallIntegerField(default=0)
+    last_chapter_index = models.SmallIntegerField(default=0)
+    finished = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'StudentProgress {self.user.username} - {self.course.title}'

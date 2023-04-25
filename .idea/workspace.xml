@@ -4,15 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="copied serializers from main rest-auth code and changed to suit needs">
-      <change beforePath="$PROJECT_DIR$/.idea/dzskills.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dzskills.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best">
+      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/migrations/0002_user_profile_image.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/migrations/0002_user_profile_image.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_buying/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_buying/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_buying/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_buying/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/course_buying/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
@@ -20,8 +19,9 @@
       <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/student/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_profile/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_profile/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_profile/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_profile/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/user_profile/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/user_profile/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +82,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
 }</component>
   <component name="RunManager" selected="Django Server.backend">
@@ -175,7 +175,11 @@
       <workItem from="1680597478840" duration="119000" />
       <workItem from="1680597791343" duration="2731000" />
       <workItem from="1680869744399" duration="1440000" />
-      <workItem from="1680872438057" duration="4275000" />
+      <workItem from="1680872438057" duration="13538000" />
+      <workItem from="1680923037604" duration="22095000" />
+      <workItem from="1681134200250" duration="6575000" />
+      <workItem from="1682278229687" duration="1209000" />
+      <workItem from="1682346383605" duration="1809000" />
     </task>
     <task id="LOCAL-00001" summary="Pycharm .idea files">
       <created>1676450443168</created>
@@ -478,7 +482,14 @@
       <option name="project" value="LOCAL" />
       <updated>1677795944453</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best">
+      <created>1680877187337</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1680877187337</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -508,7 +519,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="google provider settings" />
     <MESSAGE value="facebook provider settings" />
     <MESSAGE value="file formatting changes" />
     <MESSAGE value="added user model" />
@@ -533,30 +543,46 @@
     <MESSAGE value="changed main url to be under /api" />
     <MESSAGE value="RestAuth config to match needs" />
     <MESSAGE value="copied serializers from main rest-auth code and changed to suit needs" />
-    <option name="LAST_COMMIT_MESSAGE" value="copied serializers from main rest-auth code and changed to suit needs" />
+    <MESSAGE value="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best" />
+    <option name="LAST_COMMIT_MESSAGE" value="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/user_profile/views.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="1" />
+          <line>15</line>
+          <option name="timeStamp" value="9" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/user_profile/views.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="2" />
+          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
+          <line>47</line>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
+          <line>50</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/courses/views.py</url>
-          <line>55</line>
-          <option name="timeStamp" value="3" />
+          <line>96</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/course_buying/views.py</url>
+          <line>36</line>
+          <option name="timeStamp" value="29" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/course_buying/views.py</url>
           <line>15</line>
-          <option name="timeStamp" value="7" />
+          <option name="timeStamp" value="30" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

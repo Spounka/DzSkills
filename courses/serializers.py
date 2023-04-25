@@ -19,7 +19,7 @@ class VideoSerializer(serializers.ModelSerializer):
 class ChapterVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = main.Video
-        fields = ['title', 'description', 'video', 'duration']
+        fields = ['pk', 'title', 'description', 'video', 'duration', ]
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = main.Chapter
         depth = 0
-        fields = ['title', 'description', 'thumbnail', 'videos']
+        fields = ['pk', 'title', 'description', 'thumbnail', 'videos']
 
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
@@ -53,11 +53,17 @@ class CourseSerializer(serializers.ModelSerializer):
             videos_data = chapter_data.pop('videos')
             chapter = main.Chapter.objects.create(course=course, **chapter_data)
             videos = [main.Video.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
+            from courses.models import set_video_duration
+
+            def update_video(video):
+                set_video_duration(video)
+                video.save()
+
+            map(lambda video: update_video(video), videos)
+
             chapter.videos.set(videos)
             chapters.append(chapter)
         course.chapters.set(chapters)
-        course.chapters.first().unlock()
-        course.chapters.first().videos.first().unlock()
         return course
 
     class Meta:
@@ -72,4 +78,19 @@ class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = main.Chapter
         depth = 2
-        fields = ['pk', 'title', 'description', 'thumbnail', 'locked', 'videos']
+        fields = ['pk', 'title', 'description', 'thumbnail', 'videos']
+
+
+class StudentProgressSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(read_only=True)
+    course = serializers.PrimaryKeyRelatedField(queryset=main.Course.objects.filter())
+
+    class Meta:
+        model = main.StudentProgress
+        fields = ('pk', 'last_chapter_index', 'last_video_index', 'user', 'course')
+
+    def create(self, validated_data):
+        pass
+
+    def update(self, instance, validated_data):
+        pass

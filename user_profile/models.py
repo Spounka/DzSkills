@@ -14,9 +14,9 @@ class UserProfile(models.Model):
     user: 'UserModel' = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     profile_image = models.ImageField(upload_to=get_image_directory, null=True)
 
-    description = models.CharField(max_length=300, null=True, blank=True)
-    nationality = models.CharField(max_length=30, null=True, blank=True)
-    speciality = models.CharField(max_length=30, null=True, blank=True)
+    description = models.CharField(max_length=300, blank=True, default="")
+    nationality = models.CharField(max_length=30, blank=True, default="")
+    speciality = models.CharField(max_length=30, blank=True, default="")
 
     def __str__(self):
         return self.user.username

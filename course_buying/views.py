@@ -17,8 +17,8 @@ class OrderAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin):
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
-            return serializers.OrderSerializer
-        return serializers.ViewOrderSerializer
+            return serializers.ViewOrderSerializer
+        return serializers.OrderSerializer
 
 
 class PaymentAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin):
@@ -58,3 +58,24 @@ class RelatedOrdersAPI(generics.ListAPIView):
 
     def get_queryset(self):
         return self.request.user.order_set
+
+
+class ListPaymentsForAdminAPI(generics.ListAPIView):
+    serializer_class = serializers.ListPaymentsForAdminSerializer
+    queryset = Payment.objects.filter()
+
+
+class AcceptPaymentAPI(generics.UpdateAPIView):
+    def update(self, request, *args, **kwargs):
+        payment = Payment.objects.get(pk=kwargs['pk'])
+        payment.status = payment.ACCEPTED
+        payment.save()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class RejectPaymentAPI(generics.UpdateAPIView):
+    def update(self, request, *args, **kwargs):
+        payment = Payment.objects.get(pk=kwargs['pk'])
+        payment.status = payment.REFUSED
+        payment.save()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)

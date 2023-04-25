@@ -2,13 +2,14 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from authentication import models as auth
+from django.utils import timezone
 
 
 # Create your models here.
 class Order(models.Model):
     course = models.ForeignKey('courses.Course', on_delete=models.CASCADE)
     buyer = models.ForeignKey(auth.User, on_delete=models.CASCADE)
-    date_issued = models.DateField(auto_now_add=True)
+    date_issued = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return f'Order {self.pk} {self.buyer.username}-{self.course.title}'

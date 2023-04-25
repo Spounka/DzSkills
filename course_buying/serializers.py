@@ -13,17 +13,8 @@ class OrderCreationPaymentSerializer(serializers.ModelSerializer):
 
 
 class ViewOrderSerializer(serializers.ModelSerializer):
-    course = serializers.PrimaryKeyRelatedField(read_only=True)
+    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter())
     buyer = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    class Meta:
-        model = Order
-        fields = '__all__'
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.all())
-    buyer = auth_ser.UserSerializer(read_only=True)
     payment = OrderCreationPaymentSerializer()
 
     def create(self, validated_data):
@@ -37,6 +28,25 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    course = cs.CourseSerializer()
+    buyer = auth_ser.UserSerializer(read_only=True)
+    payment = OrderCreationPaymentSerializer()
+
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+
+class ListPaymentsForAdminSerializer(serializers.ModelSerializer):
+    order = OrderSerializer()
+
+    class Meta:
+        model = Payment
+        fields = "__all__"
+        depth = 1
 
 
 class PaymentSerializer(serializers.ModelSerializer):

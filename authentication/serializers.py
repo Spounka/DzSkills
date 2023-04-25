@@ -1,6 +1,5 @@
 from dj_rest_auth import serializers as dj_serializers
 from dj_rest_auth.serializers import UserDetailsSerializer
-# from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -104,4 +103,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         depth = 1
-        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'profile_image']
+        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image']

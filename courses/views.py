@@ -4,7 +4,7 @@ from django.http import QueryDict
 from rest_framework import generics, response, mixins, permissions, status
 from rest_framework.permissions import IsAuthenticated
 
-from . import serializers as app, models as m
+from . import serializers as app, models as m;
 
 
 # Create your views here.
@@ -67,3 +67,44 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
 class TrendingCourses(generics.ListAPIView):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter(trending=True)
+
+
+class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
+    serializer_class = app.StudentProgressSerializer
+
+    permission_classes = (IsAuthenticated,)
+
+    def retrieve(self, request, *args, **kwargs):
+        query = m.StudentProgress.objects.filter()
+        filt = {'course': self.kwargs.get('pk'), 'user': request.user}
+        obj = query.filter(**filt).get()
+        serializer = self.get_serializer_class()
+        data = serializer(obj)
+        return response.Response(data=data.data, status=status.HTTP_200_OK)
+
+    def get(self, request, *args, **kwargs):
+        if not kwargs.get('pk'):
+            return self.list(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
+
+
+class UpdateProgressAPI(generics.UpdateAPIView):
+    queryset = m.StudentProgress.objects.filter()
+    serializer_class = app.StudentProgressSerializer
+    permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        progression = self.get_queryset().all()
+        progression = progression.filter(user=self.request.user, course=self.kwargs.get('pk')).get()
+        index_of_last_video = progression.course.chapters.all()[progression.last_chapter_index].videos.count() - 1
+
+        index_of_last_chapter = progression.course.chapters.count() - 1
+        if progression.last_video_index < index_of_last_video:
+            progression.last_video_index += 1
+        elif progression.last_chapter_index < index_of_last_chapter:
+            progression.last_video_index = 0
+            progression.last_chapter_index += 1
+        else:
+            progression.finished = True
+        progression.save()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)

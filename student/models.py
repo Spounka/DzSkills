@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.conf import settings
 from courses import models as courses
@@ -14,11 +15,3 @@ class Student(models.Model):
 
     def __str__(self):
         return f'Student {self.user.username}'
-
-
-class StudentProgression(models.Model):
-    student: Student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    course: courses.Course = models.ForeignKey(courses.Course, on_delete=models.CASCADE)
-
-    chapter: courses.Chapter = models.PositiveSmallIntegerField(default=0)
-    video: courses.Video = models.PositiveSmallIntegerField(default=0)

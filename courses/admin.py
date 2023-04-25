@@ -29,3 +29,4 @@ class CourseAdmin(admin.ModelAdmin):
 admin.site.register(models.Course, CourseAdmin)
 admin.site.register(models.Chapter, ChapterAdmin)
 admin.site.register(models.Video, admin.ModelAdmin)
+admin.site.register(models.StudentProgress, admin.ModelAdmin)
