@@ -140,6 +140,7 @@ class StudentProgress(models.Model):
 
     last_video_index = models.SmallIntegerField(default=0)
     last_chapter_index = models.SmallIntegerField(default=0)
+    progress_percentage = models.FloatField(default=0.0)
     finished = models.BooleanField(default=False)
 
     def __str__(self):
