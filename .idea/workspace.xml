@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/models.py" afterDir="false" />
-    </list>
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="pycharm doing weird stuff again" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -168,14 +162,7 @@
       <workItem from="1681134200250" duration="6575000" />
       <workItem from="1682278229687" duration="1209000" />
       <workItem from="1682346383605" duration="1809000" />
-      <workItem from="1682360366012" duration="5661000" />
-    </task>
-    <task id="LOCAL-00001" summary="Pycharm .idea files">
-      <created>1676450443168</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1676450443168</updated>
+      <workItem from="1682360366012" duration="6403000" />
     </task>
     <task id="LOCAL-00002" summary="renamed project name in pycharm display">
       <created>1676450470307</created>
@@ -485,7 +472,42 @@
       <option name="project" value="LOCAL" />
       <updated>1682423373495</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="Added the percentage field for progression">
+      <created>1682499015301</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1682499015301</updated>
+    </task>
+    <task id="LOCAL-00047" summary="User serializer now returns the date joined">
+      <created>1682499032231</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1682499032231</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Added GetAllUsers view in authentication module">
+      <created>1682499056813</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1682499056813</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Added /api/users/ endpoint">
+      <created>1682499074047</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1682499074047</updated>
+    </task>
+    <task id="LOCAL-00050" summary="pycharm doing weird stuff again">
+      <created>1682499084592</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1682499084592</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -515,11 +537,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="facebook provider settings" />
-    <MESSAGE value="file formatting changes" />
-    <MESSAGE value="added user model" />
-    <MESSAGE value="set authentication module user to be the default in settings.py" />
-    <MESSAGE value="fixed db host in settings.py" />
     <MESSAGE value="added migration file" />
     <MESSAGE value="pycharm files" />
     <MESSAGE value="changed host in settings.py to simplify debugging" />
@@ -540,7 +557,12 @@
     <MESSAGE value="RestAuth config to match needs" />
     <MESSAGE value="copied serializers from main rest-auth code and changed to suit needs" />
     <MESSAGE value="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best" />
-    <option name="LAST_COMMIT_MESSAGE" value="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best" />
+    <MESSAGE value="Added the percentage field for progression" />
+    <MESSAGE value="User serializer now returns the date joined" />
+    <MESSAGE value="Added GetAllUsers view in authentication module" />
+    <MESSAGE value="Added /api/users/ endpoint" />
+    <MESSAGE value="pycharm doing weird stuff again" />
+    <option name="LAST_COMMIT_MESSAGE" value="pycharm doing weird stuff again" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
