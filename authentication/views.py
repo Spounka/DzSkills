@@ -3,7 +3,8 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.http import HttpResponse
-from rest_framework import response
+from rest_framework import response, generics
+from . import serializers, models
 
 
 # Create your views here.
@@ -32,6 +33,11 @@ class GoogleLogin(SocialLoginView):
     def post(self, request, *args, **kwargs):
         x = request
         return super().post(request, *args, **kwargs)
+
+
+class GetAllUsersAPI(generics.ListAPIView):
+    serializer_class = serializers.UserSerializer
+    queryset = models.User.objects.all()
 
 
 def get_stuff(request):
