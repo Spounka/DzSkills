@@ -4,7 +4,9 @@ from django.http import QueryDict
 from rest_framework import generics, response, mixins, permissions, status
 from rest_framework.permissions import IsAuthenticated
 
-from . import serializers as app, models as m;
+from authentication.models import User
+from authentication.serializers import UserSerializer
+from . import serializers as app, models as m
 
 
 # Create your views here.
@@ -108,3 +110,13 @@ class UpdateProgressAPI(generics.UpdateAPIView):
             progression.finished = True
         progression.save()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class GetCourseStudents(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    queryset = m.Course.objects.filter()
+
+    def retrieve(self, request, *args, **kwargs):
+        course = self.get_object()
+        serializer = self.get_serializer(course.user_set.all(), many=True)
+        return response.Response(serializer.data)

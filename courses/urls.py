@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.CourseAPI.as_view(), name="courses-list"),
     path('<int:pk>/', views.CourseAPI.as_view(), name="course"),
+    path('<int:pk>/students/', views.GetCourseStudents.as_view(), name="course"),
 
     path('trending/', views.TrendingCourses.as_view(), name="trending-courses"),
 
