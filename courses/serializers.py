@@ -94,3 +94,13 @@ class StudentProgressSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         pass
+
+
+class StudentProgressForRelatedStudents(serializers.ModelSerializer):
+    user = authentication.serializers.UserSerializer()
+
+    # course = CourseSerializer()
+
+    class Meta:
+        model = main.StudentProgress
+        fields = ['user', 'last_video_index', 'last_chapter_index', ]
