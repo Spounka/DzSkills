@@ -13,7 +13,7 @@ urlpatterns = [
     path('api/rest-auth/facebook/', views.FacebookLoginView.as_view(), name='fb_login'),
     path('api/rest-auth/google/', views.GoogleLogin.as_view(), name='google_login'),
 
-    path('api/users/', views.GetAllUsersAPI.as_view(), name='users'),
+    path('api/users/', include('authentication.urls')),
     path('api/profile/', include('user_profile.urls'), name='profile'),
     path('api/courses/', include('courses.urls'), name="courses"),
     path('api/students/', include('student.urls'), name="students"),
