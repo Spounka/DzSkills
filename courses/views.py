@@ -118,3 +118,13 @@ class GetCourseStudents(generics.RetrieveAPIView):
         course = self.get_object()
         serializer = self.get_serializer_class()(course.studentprogress_set.all(), many=True)
         return response.Response(serializer.data)
+
+
+class GetRelatedCourses(generics.RetrieveAPIView):
+    serializer_class = app.CourseSerializer
+    queryset = User.objects.filter()
+
+    def retrieve(self, request, *args, **kwargs):
+        user = self.get_object()
+        courses_serialized = self.get_serializer_class()(user.courses.all(), many=True)
+        return response.Response(courses_serialized.data)
