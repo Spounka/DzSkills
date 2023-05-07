@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="Pycharm Code stuff">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="Pycharm shenanigans">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courses/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -176,49 +174,7 @@
       <workItem from="1683135339521" duration="4290000" />
       <workItem from="1683397486016" duration="1562000" />
       <workItem from="1683404751211" duration="6449000" />
-      <workItem from="1683473086454" duration="3061000" />
-    </task>
-    <task id="LOCAL-00007" summary="database setup">
-      <created>1676452043231</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452043231</updated>
-    </task>
-    <task id="LOCAL-00008" summary="static and media folders confgi">
-      <created>1676452056440</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452056440</updated>
-    </task>
-    <task id="LOCAL-00009" summary="File formatting fixes">
-      <created>1676452090838</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452090838</updated>
-    </task>
-    <task id="LOCAL-00010" summary="added new authentication app">
-      <created>1676452146040</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452146040</updated>
-    </task>
-    <task id="LOCAL-00011" summary="added auth app to installed apps in settings.py">
-      <created>1676452269019</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452269019</updated>
-    </task>
-    <task id="LOCAL-00012" summary="Added auth backends with all auth support">
-      <created>1676452339970</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452339970</updated>
+      <workItem from="1683473086454" duration="5064000" />
     </task>
     <task id="LOCAL-00013" summary="all auth to installed apps">
       <created>1676452433572</created>
@@ -521,7 +477,49 @@
       <option name="project" value="LOCAL" />
       <updated>1683469975552</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Added RetrieveUser view">
+      <created>1683484447219</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484447220</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Moved auth urls to new file">
+      <created>1683484461740</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484461741</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode">
+      <created>1683484509753</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484509753</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode">
+      <created>1683484520224</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484520224</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Added RelatedStudents View">
+      <created>1683484537773</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484537773</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Pycharm shenanigans">
+      <created>1683484547519</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1683484547519</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -551,12 +549,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="pycharm being weird" />
-    <MESSAGE value="ignored static files" />
-    <MESSAGE value="Registered user model to admin" />
-    <MESSAGE value="added profileImage field to User" />
-    <MESSAGE value="added CORS to settings" />
-    <MESSAGE value="social auth in installed apps" />
     <MESSAGE value="some all auth settings" />
     <MESSAGE value="added email authentication in backends" />
     <MESSAGE value="fixed HOST issue, still not perfect and requires tweaks" />
@@ -576,7 +568,13 @@
     <MESSAGE value="Added view for getting related students of a course" />
     <MESSAGE value="code formatting I suppose" />
     <MESSAGE value="Pycharm Code stuff" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pycharm Code stuff" />
+    <MESSAGE value="Added RetrieveUser view" />
+    <MESSAGE value="Moved auth urls to new file" />
+    <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression model" />
+    <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode" />
+    <MESSAGE value="Added RelatedStudents View" />
+    <MESSAGE value="Pycharm shenanigans" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pycharm shenanigans" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
