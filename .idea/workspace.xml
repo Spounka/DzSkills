@@ -4,11 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="pycharm doing weird stuff again">
-      <change beforePath="$PROJECT_DIR$/.idea/backend.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backend.iml" afterDir="false" />
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="Pycharm Code stuff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/course_buying/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/course_buying/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -175,35 +175,8 @@
       <workItem from="1683121585170" duration="692000" />
       <workItem from="1683135339521" duration="4290000" />
       <workItem from="1683397486016" duration="1562000" />
-      <workItem from="1683404751211" duration="4404000" />
-    </task>
-    <task id="LOCAL-00003" summary="added dotenv dependency">
-      <created>1676451171229</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1676451171229</updated>
-    </task>
-    <task id="LOCAL-00004" summary="pycharm doing its thing">
-      <created>1676451198458</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1676451198458</updated>
-    </task>
-    <task id="LOCAL-00005" summary="pycharm doing its thing">
-      <created>1676451966430</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1676451966430</updated>
-    </task>
-    <task id="LOCAL-00006" summary="added dotenv configs">
-      <created>1676452008032</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452008032</updated>
+      <workItem from="1683404751211" duration="6449000" />
+      <workItem from="1683473086454" duration="3061000" />
     </task>
     <task id="LOCAL-00007" summary="database setup">
       <created>1676452043231</created>
@@ -520,7 +493,35 @@
       <option name="project" value="LOCAL" />
       <updated>1682499147212</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="Progress now is created when student payment gets accepted">
+      <created>1683469892596</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1683469892597</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Added view for getting related students of a course">
+      <created>1683469950986</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1683469950986</updated>
+    </task>
+    <task id="LOCAL-00054" summary="code formatting I suppose">
+      <created>1683469963837</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1683469963837</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Pycharm Code stuff">
+      <created>1683469975552</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1683469975552</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -550,10 +551,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added migration file" />
-    <MESSAGE value="pycharm files" />
-    <MESSAGE value="changed host in settings.py to simplify debugging" />
-    <MESSAGE value="added .gitignore" />
     <MESSAGE value="pycharm being weird" />
     <MESSAGE value="ignored static files" />
     <MESSAGE value="Registered user model to admin" />
@@ -575,7 +572,11 @@
     <MESSAGE value="Added GetAllUsers view in authentication module" />
     <MESSAGE value="Added /api/users/ endpoint" />
     <MESSAGE value="pycharm doing weird stuff again" />
-    <option name="LAST_COMMIT_MESSAGE" value="pycharm doing weird stuff again" />
+    <MESSAGE value="Progress now is created when student payment gets accepted" />
+    <MESSAGE value="Added view for getting related students of a course" />
+    <MESSAGE value="code formatting I suppose" />
+    <MESSAGE value="Pycharm Code stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pycharm Code stuff" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
