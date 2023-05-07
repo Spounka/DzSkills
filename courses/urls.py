@@ -14,4 +14,6 @@ urlpatterns = [
     path('progress/', views.StudentProgressAPI.as_view(), name='progressions'),
     path('progress/<int:pk>/', views.StudentProgressAPI.as_view(), name='progression'),
     path('progress/<int:pk>/update/', views.UpdateProgressAPI.as_view(), name='update-progress'),
+
+    path('owner/<int:pk>/related/', views.GetRelatedCourses.as_view(), name='related-courses'),
 ]
