@@ -40,6 +40,12 @@ class GetAllUsersAPI(generics.ListAPIView):
     queryset = models.User.objects.all()
 
 
+class RetrieveUser(generics.RetrieveAPIView):
+    serializer_class = serializers.UserSerializer
+    queryset = models.User.objects.all()
+    # permission_classes = [permissions.IsAuthenticated]
+
+
 def get_stuff(request):
     name = request.headers
     return HttpResponse(f'{request.GET.get("code")}')
