@@ -1,7 +1,4 @@
-import json
-
-from django.http import QueryDict
-from rest_framework import generics, response, mixins, permissions, status
+from rest_framework import generics, response, mixins, status
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
@@ -50,9 +47,10 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
     def partial_update(self, request, *args, **kwargs):
         if not self.kwargs.get('pk', None):
             return response.Response(status=status.HTTP_400_BAD_REQUEST, data={'message': 'no course provided'})
-        if (course := self.get_queryset().filter(pk=self.kwargs.get('pk'))) is not None:
-            # course.app
-            pass
+        # if (course := self.get_queryset().filter(pk=self.kwargs.get('pk'))) is not None:
+        #     # course.app
+        #     pass
+        return super().partial_update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         chapters = request.data.get('chapters')
