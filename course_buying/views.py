@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, mixins, response, status, permissions
 from .models import Order, Payment
 from . import serializers
+from courses.models import StudentProgress
 from authentication.models import User
 
 
@@ -70,6 +71,8 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
         payment = Payment.objects.get(pk=kwargs['pk'])
         payment.status = payment.ACCEPTED
         payment.save()
+        progress = StudentProgress(user=payment.order.buyer, course=payment.order.course)
+        progress.save()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
