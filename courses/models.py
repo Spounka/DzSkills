@@ -65,6 +65,7 @@ class Course(models.Model):
 
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    hashtags = models.ManyToManyField(Hashtag)
 
     duration = models.CharField(max_length=10, default="1h")
     used_programs = models.CharField(max_length=300, default="")
