@@ -65,6 +65,7 @@ class Course(models.Model):
     presentation_file = models.FileField(upload_to=get_course_file_upload_directory, blank=True, null=True)
 
     course_level = models.CharField(max_length=30, choices=LEVEL_CHOICES, default=BEGINNER)
+    level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
     duration = models.CharField(max_length=10, default="1h")
     used_programs = models.CharField(max_length=300, default="")
     language = models.CharField(max_length=30, default="Arabic")
