@@ -22,6 +22,18 @@ def get_chapter_upload_directory(instance, filename):
     return f'{instance.course.owner}/courses/{instance.course.title}/chapter_{instance.title}/{filename}'
 
 
+class Hashtag(models.Model):
+    name = models.CharField(max_length=10, default="")
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=30, default="")
+
+
+class Level(models.Model):
+    name = models.CharField(max_length=30, default="")
+
+
 class Course(models.Model):
     PENDING = 'pend'
     ACCEPTED = 'app'
