@@ -63,7 +63,7 @@ class Course(models.Model):
     trending = models.BooleanField(default=False)
     presentation_file = models.FileField(upload_to=get_course_file_upload_directory, blank=True, null=True)
 
-    level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
+    course_level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
     hashtags = models.ManyToManyField(Hashtag)
 
