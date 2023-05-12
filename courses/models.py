@@ -59,12 +59,10 @@ class Course(models.Model):
     description = models.CharField(max_length=300)
     thumbnail = models.ImageField(upload_to=get_course_image_upload_directory)
     price = models.PositiveIntegerField()
-    hashtags = models.CharField(max_length=100)
     status = models.CharField(max_length=30, choices=STATUS_CHOICES, default=PENDING)
     trending = models.BooleanField(default=False)
     presentation_file = models.FileField(upload_to=get_course_file_upload_directory, blank=True, null=True)
 
-    course_level = models.CharField(max_length=30, choices=LEVEL_CHOICES, default=BEGINNER)
     level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
