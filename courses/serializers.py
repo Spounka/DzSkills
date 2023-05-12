@@ -45,8 +45,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         chapters_data = validated_data.pop('chapters', None)
-        owner = self.context['request'].user if not self.context[
-            'request'].user.is_anonymous else UserModel.objects.all().first()
+        owner = self.context['request'].user
         course = main.Course.objects.create(owner=owner, **validated_data)
         chapters = []
         for chapter_data in chapters_data:
