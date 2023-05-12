@@ -4,10 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="Pycharm shenanigans">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="Pycharm Shenanigans">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,28 +175,7 @@
       <workItem from="1683135339521" duration="4290000" />
       <workItem from="1683397486016" duration="1562000" />
       <workItem from="1683404751211" duration="6449000" />
-      <workItem from="1683473086454" duration="5064000" />
-    </task>
-    <task id="LOCAL-00013" summary="all auth to installed apps">
-      <created>1676452433572</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452433572</updated>
-    </task>
-    <task id="LOCAL-00014" summary="added social account providers">
-      <created>1676452514840</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452514840</updated>
-    </task>
-    <task id="LOCAL-00015" summary="file formatting">
-      <created>1676452526669</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1676452526669</updated>
+      <workItem from="1683473086454" duration="19291000" />
     </task>
     <task id="LOCAL-00016" summary="added site">
       <created>1676452689189</created>
@@ -519,7 +499,28 @@
       <option name="project" value="LOCAL" />
       <updated>1683484547519</updated>
     </task>
-    <option name="localTasksCounter" value="62" />
+    <task id="LOCAL-00062" summary="Added view to get courses that a teacher owns">
+      <created>1683487981128</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1683487981129</updated>
+    </task>
+    <task id="LOCAL-00063" summary="added related courses view to url">
+      <created>1683487995961</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1683487995961</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Pycharm Shenanigans">
+      <created>1683488004370</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1683488004370</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -549,9 +550,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="some all auth settings" />
-    <MESSAGE value="added email authentication in backends" />
-    <MESSAGE value="fixed HOST issue, still not perfect and requires tweaks" />
     <MESSAGE value="added URLS and removed comments from urls.py" />
     <MESSAGE value="added auth file backend, late commit" />
     <MESSAGE value="idk anymore" />
@@ -574,7 +572,10 @@
     <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode" />
     <MESSAGE value="Added RelatedStudents View" />
     <MESSAGE value="Pycharm shenanigans" />
-    <option name="LAST_COMMIT_MESSAGE" value="Pycharm shenanigans" />
+    <MESSAGE value="Added view to get courses that a teacher owns" />
+    <MESSAGE value="added related courses view to url" />
+    <MESSAGE value="Pycharm Shenanigans" />
+    <option name="LAST_COMMIT_MESSAGE" value="Pycharm Shenanigans" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
