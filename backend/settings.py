@@ -31,6 +31,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', False)
+# DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,6 +42,16 @@ CSRF_TRUSTED_ORIGINS = [
     'http://192.168.1.12/',
     'http://192.168.1.12:3000/',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:4173',
+    'http://localhost',
+    'http://192.168.1.12',
+    'http://192.168.1.12:3000',
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -200,7 +211,7 @@ DATABASES = {
         'NAME':     os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
         'USER':     os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-        'HOST':     os.environ.get('DB_HOST', 'localhost'),
+        'HOST':     os.environ.get('POSTGRES_HOST', 'localhost'),
         'PORT':     5432
     }
 }
@@ -250,11 +261,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024**3
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-#     'http://localhost',
-#     'http://192.168.1.12',
-#     'http://192.168.1.12:3000',
-# ]
-
-CORS_ALLOW_ALL_ORIGINS = True

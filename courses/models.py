@@ -25,13 +25,31 @@ def get_chapter_upload_directory(instance, filename):
 class Hashtag(models.Model):
     name = models.CharField(max_length=10, default="")
 
+    def __str__(self):
+        return self.name
+
+
+def get_category_upload_dir(instance: 'Category', filename):
+    return f'categories/{instance.name}/{filename}'
+
 
 class Category(models.Model):
     name = models.CharField(max_length=30, default="")
+    description = models.CharField(max_length=300, default="")
+    image = models.ImageField(upload_to=get_category_upload_dir, null=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Categories'
 
 
 class Level(models.Model):
     name = models.CharField(max_length=30, default="")
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
@@ -63,9 +81,10 @@ class Course(models.Model):
     trending = models.BooleanField(default=False)
     presentation_file = models.FileField(upload_to=get_course_file_upload_directory, blank=True, null=True)
 
-    course_level = models.ForeignKey(Level, on_delete=models.SET_NULL, null=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
-    hashtags = models.ManyToManyField(Hashtag)
+    course_level = models.ForeignKey(Level, blank=True, on_delete=models.SET_NULL, null=True,
+                                     related_name="courses")
+    category = models.ForeignKey(Category, blank=True, on_delete=models.SET_NULL, null=True, related_name="courses")
+    hashtags = models.ManyToManyField(Hashtag, blank=True, related_name="courses")
 
     duration = models.CharField(max_length=10, default="1h")
     used_programs = models.CharField(max_length=300, default="")

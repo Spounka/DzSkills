@@ -128,3 +128,18 @@ class GetRelatedCourses(generics.RetrieveAPIView):
         user = self.get_object()
         courses_serialized = self.get_serializer_class()(user.courses.all(), many=True)
         return response.Response(courses_serialized.data)
+
+
+class GetHashtagsAPI(generics.ListCreateAPIView):
+    serializer_class = app.HashtagSerializer
+    queryset = m.Hashtag.objects.all()
+
+
+class GetLevelsAPI(generics.ListCreateAPIView):
+    serializer_class = app.LevelSerializer
+    queryset = m.Level.objects.all()
+
+
+class GetCategoryAPI(generics.ListCreateAPIView):
+    serializer_class = app.CategorySerializer
+    queryset = m.Category.objects.all()

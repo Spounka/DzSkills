@@ -1,8 +1,13 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 urlpatterns = [
     path('', views.CourseAPI.as_view(), name="courses-list"),
+
+    path('categories/', views.GetCategoryAPI.as_view(), name='categories'),
+    path('levels/', views.GetLevelsAPI.as_view(), name='levels'),
+    path('hashtags/', views.GetHashtagsAPI.as_view(), name="hashtags"),
+
     path('<int:pk>/', views.CourseAPI.as_view(), name="course"),
     path('<int:pk>/students/', views.GetCourseStudents.as_view(), name="course"),
 
