@@ -23,7 +23,7 @@ def get_chapter_upload_directory(instance, filename):
 
 
 class Hashtag(models.Model):
-    name = models.CharField(max_length=10, default="")
+    name = models.CharField(max_length=20, default="")
 
     def __str__(self):
         return self.name

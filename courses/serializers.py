@@ -114,6 +114,13 @@ class HashtagSerializer(serializers.ModelSerializer):
         model = models.Hashtag
 
 
+class CreateHashtagSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'name']
+        depth = 0
+        model = models.Hashtag
+
+
 class CategorySerializer(serializers.ModelSerializer):
     courses = CourseSerializer(many=True)
 
@@ -129,4 +136,11 @@ class LevelSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         depth = 1
+        model = models.Level
+
+
+class CreateLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'name']
+        depth = 0
         model = models.Level

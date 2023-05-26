@@ -134,10 +134,18 @@ class GetHashtagsAPI(generics.ListCreateAPIView):
     serializer_class = app.HashtagSerializer
     queryset = m.Hashtag.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = app.CreateHashtagSerializer
+        return super().create(request, *args, **kwargs)
+
 
 class GetLevelsAPI(generics.ListCreateAPIView):
     serializer_class = app.LevelSerializer
     queryset = m.Level.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        self.serializer_class = app.CreateLevelSerializer
+        return super().create(request, *args, **kwargs)
 
 
 class GetCategoryAPI(generics.ListCreateAPIView):

@@ -30,8 +30,7 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', False)
-# DEBUG = True
+DEBUG = (os.environ.get('DEBUG', False) == "true")
 
 ALLOWED_HOSTS = ['*']
 
@@ -163,7 +162,7 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
+    # Needed to log in by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
     'authentication.auths.AuthWithEmail',
 

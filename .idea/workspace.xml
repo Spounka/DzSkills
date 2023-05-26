@@ -4,22 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="added hashtag field in the course model">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="trying to get over with things, I don't have time to detail">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/admin.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +83,7 @@
       <recent name="$PROJECT_DIR$/media" />
     </key>
   </component>
-  <component name="RunManager" selected="Docker...: Compose Deployment">
+  <component name="RunManager" selected="Django Server.DzSkills">
     <configuration name="DzSkills" type="Python.DjangoServer" factoryName="Django server">
       <module name="backend" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -115,7 +109,7 @@
         </ENTRIES>
       </EXTENSION>
       <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="8000" />
+      <option name="port" value="8080" />
       <option name="host" value="" />
       <option name="additionalOptions" value="" />
       <option name="browserUrl" value="" />
@@ -234,14 +228,9 @@
       <workItem from="1684708332191" duration="1049000" />
       <workItem from="1684711576193" duration="1773000" />
       <workItem from="1684743168413" duration="15302000" />
-      <workItem from="1684824783175" duration="2608000" />
-    </task>
-    <task id="LOCAL-00023" summary="fixed db host in settings.py">
-      <created>1676453379823</created>
-      <option name="number" value="00023" />
-      <option name="presentableId" value="LOCAL-00023" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453379823</updated>
+      <workItem from="1684824783175" duration="9481000" />
+      <workItem from="1684849597447" duration="11081000" />
+      <workItem from="1685118312549" duration="2162000" />
     </task>
     <task id="LOCAL-00024" summary="added migration file">
       <created>1676453389267</created>
@@ -579,7 +568,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683888528866</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="trying to get over with things, I don't have time to detail">
+      <created>1684828693181</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1684828693181</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -609,7 +605,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="No idea&#10;&#10;There has been a lot of changes throughout this development commit, I don't really know what changed and what didn't, so I will be pushing everything due to time constraints and hope for the best" />
     <MESSAGE value="Added the percentage field for progression" />
     <MESSAGE value="User serializer now returns the date joined" />
     <MESSAGE value="Added GetAllUsers view in authentication module" />
@@ -634,7 +629,8 @@
     <MESSAGE value="Added category migration + field in the course model" />
     <MESSAGE value="Removed string hashtag and course_level field in the course model" />
     <MESSAGE value="added hashtag field in the course model" />
-    <option name="LAST_COMMIT_MESSAGE" value="added hashtag field in the course model" />
+    <MESSAGE value="trying to get over with things, I don't have time to detail" />
+    <option name="LAST_COMMIT_MESSAGE" value="trying to get over with things, I don't have time to detail" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -678,6 +674,21 @@
           <url>file://$PROJECT_DIR$/admin_dashboard/views.py</url>
           <line>16</line>
           <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/authentication/views.py</url>
+          <line>61</line>
+          <option name="timeStamp" value="43" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/courses/views.py</url>
+          <line>137</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/authentication/views.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
