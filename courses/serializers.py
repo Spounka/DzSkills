@@ -19,7 +19,7 @@ class VideoSerializer(serializers.ModelSerializer):
 class ChapterVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Video
-        fields = ['pk', 'title', 'description', 'video', 'duration', ]
+        fields = ['id', 'title', 'description', 'video', 'duration', ]
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
@@ -28,7 +28,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 0
-        fields = ['pk', 'title', 'description', 'thumbnail', 'videos']
+        fields = ['id', 'title', 'description', 'thumbnail', 'videos']
 
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
@@ -144,3 +144,52 @@ class CreateLevelSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
         depth = 0
         model = models.Level
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = "__all__"
+        depth = 0
+        model = models.Certificate
+
+
+class QuizzAnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 0
+        # fields = "__all__"
+        exclude = ('question',)
+        model = models.QuizzAnswer
+
+
+class QuizzQuestionSerializer(serializers.ModelSerializer):
+    answers = QuizzAnswerSerializer(many=True)
+
+    class Meta:
+        exclude = ('quizz',)
+        depth = 0
+        model = models.QuizzQuestion
+
+
+class CourseQuizzSerializer(serializers.ModelSerializer):
+    questions = QuizzQuestionSerializer(many=True)
+
+    def create(self, validated_data):
+        questions_data = validated_data.pop('questions', None)
+        quizz = models.CourseQuizz.objects.create(**validated_data)
+        questions = []
+        for q in questions_data:
+            answers_data = q.pop('answers')
+            question = models.QuizzQuestion.objects.create(quizz=quizz, **q)
+            answers = [models.QuizzAnswer.objects.create(question=question, **q) for a in answers_data]
+
+            question.answers.set(answers)
+            questions.append(question)
+
+        quizz.questions.set(questions)
+
+        return quizz
+
+    class Meta:
+        fields = "__all__"
+        depth = 0
+        model = models.CourseQuizz

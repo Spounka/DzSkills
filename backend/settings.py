@@ -30,7 +30,8 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get('DEBUG', False) == "true")
+# DEBUG = (os.environ.get('DEBUG', True) == "true")
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -38,6 +39,7 @@ ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
+    'http://localhost',
     'http://192.168.1.12/',
     'http://192.168.1.12:3000/',
 ]
@@ -247,10 +249,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'http://localhost/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = 'http://localhost/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type

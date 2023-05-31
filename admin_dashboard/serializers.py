@@ -18,7 +18,8 @@ class ReceiptSerializer(serializers.ModelSerializer):
     def get_image(self, receipt):
         request = self.context.get('request')
         url = receipt.image.url
-        return request.build_absolute_uri(url)
+        # return request.build_absolute_uri(url)
+        return receipt.image.url
 
 
 class CreateReceiptSerializer(serializers.ModelSerializer):

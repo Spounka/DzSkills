@@ -1,8 +1,12 @@
+from io import BytesIO
+
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework import generics, response, mixins, status
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
 from authentication.serializers import UserSerializer
+from certificate_generation.main import generate_certificate
 from . import serializers as app, models as m
 
 
@@ -99,6 +103,8 @@ class UpdateProgressAPI(generics.UpdateAPIView):
         index_of_last_video = progression.course.chapters.all()[progression.last_chapter_index].videos.count() - 1
 
         index_of_last_chapter = progression.course.chapters.count() - 1
+        if progression.finished:
+            return response.Response(status=status.HTTP_204_NO_CONTENT)
         if progression.last_video_index < index_of_last_video:
             progression.last_video_index += 1
         elif progression.last_chapter_index < index_of_last_chapter:
@@ -106,8 +112,10 @@ class UpdateProgressAPI(generics.UpdateAPIView):
             progression.last_chapter_index += 1
         else:
             progression.finished = True
+            certificate = m.Certificate()
+            certificate.generate(request.user, progression.course)
         progression.save()
-        return response.Response(status=status.HTTP_204_NO_CONTENT)
+        return response.Response(status=status.HTTP_200_OK)
 
 
 class GetCourseStudents(generics.RetrieveAPIView):
@@ -151,3 +159,30 @@ class GetLevelsAPI(generics.ListCreateAPIView):
 class GetCategoryAPI(generics.ListCreateAPIView):
     serializer_class = app.CategorySerializer
     queryset = m.Category.objects.all()
+
+
+class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):
+    serializer_class = app.CourseQuizzSerializer
+    queryset = m.CourseQuizz.objects.all()
+
+    def get_object(self):
+        lookup_field = self.lookup_url_kwarg or self.lookup_field
+        return m.CourseQuizz.objects.filter(course_id=self.kwargs[lookup_field]).first()
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class GetCertificate(generics.RetrieveAPIView):
+    serializer_class = app.CourseSerializer
+    queryset = m.Course.objects.filter()
+    permission_classes = [IsAuthenticated, ]
+
+    def retrieve(self, request, *args, **kwargs):
+        course = self.get_object()
+        certificate = m.Certificate.objects.filter(user=request.user).filter(course=course).first()
+        serializer = app.CertificateSerializer(certificate)
+        return response.Response(data=serializer.data, status=status.HTTP_200_OK)

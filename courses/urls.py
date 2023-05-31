@@ -21,4 +21,9 @@ urlpatterns = [
     path('progress/<int:pk>/update/', views.UpdateProgressAPI.as_view(), name='update-progress'),
 
     path('owner/<int:pk>/related/', views.GetRelatedCourses.as_view(), name='related-courses'),
+
+    path('<int:pk>/quizz/', views.QuizzRetrieveUpdateDestroyView.as_view(), name="quizz-list-create"),
+
+    path('<int:pk>/certificate/', views.GetCertificate.as_view(), name="certificate"),
+
 ]

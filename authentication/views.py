@@ -3,9 +3,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth.hashers import make_password
-from django.http import HttpResponse
 from rest_framework import response, generics, permissions, status, views
-from rest_framework.exceptions import ValidationError
 
 from . import serializers, models
 

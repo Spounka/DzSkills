@@ -1,7 +1,11 @@
+import os
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from certificate_generation.main import generate_certificate
 
 
 # Create your models here.
@@ -125,6 +129,30 @@ class Chapter(models.Model):
         return f'{self.course.title}/{self.title}'
 
 
+class CourseQuizz(models.Model):
+    course = models.OneToOneField(Course, on_delete=models.CASCADE, related_name='quizz')
+
+    def __str__(self):
+        return f'{self.course.title}-quizz'
+
+
+class QuizzQuestion(models.Model):
+    quizz = models.ForeignKey(CourseQuizz, on_delete=models.CASCADE, related_name="questions")
+    content = models.CharField(max_length=200, default="")
+
+    def __str__(self):
+        return f'{self.quizz.course.title}-question {self.pk:02}'
+
+
+class QuizzAnswer(models.Model):
+    question = models.ForeignKey(QuizzQuestion, on_delete=models.CASCADE, related_name="answers")
+    content = models.CharField(max_length=200, default="")
+    is_correct_answer = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.question.quizz.course.title}-question {self.question.pk:02} answer'
+
+
 def get_duration(video: 'Video'):
     from moviepy.video.io.VideoFileClip import VideoFileClip
 
@@ -178,3 +206,25 @@ class StudentProgress(models.Model):
 
     def __str__(self):
         return f'StudentProgress {self.user.username} - {self.course.title}'
+
+
+def certificate_upload_dir(instance: "Certificate", filename):
+    return f'users/{instance.user.username}/courses/{instance.course.title}/certificate/{filename}'
+
+
+class Certificate(models.Model):
+    user: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    course: Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+
+    certificate_image = models.ImageField(upload_to=certificate_upload_dir)
+
+    def generate(self, user, course):
+        certificate_image = generate_certificate(f'{user.first_name} {user.last_name}')
+        certificate_image.save(f'/tmp/certificate-{user.username}.png')
+        self.user = user
+        self.course = course
+        self.certificate_image.save(name="certificate.png",
+                                    content=open(f'/tmp/certificate-{user.username}.png', 'rb'),
+                                    save=True)
+        self.save()
+        # os.remove(f'certificate-{user.username}.png')

@@ -4,16 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="trying to get over with things, I don't have time to detail">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authentication/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/courses/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/courses/views.py" afterDir="false" />
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="removed the stupid certificate file">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,18 +34,19 @@
   <component name="GitRewordedCommitMessages">
     <option name="commitMessagesMapping">
       <RewordedCommitMessageMapping>
-        <option name="originalMessage" value="Added Initial Project files" />
-        <option name="rewordedMessage" value="Initial Project Setup" />
+        <option name="originalMessage" value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
+        <option name="rewordedMessage" value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
       </RewordedCommitMessageMapping>
     </option>
     <option name="currentCommit" value="1" />
-    <option name="onto" value="85c383872eda2777a38dcc67369de0165ad374a9" />
+    <option name="onto" value="165a4ad28e5b01b2076c59b2c8fc02ac018acdf8" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/app_settings.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/serializers.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/urls.py" root0="SKIP_INSPECTION" />
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/views.py" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/courses/views.py" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -63,21 +56,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/spounka/Work/websites/DzSkills/backend/media&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "dev",
+    "last_opened_file_path": "/home/spounka/Work/websites/DzSkills/docker-compose.yml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/media" />
@@ -230,49 +223,10 @@
       <workItem from="1684743168413" duration="15302000" />
       <workItem from="1684824783175" duration="9481000" />
       <workItem from="1684849597447" duration="11081000" />
-      <workItem from="1685118312549" duration="2162000" />
-    </task>
-    <task id="LOCAL-00024" summary="added migration file">
-      <created>1676453389267</created>
-      <option name="number" value="00024" />
-      <option name="presentableId" value="LOCAL-00024" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453389267</updated>
-    </task>
-    <task id="LOCAL-00025" summary="pycharm files">
-      <created>1676453394215</created>
-      <option name="number" value="00025" />
-      <option name="presentableId" value="LOCAL-00025" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453394215</updated>
-    </task>
-    <task id="LOCAL-00026" summary="changed host in settings.py to simplify debugging">
-      <created>1676453611075</created>
-      <option name="number" value="00026" />
-      <option name="presentableId" value="LOCAL-00026" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453611075</updated>
-    </task>
-    <task id="LOCAL-00027" summary="added .gitignore">
-      <created>1676453668991</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453668991</updated>
-    </task>
-    <task id="LOCAL-00028" summary="pycharm being weird">
-      <created>1676453678451</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1676453678451</updated>
-    </task>
-    <task id="LOCAL-00029" summary="ignored static files">
-      <created>1677538158303</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538158303</updated>
+      <workItem from="1685118312549" duration="2672000" />
+      <workItem from="1685202994043" duration="6790000" />
+      <workItem from="1685494609638" duration="29796000" />
+      <workItem from="1685677582350" duration="992000" />
     </task>
     <task id="LOCAL-00030" summary="Registered user model to admin">
       <created>1677538175131</created>
@@ -575,7 +529,49 @@
       <option name="project" value="LOCAL" />
       <updated>1684828693181</updated>
     </task>
-    <option name="localTasksCounter" value="73" />
+    <task id="LOCAL-00073" summary="trying to get over with things, I don't have time to detail">
+      <created>1685122844622</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1685122844623</updated>
+    </task>
+    <task id="LOCAL-00074" summary="removed the .env file since everything is dockerbased">
+      <created>1685122921081</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1685122921081</updated>
+    </task>
+    <task id="LOCAL-00075" summary="certification crap, idk X)">
+      <created>1685541415617</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1685541415618</updated>
+    </task>
+    <task id="LOCAL-00076" summary="added quizz model">
+      <created>1685541567256</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1685541567256</updated>
+    </task>
+    <task id="LOCAL-00077" summary="added quizz and certificatation&#10;&#10;Quizz probably still needs more work but for now lgtm">
+      <created>1685677639581</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1685677639582</updated>
+    </task>
+    <task id="LOCAL-00078" summary="removed the stupid certificate file">
+      <created>1685677811458</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1685677811458</updated>
+    </task>
+    <option name="localTasksCounter" value="79" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -592,7 +588,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="auth" />
+                        <option value="dev" />
                       </list>
                     </value>
                   </entry>
@@ -605,11 +601,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added the percentage field for progression" />
-    <MESSAGE value="User serializer now returns the date joined" />
-    <MESSAGE value="Added GetAllUsers view in authentication module" />
-    <MESSAGE value="Added /api/users/ endpoint" />
-    <MESSAGE value="pycharm doing weird stuff again" />
     <MESSAGE value="Progress now is created when student payment gets accepted" />
     <MESSAGE value="Added view for getting related students of a course" />
     <MESSAGE value="code formatting I suppose" />
@@ -630,7 +621,12 @@
     <MESSAGE value="Removed string hashtag and course_level field in the course model" />
     <MESSAGE value="added hashtag field in the course model" />
     <MESSAGE value="trying to get over with things, I don't have time to detail" />
-    <option name="LAST_COMMIT_MESSAGE" value="trying to get over with things, I don't have time to detail" />
+    <MESSAGE value="removed the .env file since everything is dockerbased" />
+    <MESSAGE value="certification crap, idk X)" />
+    <MESSAGE value="added quizz model" />
+    <MESSAGE value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
+    <MESSAGE value="removed the stupid certificate file" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed the stupid certificate file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -677,18 +673,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/authentication/views.py</url>
-          <line>61</line>
+          <line>59</line>
           <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/courses/views.py</url>
-          <line>137</line>
-          <option name="timeStamp" value="44" />
+          <url>file://$PROJECT_DIR$/authentication/views.py</url>
+          <line>81</line>
+          <option name="timeStamp" value="45" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/authentication/views.py</url>
-          <line>83</line>
-          <option name="timeStamp" value="45" />
+          <url>file://$PROJECT_DIR$/courses/views.py</url>
+          <line>113</line>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/courses/views.py</url>
+          <line>184</line>
+          <option name="timeStamp" value="55" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -699,6 +700,8 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/dzskills$models.coverage" NAME="models Coverage Results" MODIFIED="1685517352665" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/courses" />
+    <SUITE FILE_PATH="coverage/dzskills$main.coverage" NAME="main Coverage Results" MODIFIED="1685495101050" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/certificate_generation" />
     <SUITE FILE_PATH="coverage/dzskills$hextoserial.coverage" NAME="hextoserial Coverage Results" MODIFIED="1683131785016" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/gitClones/Arduino-PIC-programmer/hextoserial" />
   </component>
 </project>
