@@ -34,3 +34,11 @@ class RetrieveCurrentReceipt(generics.GenericAPIView):
             receipt = receipt.increment()
         serializer = self.get_serializer(receipt, context={'request': request})
         return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class RetrieveUpdateAdminSettingsView(generics.RetrieveUpdateAPIView):
+    queryset = models.AdminConfig.objects.filter()
+    serializer_class = serializers.AdminConfigSerializer
+
+    def get_object(self):
+        return self.queryset.first()

@@ -1,9 +1,47 @@
+from django.core.exceptions import ValidationError
 from django.db import models
+import re
 
 
 # Create your models here.
 def receipt_upload_dir(_: "Receipt", filename: str):
     return f'receipts/{Receipt.objects.count()}/{filename}'
+
+
+def certificate_upload_dir(_: "CertificateTemplate", filename: str) -> str:
+    return f'admin/title-screen/certificate/{filename}'
+
+
+def landing_page_upload_dir(_: "LandingPageImage", filename: str) -> str:
+    return f'admin/title-screen/images/{filename}'
+
+
+def validate_color(value):
+    expression = r"^#[0-9a-fA-F]{6}([0-9a-f-A-F]{2}|[0-9a-f-A-F]{4}){0,1}$"
+    if not re.match(expression, value):
+        raise ValidationError("Color invalid")
+
+
+class TitleScreenText(models.Model):
+    content = models.CharField(max_length=300, default="")
+    color = models.CharField(max_length=30, default="#000000", validators=[validate_color])
+
+
+class CertificateTemplate(models.Model):
+    template = models.FileField(upload_to=certificate_upload_dir)
+
+
+class LandingPageImage(models.Model):
+    image = models.FileField()
+    config = models.ForeignKey('AdminConfig', on_delete=models.CASCADE, null=True, related_name='images')
+
+
+class ChosenTeacher(models.Model):
+    ...
+
+
+class Comments(models.Model):
+    ...
 
 
 class Receipt(models.Model):
@@ -45,6 +83,11 @@ class Receipt(models.Model):
 
 class AdminConfig(models.Model):
     receipt_usage_count = models.PositiveIntegerField(default=50)
+    main_title_text = models.ForeignKey(TitleScreenText, on_delete=models.SET_NULL, null=True,
+                                        related_name="main_title")
+    secondary_title_text = models.ForeignKey(TitleScreenText, on_delete=models.SET_NULL, null=True,
+                                             related_name="secondary_title")
+    certificate_template = models.ForeignKey(CertificateTemplate, on_delete=models.SET, null=True)
 
     def save(self, *args, **kwargs):
         self.__class__.objects.exclude(id=self.id).delete()

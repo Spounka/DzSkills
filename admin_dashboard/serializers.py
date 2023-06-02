@@ -2,10 +2,36 @@ from rest_framework import serializers
 from . import models
 
 
+class TitleScreenTextSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['content', 'color']
+        model = models.TitleScreenText
+        depth = 0
+
+
+class CertificateTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['template']
+        model = models.CertificateTemplate
+        depth = 0
+
+
+class LandingPageImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ['id', 'image']
+        model = models.LandingPageImage
+        depth = 0
+
+
 class AdminConfigSerializer(serializers.ModelSerializer):
+    main_title_text = TitleScreenTextSerializer()
+    secondary_title_text = TitleScreenTextSerializer()
+    certificate_template = CertificateTemplateSerializer()
+    images = LandingPageImageSerializer(many=True)
+
     class Meta:
         model = models.AdminConfig
-        exclude = ["pk", ]
+        exclude = ["id", ]
 
 
 class ReceiptSerializer(serializers.ModelSerializer):

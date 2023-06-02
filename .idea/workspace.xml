@@ -4,8 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="removed the stupid certificate file">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="added helper migrations script">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,12 +39,12 @@
   <component name="GitRewordedCommitMessages">
     <option name="commitMessagesMapping">
       <RewordedCommitMessageMapping>
-        <option name="originalMessage" value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
-        <option name="rewordedMessage" value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
+        <option name="originalMessage" value="certification crap, idk X)" />
+        <option name="rewordedMessage" value="ignored the certificate folder&#10;&#10;&#10;added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
       </RewordedCommitMessageMapping>
     </option>
     <option name="currentCommit" value="1" />
-    <option name="onto" value="165a4ad28e5b01b2076c59b2c8fc02ac018acdf8" />
+    <option name="onto" value="2fe7ae13393b73f4b64fa29c921db32ca518de4c" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/app_settings.py" root0="SKIP_INSPECTION" />
@@ -56,27 +61,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "dev",
-    "last_opened_file_path": "/home/spounka/Work/websites/DzSkills/docker-compose.yml",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/spounka/Work/websites/DzSkills/docker-compose.yml&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/media" />
     </key>
   </component>
-  <component name="RunManager" selected="Django Server.DzSkills">
+  <component name="RunManager">
     <configuration name="DzSkills" type="Python.DjangoServer" factoryName="Django server">
       <module name="backend" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -112,65 +117,12 @@
       <option name="customRunCommand" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="backend" type="Python.DjangoServer" factoryName="Django server">
-      <module name="backend" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="DJANGO_SETTINGS_MODULE" value="backend.settings" />
-      </envs>
-      <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
-      <option name="SDK_NAME" value="Python 3.11 (dzskills)" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="net.ashald.envfile">
-        <option name="IS_ENABLED" value="false" />
-        <option name="IS_SUBST" value="false" />
-        <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
-        <option name="IS_IGNORE_MISSING_FILES" value="false" />
-        <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
-        <ENTRIES>
-          <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
-        </ENTRIES>
-      </EXTENSION>
-      <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="8000" />
-      <option name="host" value="" />
-      <option name="additionalOptions" value="" />
-      <option name="browserUrl" value="" />
-      <option name="runTestServer" value="false" />
-      <option name="runNoReload" value="false" />
-      <option name="useCustomRunCommand" value="false" />
-      <option name="customRunCommand" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="..: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="sourceFilePath" value="../docker-compose.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml">
         <settings />
       </deployment>
       <method v="2" />
     </configuration>
-    <list>
-      <item itemvalue="Django Server.backend" />
-      <item itemvalue="Django Server.DzSkills" />
-      <item itemvalue="Docker...: Compose Deployment" />
-    </list>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Docker...: Compose Deployment" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -226,42 +178,8 @@
       <workItem from="1685118312549" duration="2672000" />
       <workItem from="1685202994043" duration="6790000" />
       <workItem from="1685494609638" duration="29796000" />
-      <workItem from="1685677582350" duration="992000" />
-    </task>
-    <task id="LOCAL-00030" summary="Registered user model to admin">
-      <created>1677538175131</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538175131</updated>
-    </task>
-    <task id="LOCAL-00031" summary="added profileImage field to User">
-      <created>1677538201152</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538201152</updated>
-    </task>
-    <task id="LOCAL-00032" summary="added profileImage field to User">
-      <created>1677538206853</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538206853</updated>
-    </task>
-    <task id="LOCAL-00033" summary="added CORS to settings">
-      <created>1677538307866</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538307866</updated>
-    </task>
-    <task id="LOCAL-00034" summary="social auth in installed apps">
-      <created>1677538353275</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538353275</updated>
+      <workItem from="1685677582350" duration="4088000" />
+      <workItem from="1685683024787" duration="5080000" />
     </task>
     <task id="LOCAL-00035" summary="some all auth settings">
       <created>1677538363883</created>
@@ -571,7 +489,42 @@
       <option name="project" value="LOCAL" />
       <updated>1685677811458</updated>
     </task>
-    <option name="localTasksCounter" value="79" />
+    <task id="LOCAL-00079" summary="ignored the certificate folder">
+      <created>1685678588088</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1685678588088</updated>
+    </task>
+    <task id="LOCAL-00080" summary="removed the certificate folder">
+      <created>1685678627585</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1685678627585</updated>
+    </task>
+    <task id="LOCAL-00081" summary="removed unused parameter in receipt's upload dir function">
+      <created>1685680324363</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1685680324364</updated>
+    </task>
+    <task id="LOCAL-00082" summary="rearranged the models in admin_page">
+      <created>1685680449807</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1685680449807</updated>
+    </task>
+    <task id="LOCAL-00083" summary="added helper migrations script">
+      <created>1685680590012</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1685680590012</updated>
+    </task>
+    <option name="localTasksCounter" value="84" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -601,12 +554,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Progress now is created when student payment gets accepted" />
-    <MESSAGE value="Added view for getting related students of a course" />
-    <MESSAGE value="code formatting I suppose" />
-    <MESSAGE value="Pycharm Code stuff" />
-    <MESSAGE value="Added RetrieveUser view" />
-    <MESSAGE value="Moved auth urls to new file" />
     <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression model" />
     <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode" />
     <MESSAGE value="Added RelatedStudents View" />
@@ -626,7 +573,13 @@
     <MESSAGE value="added quizz model" />
     <MESSAGE value="added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
     <MESSAGE value="removed the stupid certificate file" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed the stupid certificate file" />
+    <MESSAGE value="ignored the certificate folder" />
+    <MESSAGE value="removed the certificate folder" />
+    <MESSAGE value="added quizz and certification logic and ignored the certificate folder &#10;&#10;Quizz probably still needs more work but for now lgtm" />
+    <MESSAGE value="removed unused parameter in receipt's upload dir function" />
+    <MESSAGE value="rearranged the models in admin_page" />
+    <MESSAGE value="added helper migrations script" />
+    <option name="LAST_COMMIT_MESSAGE" value="added helper migrations script" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
