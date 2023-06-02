@@ -6,21 +6,6 @@ def receipt_upload_dir(_: "Receipt", filename: str):
     return f'receipts/{Receipt.objects.count()}/{filename}'
 
 
-class AdminConfig(models.Model):
-    receipt_usage_count = models.PositiveIntegerField(default=50)
-
-    def save(self, *args, **kwargs):
-        self.__class__.objects.exclude(id=self.id).delete()
-        super().save(*args, **kwargs)
-
-    @classmethod
-    def load(cls):
-        try:
-            return cls.objects.get()
-        except cls.DoesNotExist:
-            return cls().save()
-
-
 class Receipt(models.Model):
     image = models.FileField(upload_to=receipt_upload_dir)
     count = models.PositiveIntegerField(default=0, blank=True)
@@ -56,3 +41,18 @@ class Receipt(models.Model):
         except self.__class__.DoesNotExist:
             obj = self.__class__.objects.first()
         return obj
+
+
+class AdminConfig(models.Model):
+    receipt_usage_count = models.PositiveIntegerField(default=50)
+
+    def save(self, *args, **kwargs):
+        self.__class__.objects.exclude(id=self.id).delete()
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls):
+        try:
+            return cls.objects.get()
+        except cls.DoesNotExist:
+            return cls().save()
