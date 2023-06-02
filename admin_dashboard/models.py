@@ -2,7 +2,7 @@ from django.db import models
 
 
 # Create your models here.
-def receipt_upload_dir(instance: "Receipt", filename: str):
+def receipt_upload_dir(_: "Receipt", filename: str):
     return f'receipts/{Receipt.objects.count()}/{filename}'
 
 
