@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="added helper migrations script">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="admin config stuff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -179,14 +175,7 @@
       <workItem from="1685202994043" duration="6790000" />
       <workItem from="1685494609638" duration="29796000" />
       <workItem from="1685677582350" duration="4088000" />
-      <workItem from="1685683024787" duration="5080000" />
-    </task>
-    <task id="LOCAL-00035" summary="some all auth settings">
-      <created>1677538363883</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538363883</updated>
+      <workItem from="1685683024787" duration="6976000" />
     </task>
     <task id="LOCAL-00036" summary="added email authentication in backends">
       <created>1677538384167</created>
@@ -524,7 +513,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685680590012</updated>
     </task>
-    <option name="localTasksCounter" value="84" />
+    <task id="LOCAL-00084" summary="admin config stuff">
+      <created>1685712320971</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1685712320972</updated>
+    </task>
+    <option name="localTasksCounter" value="85" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -554,7 +550,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression model" />
     <MESSAGE value="Added RelatedStudent Serializer&#10;&#10;The RelatedStudent is mainly used to retrieve students from a course using the progression mode" />
     <MESSAGE value="Added RelatedStudents View" />
     <MESSAGE value="Added view to get courses that a teacher owns" />
@@ -579,7 +574,8 @@
     <MESSAGE value="removed unused parameter in receipt's upload dir function" />
     <MESSAGE value="rearranged the models in admin_page" />
     <MESSAGE value="added helper migrations script" />
-    <option name="LAST_COMMIT_MESSAGE" value="added helper migrations script" />
+    <MESSAGE value="admin config stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="admin config stuff" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -613,11 +609,6 @@
           <url>file://$PROJECT_DIR$/course_buying/views.py</url>
           <line>16</line>
           <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/admin_dashboard/views.py</url>
-          <line>25</line>
-          <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/admin_dashboard/views.py</url>
