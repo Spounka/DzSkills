@@ -84,6 +84,7 @@ INSTALLED_APPS = [
     'courses',
     'course_buying',
     'comment',
+    'messaging',
 
     # Social Accounts
     'allauth.socialaccount.providers.discord',

@@ -4,15 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="added comment app">
-      <change afterPath="$PROJECT_DIR$/comment/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin_dashboard/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/admin_dashboard/views.py" afterDir="false" />
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="finished the comment system">
       <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/comment/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/comment/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/comment/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/comment/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,14 +174,7 @@
       <workItem from="1685202994043" duration="6790000" />
       <workItem from="1685494609638" duration="29796000" />
       <workItem from="1685677582350" duration="4088000" />
-      <workItem from="1685683024787" duration="15755000" />
-    </task>
-    <task id="LOCAL-00037" summary="fixed HOST issue, still not perfect and requires tweaks">
-      <created>1677538408715</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538408715</updated>
+      <workItem from="1685683024787" duration="15820000" />
     </task>
     <task id="LOCAL-00038" summary="added URLS and removed comments from urls.py">
       <created>1677538439375</created>
@@ -526,7 +512,14 @@
       <option name="project" value="LOCAL" />
       <updated>1685716360867</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="finished the comment system">
+      <created>1685818426776</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1685818426777</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -556,7 +549,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added RelatedStudents View" />
     <MESSAGE value="Added view to get courses that a teacher owns" />
     <MESSAGE value="added related courses view to url" />
     <MESSAGE value="Pycharm Shenanigans" />
@@ -581,7 +573,8 @@
     <MESSAGE value="added helper migrations script" />
     <MESSAGE value="admin config stuff" />
     <MESSAGE value="added comment app" />
-    <option name="LAST_COMMIT_MESSAGE" value="added comment app" />
+    <MESSAGE value="finished the comment system" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished the comment system" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
