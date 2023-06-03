@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="finished the comment system">
+    <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="set up the fly deployment">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,21 +57,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/home/spounka/Work/websites/DzSkills/docker-compose.yml&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "fly",
+    "last_opened_file_path": "/home/spounka/Work/websites/DzSkills/docker-compose.yml",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/media" />
@@ -84,6 +85,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
         <env name="DJANGO_SETTINGS_MODULE" value="backend.settings" />
+        <env name="DATABASE_URL" value="postgres://dzskills:mFkAxxgeYQryzU2@dzskills-db.fly.dev:5432/dzskills?sslmode=disable" />
       </envs>
       <option name="SDK_HOME" value="$PROJECT_DIR$/.venv/bin/python" />
       <option name="SDK_NAME" value="Python 3.11 (dzskills)" />
@@ -174,21 +176,7 @@
       <workItem from="1685202994043" duration="6790000" />
       <workItem from="1685494609638" duration="29796000" />
       <workItem from="1685677582350" duration="4088000" />
-      <workItem from="1685683024787" duration="15820000" />
-    </task>
-    <task id="LOCAL-00038" summary="added URLS and removed comments from urls.py">
-      <created>1677538439375</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538439375</updated>
-    </task>
-    <task id="LOCAL-00039" summary="added auth file backend, late commit">
-      <created>1677538476306</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1677538476306</updated>
+      <workItem from="1685683024787" duration="23625000" />
     </task>
     <task id="LOCAL-00040" summary="idk anymore">
       <created>1677538494687</created>
@@ -519,7 +507,21 @@
       <option name="project" value="LOCAL" />
       <updated>1685818426777</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="set up the fly deployment">
+      <created>1685821371613</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1685821371614</updated>
+    </task>
+    <task id="LOCAL-00088" summary="set up the fly deployment">
+      <created>1685821488385</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1685821488385</updated>
+    </task>
+    <option name="localTasksCounter" value="89" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -549,7 +551,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Added view to get courses that a teacher owns" />
     <MESSAGE value="added related courses view to url" />
     <MESSAGE value="Pycharm Shenanigans" />
     <MESSAGE value="Removed hardcoded debugging condition of making first user owner of the course" />
@@ -574,7 +575,8 @@
     <MESSAGE value="admin config stuff" />
     <MESSAGE value="added comment app" />
     <MESSAGE value="finished the comment system" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished the comment system" />
+    <MESSAGE value="set up the fly deployment" />
+    <option name="LAST_COMMIT_MESSAGE" value="set up the fly deployment" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -13,6 +13,7 @@ import os.path
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,19 +39,23 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 CSRF_TRUSTED_ORIGINS = [
+    "https://dzskills.fly.dev/",
+    "http://dzskills.fly.dev/",
     'http://localhost:3000',
     'http://localhost',
-    'http://192.168.1.12/',
-    'http://192.168.1.12:3000/',
+    "http://dzskills.fly.dev/",
+    "http://dzskills.vercel.app/",
+    "https://dzskills.vercel.app/",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://localhost:4173',
-    'http://localhost',
-    'http://192.168.1.12',
-    'http://192.168.1.12:3000',
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:3000',
+#     'http://localhost:4173',
+#     'http://localhost',
+#     'http://192.168.1.12',
+#     'http://192.168.1.12:3000',
+#     "https://dzskills.fly.dev/",
+# ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
 
@@ -218,6 +223,8 @@ DATABASES = {
         'PORT':     5432
     }
 }
+if os.environ.get('DATABASE_URL', None):
+    DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
