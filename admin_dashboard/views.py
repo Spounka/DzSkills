@@ -23,7 +23,6 @@ class RetrieveCurrentReceipt(generics.GenericAPIView):
     serializer_class = serializers.ReceiptSerializer
 
     def get(self, request, *args, **kwargs):
-        time.sleep(1)
         receipt: models.Receipt = self.queryset.filter(is_current=True).last()
         if not receipt:
             receipt = self.queryset.first()

@@ -19,6 +19,7 @@ urlpatterns = [
     path('api/students/', include('student.urls'), name="students"),
     path('api/orders/', include('course_buying.urls'), name="orders"),
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
+    path('api/comments/', include('comment.urls'), name="comments"),
 
 ]
 
