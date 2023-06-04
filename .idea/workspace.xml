@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca21aeaa-382c-4635-944c-28ccd17782a7" name="Changes" comment="finished the comment system">
-      <change beforePath="$PROJECT_DIR$/backend/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authentication/permissions.py" beforeDir="false" afterPath="$PROJECT_DIR$/authentication/permissions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,7 +27,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="dev" />
+        <entry key="$PROJECT_DIR$" value="fly" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,12 +36,12 @@
   <component name="GitRewordedCommitMessages">
     <option name="commitMessagesMapping">
       <RewordedCommitMessageMapping>
-        <option name="originalMessage" value="certification crap, idk X)" />
-        <option name="rewordedMessage" value="ignored the certificate folder&#10;&#10;&#10;added quizz and certification&#10;&#10;Quizz probably still needs more work but for now lgtm" />
+        <option name="originalMessage" value="Added fly.io config" />
+        <option name="rewordedMessage" value="set up the fly deployment" />
       </RewordedCommitMessageMapping>
     </option>
     <option name="currentCommit" value="1" />
-    <option name="onto" value="2fe7ae13393b73f4b64fa29c921db32ca518de4c" />
+    <option name="onto" value="5dc29d5438fc61cecc0537ba1868afe75bab4fe0" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/.venv/lib/python3.11/site-packages/dj_rest_auth/app_settings.py" root0="SKIP_INSPECTION" />
@@ -580,64 +582,39 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/user_profile/views.py</url>
-          <line>15</line>
-          <option name="timeStamp" value="9" />
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/tests.py</url>
+          <line>88</line>
+          <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
-          <line>47</line>
-          <option name="timeStamp" value="14" />
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/tests.py</url>
+          <line>102</line>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
-          <line>43</line>
-          <option name="timeStamp" value="16" />
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/tests.py</url>
+          <line>78</line>
+          <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/user_profile/serializers.py</url>
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/tests.py</url>
+          <line>162</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/serializers.py</url>
           <line>50</line>
-          <option name="timeStamp" value="17" />
+          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/course_buying/views.py</url>
-          <line>37</line>
-          <option name="timeStamp" value="29" />
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/views.py</url>
+          <line>247</line>
+          <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/course_buying/views.py</url>
-          <line>16</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/admin_dashboard/views.py</url>
-          <line>16</line>
-          <option name="timeStamp" value="35" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/authentication/views.py</url>
-          <line>59</line>
-          <option name="timeStamp" value="43" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/authentication/views.py</url>
-          <line>81</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/courses/views.py</url>
-          <line>113</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/courses/views.py</url>
-          <line>184</line>
-          <option name="timeStamp" value="55" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/comment/serializers.py</url>
-          <line>17</line>
-          <option name="timeStamp" value="59" />
+          <url>file://$PROJECT_DIR$/../../../python/dedicace/backend/main/views.py</url>
+          <line>35</line>
+          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
