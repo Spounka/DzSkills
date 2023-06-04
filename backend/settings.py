@@ -48,14 +48,14 @@ CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.vercel.app/",
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost:3000',
-#     'http://localhost:4173',
-#     'http://localhost',
-#     'http://192.168.1.12',
-#     'http://192.168.1.12:3000',
-#     "https://dzskills.fly.dev/",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://localhost:4173',
+    'http://localhost',
+    'http://192.168.1.12',
+    'http://192.168.1.12:3000',
+    "https://dzskills.fly.dev/",
+]
 
 # CORS_ALLOW_ALL_ORIGINS = True
 
