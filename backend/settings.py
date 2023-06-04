@@ -34,18 +34,18 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # DEBUG = (os.environ.get('DEBUG', True) == "true")
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['dzskills.fly.dev']
 
 # Application definition
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://dzskills.fly.dev/",
-    "http://dzskills.fly.dev/",
+    "https://dzskills.fly.dev",
+    "http://dzskills.fly.dev",
     'http://localhost:3000',
     'http://localhost',
-    "http://dzskills.fly.dev/",
-    "http://dzskills.vercel.app/",
-    "https://dzskills.vercel.app/",
+    "http://dzskills.fly.dev",
+    "http://dzskills.vercel.app",
+    "https://dzskills.vercel.app",
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -54,7 +54,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://192.168.1.12',
     'http://192.168.1.12:3000',
-    "https://dzskills.fly.dev/",
+    "https://dzskills.fly.dev",
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
