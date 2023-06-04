@@ -1,5 +1,6 @@
 fly.toml
 .git/
+.idea/
 *.sqlite3
 .venv/
 media/
