@@ -40,22 +40,16 @@ ALLOWED_HOSTS = ['dzskills.fly.dev']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.fly.dev",
-    "http://dzskills.fly.dev",
     'http://localhost:3000',
     'http://localhost',
-    "http://dzskills.fly.dev",
-    "http://dzskills.vercel.app",
     "https://dzskills.vercel.app",
 ]
 
 CORS_ALLOWED_ORIGINS = [
+    'http://localhost',
     'http://localhost:3000',
     'http://localhost:4173',
-    'http://localhost',
-    'http://192.168.1.12',
-    'http://192.168.1.12:3000',
     "https://dzskills.fly.dev",
-    "http://dzskills.vercel.app",
     "https://dzskills.vercel.app",
 ]
 
@@ -183,7 +177,6 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -276,5 +269,4 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 1024**3
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
