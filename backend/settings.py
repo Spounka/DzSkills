@@ -30,8 +30,8 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get('DEBUG', True) == "true")
-# DEBUG = True
+# DEBUG = (os.environ.get('DEBUG', True) == "true")
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -40,8 +40,8 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost',
-    'http://192.168.1.12/',
-    'http://192.168.1.12:3000/',
+    'http://192.168.1.12',
+    'http://192.168.1.12:3000',
 ]
 
 CORS_ALLOWED_ORIGINS = [
