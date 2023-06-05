@@ -259,12 +259,15 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = 'http://localhost/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-MEDIA_URL = 'http://localhost/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+if os.environ.get('DATABASE_URL', None):
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+else:
+    STATIC_URL = 'http://localhost/static/'
+    MEDIA_URL = 'http://localhost/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
