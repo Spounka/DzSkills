@@ -55,6 +55,8 @@ CORS_ALLOWED_ORIGINS = [
     'http://192.168.1.12',
     'http://192.168.1.12:3000',
     "https://dzskills.fly.dev",
+    "http://dzskills.vercel.app",
+    "https://dzskills.vercel.app",
 ]
 
 # CORS_ALLOW_ALL_ORIGINS = True
