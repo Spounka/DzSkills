@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/orders/', include('course_buying.urls'), name="orders"),
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
     path('api/comments/', include('comment.urls'), name="comments"),
+    path('api/conversations/', include('messaging.urls'), name="conversations"),
 
 ]
 
