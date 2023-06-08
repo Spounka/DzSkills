@@ -9,26 +9,51 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import os.path
+from datetime import timedelta
 from pathlib import Path
+
+import dj_database_url
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+if not os.path.isfile(BASE_DIR / '.env'):
+    raise RuntimeError('No dotenv found, please create one')
+
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x63(ghab0!cz^x1*)3y6)uu9#)%jva81aq9tz&*n1-!1f08w!('
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = (os.environ.get('DEBUG', True) == "true")
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://dzskills.fly.dev",
+    'http://localhost:3000',
+    'http://localhost',
+    "https://dzskills.vercel.app",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost',
+    'http://localhost:3000',
+    'http://localhost:4173',
+    "https://dzskills.fly.dev",
+    "https://dzskills.vercel.app",
+]
+
+# CORS_ALLOW_ALL_ORIGINS = True
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -36,12 +61,146 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'corsheaders',
+    # 'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Rest framework
+    'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+
+    # All Auth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'dj_rest_auth.registration',
+
+    # My Apps
+    'authentication',
+    'user_profile',
+    'admin_dashboard',
+
+    'student',
+    'courses',
+    'course_buying',
+    'comment',
+    'messaging',
+
+    # Social Accounts
+    'allauth.socialaccount.providers.discord',
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+]
+
+SITE_ID = 1
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'offline',
+        },
+        'OAUTH_PKCE_ENABLED': True,
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v16.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+    }
+}
+
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'boudaakkarnazih@gmail.com'
+# EMAIL_HOST_PASSWORD = 'xfbdmgszftyvycsr'
+#
+
+EMAIL_HOST = 'smtp.titan.email'
+EMAIL_HOST_USER = 'no-reply@dzskills.com'
+EMAIL_HOST_PASSWORD = 'DZskills2023@'
+EMAIL_PORT = 465
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_SSL = True
+
+ADMIN_EMAIL = "no-reply@dzskills.com"
+SUPPORT_EMAIL = "no-reply@dzskills.com"
+DEFAULT_FROM_EMAIL = ADMIN_EMAIL
+SERVER_EMAIL = ADMIN_EMAIL
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+}
+
+REST_AUTH = {
+    # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
+    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserDetails',
+    'REGISTER_SERIALIZER': 'authentication.serializers.RegistrationSerializer',
+    'SESSION_LOGIN': False,
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'dz-skills-token',
+    'JWT_AUTH_REFRESH_COOKIE': 'dz-skills-refresh',
+    'JWT_AUTH_HTTPONLY': False,
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+
+}
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to log in by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    'authentication.auths.AuthWithEmail',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -54,8 +213,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -70,17 +228,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
+    #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
+    #     'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+    #     'PORT': 5432
+    # }
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+if os.environ.get('DATABASE_URL', None):
+    DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -100,7 +266,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -112,13 +277,23 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_URL = 'static/'
+if not os.environ.get('DATABASE_URL', None):
+    STATIC_URL = 'static/'
+    MEDIA_URL = 'media/'
+else:
+    STATIC_URL = 'http://localhost/static/'
+    MEDIA_URL = 'http://localhost/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'authentication.User'
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
