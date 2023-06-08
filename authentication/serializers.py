@@ -97,11 +97,11 @@ class RegistrationSerializer(serializers.Serializer):
 class UserDetails(UserDetailsSerializer):
     class Meta:
         model = UserModel
-        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image')
+        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image', 'groups')
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserModel
         depth = 1
-        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image']
+        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image', 'groups']

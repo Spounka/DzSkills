@@ -31,10 +31,10 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = (os.environ.get('DEBUG', True) == "true")
-# DEBUG = True
+# DEBUG = (os.environ.get('DEBUG', True) == "true")
+DEBUG = True
 
-ALLOWED_HOSTS = ['dzskills.fly.dev']
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'corsheaders',
-    'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',
     'django.contrib.sites',
 
     # Rest framework
@@ -98,23 +98,23 @@ SITE_ID = 1
 
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
-    'google':   {
-        'SCOPE':              [
+    'google': {
+        'SCOPE': [
             'profile',
             'email',
         ],
-        'AUTH_PARAMS':        {
+        'AUTH_PARAMS': {
             'access_type': 'offline',
         },
         'OAUTH_PKCE_ENABLED': True,
     },
     'facebook': {
-        'METHOD':         'oauth2',
-        'SDK_URL':        '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE':          ['email', 'public_profile'],
-        'AUTH_PARAMS':    {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS':    {'cookie': True},
-        'FIELDS':         [
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
             'id',
             'first_name',
             'last_name',
@@ -125,35 +125,56 @@ SOCIALACCOUNT_PROVIDERS = {
             'short_name'
         ],
         'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC':    lambda request: 'en_US',
+        'LOCALE_FUNC': lambda request: 'en_US',
         'VERIFIED_EMAIL': False,
-        'VERSION':        'v16.0',
-        'GRAPH_API_URL':  'https://graph.facebook.com/v13.0',
+        'VERSION': 'v16.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = 'None'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = True
+
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'boudaakkarnazih@gmail.com'
+# EMAIL_HOST_PASSWORD = 'xfbdmgszftyvycsr'
+#
+
+EMAIL_HOST = 'smtp.titan.email'
+EMAIL_HOST_USER = 'no-reply@dzskills.com'
+EMAIL_HOST_PASSWORD = 'DZskills2023@'
+EMAIL_PORT = 465
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_SSL = True
+
+ADMIN_EMAIL = "no-reply@dzskills.com"
+SUPPORT_EMAIL = "no-reply@dzskills.com"
+DEFAULT_FROM_EMAIL = ADMIN_EMAIL
+SERVER_EMAIL = ADMIN_EMAIL
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME":  timedelta(weeks=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
 }
 
 REST_AUTH = {
     # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
     'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserDetails',
-    'REGISTER_SERIALIZER':     'authentication.serializers.RegistrationSerializer',
-    'SESSION_LOGIN':           False,
-    'USE_JWT':                 True,
-    'JWT_AUTH_COOKIE':         'dz-skills-token',
+    'REGISTER_SERIALIZER': 'authentication.serializers.RegistrationSerializer',
+    'SESSION_LOGIN': False,
+    'USE_JWT': True,
+    'JWT_AUTH_COOKIE': 'dz-skills-token',
     'JWT_AUTH_REFRESH_COOKIE': 'dz-skills-refresh',
-    'JWT_AUTH_HTTPONLY':       False,
+    'JWT_AUTH_HTTPONLY': False,
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PARSER_CLASSES':         [
+    'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.JSONParser',
     ],
@@ -177,6 +198,7 @@ AUTHENTICATION_BACKENDS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -190,10 +212,10 @@ ROOT_URLCONF = 'backend.urls'
 
 TEMPLATES = [
     {
-        'BACKEND':  'django.template.backends.django.DjangoTemplates',
-        'DIRS':     [],
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
         'APP_DIRS': True,
-        'OPTIONS':  {
+        'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -210,13 +232,17 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
+    #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
+    #     'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+    #     'PORT': 5432
+    # }
     'default': {
-        'ENGINE':   'django.db.backends.postgresql',
-        'NAME':     os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
-        'USER':     os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-        'HOST':     os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT':     5432
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 if os.environ.get('DATABASE_URL', None):
@@ -256,9 +282,9 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-if os.environ.get('DATABASE_URL', None):
-    STATIC_URL = '/static/'
-    MEDIA_URL = '/media/'
+if not os.environ.get('DATABASE_URL', None):
+    STATIC_URL = 'static/'
+    MEDIA_URL = 'media/'
 else:
     STATIC_URL = 'http://localhost/static/'
     MEDIA_URL = 'http://localhost/media/'
@@ -270,3 +296,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"

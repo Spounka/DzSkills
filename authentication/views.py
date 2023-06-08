@@ -3,6 +3,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth.hashers import make_password
+from django.shortcuts import redirect
 from rest_framework import response, generics, permissions, status, views
 
 from . import serializers, models
@@ -15,6 +16,19 @@ class FacebookLoginView(SocialLoginView):
 
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+def password_reset_view(request, *args, **kwargs):
+    print('---------------')
+    print(request.GET)
+    print('---------------')
+    print(args)
+    print('---------------')
+    print(kwargs)
+    print('---------------')
+    return redirect(f'/password-forgotten/confirm/?u={kwargs.get("uidb64")}&t={kwargs.get("token")}', )
+    # return redirect('/password-forgotten/', kwargs={'u': kwargs.get('uidb64'), 't': kwargs.get('token')},
+    #                 permanent=True)
 
 
 class GoogleLogin(SocialLoginView):
