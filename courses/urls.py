@@ -1,4 +1,5 @@
 from django.urls import path
+
 from . import views
 
 urlpatterns = [
@@ -14,7 +15,7 @@ urlpatterns = [
     path('trending/', views.TrendingCourses.as_view(), name="trending-courses"),
 
     path('<int:pk>/chapters/', views.ChapterAPI.as_view(), name="chapters"),
-    path('<int:pk>/chapters/<int:ch>/videos', views.VideoAPI.as_view(), name="video"),
+    path('<int:pk>/chapters/<int:ch>/videos/', views.VideoAPI.as_view(), name="video"),
 
     path('progress/', views.StudentProgressAPI.as_view(), name='progressions'),
     path('progress/<int:pk>/', views.StudentProgressAPI.as_view(), name='progression'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('<int:pk>/quizz/', views.QuizzRetrieveUpdateDestroyView.as_view(), name="quizz-list-create"),
 
     path('<int:pk>/certificate/', views.GetCertificate.as_view(), name="certificate"),
+    path('<int:pk>/ratings/', views.ListCreateRatings.as_view(), name="ratings"),
 
 ]

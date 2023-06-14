@@ -3,6 +3,8 @@
 import courses.models
 from django.db import migrations, models
 
+import courses.upload_paths
+
 
 class Migration(migrations.Migration):
 
@@ -14,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='course',
             name='presentation_file',
-            field=models.FileField(blank=True, null=True, upload_to=courses.models.get_course_file_upload_directory),
+            field=models.FileField(blank=True, null=True, upload_to=courses.upload_paths.get_course_file_upload_directory),
         ),
     ]

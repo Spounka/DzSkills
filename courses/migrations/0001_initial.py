@@ -5,6 +5,8 @@ from django.conf import settings
 from django.db import migrations, models
 import django.db.models.deletion
 
+import courses.upload_paths
+
 
 class Migration(migrations.Migration):
     initial = True
@@ -20,7 +22,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=300)),
                 ('description', models.CharField(max_length=150)),
-                ('thumbnail', models.ImageField(upload_to=courses.models.get_chapter_upload_directory)),
+                ('thumbnail', models.ImageField(upload_to=courses.upload_paths.get_chapter_upload_directory)),
             ],
         ),
         migrations.CreateModel(
@@ -29,7 +31,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=300)),
                 ('description', models.CharField(max_length=150)),
-                ('thumbnail', models.ImageField(upload_to=courses.models.get_course_image_upload_directory)),
+                ('thumbnail', models.ImageField(upload_to=courses.upload_paths.get_course_image_upload_directory)),
                 ('price', models.PositiveIntegerField()),
                 ('hastags', models.CharField(max_length=100)),
                 ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),

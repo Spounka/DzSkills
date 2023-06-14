@@ -1,12 +1,7 @@
-from io import BytesIO
-
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from rest_framework import generics, response, mixins, status
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
-from authentication.serializers import UserSerializer
-from certificate_generation.main import generate_certificate
 from . import serializers as app, models as m
 
 
@@ -186,3 +181,26 @@ class GetCertificate(generics.RetrieveAPIView):
         certificate = m.Certificate.objects.filter(user=request.user).filter(course=course).first()
         serializer = app.CertificateSerializer(certificate)
         return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+    serializer_class = app.RatingSerializer
+    queryset = m.Rating.objects.all()
+    permission_classes = [IsAuthenticated, ]
+
+    def list(self, request, *args, **kwargs):
+        video = m.Video.objects.get(pk=self.kwargs.get('pk'))
+        ratings = video.ratings.all()
+        serializer = self.get_serializer(ratings, many=True)
+        return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    def get_object(self):
+        video = m.Video.objects.filter(pk=self.kwargs.get('pk')).first()
+        query = m.Rating.objects.filter(video=video, student=self.request.user)
+        return query.first()
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)

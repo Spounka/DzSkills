@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os.path
+import socket
 from datetime import timedelta
 from pathlib import Path
 
@@ -42,19 +43,21 @@ CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.fly.dev",
     'http://localhost:3000',
     'http://localhost',
+    'http://localhost:8000',
     "https://dzskills.vercel.app",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-    'http://localhost:3000',
-    'http://localhost:4173',
-    "https://dzskills.fly.dev",
-    "https://dzskills.vercel.app",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost',
+#     'http://localhost:3000',
+#     'http://localhost:4173',
+#     "https://dzskills.fly.dev",
+#     "https://dzskills.vercel.app",
+# ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
+HOSTNAME = 'localhost'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,7 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'corsheaders',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'django.contrib.sites',
 
     # Rest framework
@@ -86,12 +89,13 @@ INSTALLED_APPS = [
     'course_buying',
     'comment',
     'messaging',
+    'support',
 
     # Social Accounts
-    'allauth.socialaccount.providers.discord',
+    # 'allauth.socialaccount.providers.discord',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.linkedin_oauth2',
+    # 'allauth.socialaccount.providers.linkedin_oauth2',
 ]
 
 SITE_ID = 1
@@ -128,15 +132,22 @@ SOCIALACCOUNT_PROVIDERS = {
         'LOCALE_FUNC': lambda request: 'en_US',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v16.0',
-        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v17.0',
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_ADAPTER = 'authentication.adapter.AccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'authentication.adapter.SocialAdapter'
+EMAIL_ACTIVATION_URL = '/register/verify-email/'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+REST_AUTH_REGISTER_VERIFICATION_ENABLED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_STORE_TOKENS = True
 
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
@@ -158,13 +169,13 @@ DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=4),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
 }
 
 REST_AUTH = {
     # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
-    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserDetails',
+    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserSerializer',
     'REGISTER_SERIALIZER': 'authentication.serializers.RegistrationSerializer',
     'SESSION_LOGIN': False,
     'USE_JWT': True,
@@ -232,18 +243,18 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
-    #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
-    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-    #     'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
-    #     'PORT': 5432
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
+        'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
+        'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
+        'PORT': 5432
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 if os.environ.get('DATABASE_URL', None):
     DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
@@ -282,12 +293,8 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-if not os.environ.get('DATABASE_URL', None):
-    STATIC_URL = 'static/'
-    MEDIA_URL = 'media/'
-else:
-    STATIC_URL = 'http://localhost/static/'
-    MEDIA_URL = 'http://localhost/media/'
+STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

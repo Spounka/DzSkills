@@ -9,9 +9,9 @@ class MessageService:
     @classmethod
     def create(cls, sender: User, recipient: User, content: str, course: Course, files=None):
         conversation = models.Conversation.objects.filter(
-            Q(student=sender, teacher=recipient) | Q(teacher=sender, student=recipient), course=course).first()
-        teacher = sender if sender.is_teacher() else recipient
-        student = sender if not sender.is_teacher() else recipient
+            Q(student=sender, teacher=recipient) | Q(teacher=sender, student=recipient)).filter(course=course).first()
+        teacher = course.owner
+        student = sender if course.owner.pk != sender.pk else recipient
         if not conversation:
             conversation = models.Conversation.objects.create(
                 course=course,

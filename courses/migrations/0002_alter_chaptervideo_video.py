@@ -3,6 +3,8 @@
 import courses.models
 from django.db import migrations, models
 
+import courses.upload_paths
+
 
 class Migration(migrations.Migration):
 
@@ -14,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='chaptervideo',
             name='video',
-            field=models.FileField(upload_to=courses.models.get_video_upload_directory),
+            field=models.FileField(upload_to=courses.upload_paths.get_video_upload_directory),
         ),
     ]

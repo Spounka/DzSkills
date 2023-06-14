@@ -9,17 +9,40 @@ from . import models as models
 UserModel = get_user_model()
 
 
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Rating
+        fields = ['id', 'rating', 'student', 'video']
+        depth = 0
+        extra_kwargs = {
+            'video': {'write_only': True},
+        }
+
+
 class VideoSerializer(serializers.ModelSerializer):
+    ratings = RatingSerializer(many=True)
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Video
         fields = "__all__"
         depth = 0
 
+    def get_average_rating(self, video: models.Video):
+        return video.get_average_rating()
+
 
 class ChapterVideoSerializer(serializers.ModelSerializer):
+    ratings = RatingSerializer(many=True)
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Video
-        fields = ['id', 'title', 'description', 'video', 'duration', ]
+        fields = ['id', 'title', 'description', 'video', 'duration', 'ratings', 'average_rating']
+        read_only_fields = ('average_rating',)
+
+    def get_average_rating(self, video: models.Video):
+        return video.get_average_rating()
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
@@ -28,7 +51,8 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 0
-        fields = ['id', 'title', 'description', 'thumbnail', 'videos']
+        fields = ['id', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        read_only_fields = ('average_rating',)
 
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
@@ -40,7 +64,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     chapters = CourseChapterSerializer(many=True)
-    owner = authentication.serializers.UserDetails(read_only=True)
+    owner = authentication.serializers.UserSerializer(read_only=True)
     videos_count = serializers.ReadOnlyField()
 
     def create(self, validated_data):
@@ -68,6 +92,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Course
         fields = "__all__"
+        read_only_fields = ('average_rating',)
         depth = 2
 
 
@@ -77,7 +102,8 @@ class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 2
-        fields = ['pk', 'title', 'description', 'thumbnail', 'videos']
+        fields = ['pk', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        read_only_fields = ('average_rating',)
 
 
 class StudentProgressSerializer(serializers.ModelSerializer):

@@ -1,40 +1,20 @@
-import os
-
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from certificate_generation.main import generate_certificate
+from courses.upload_paths import get_course_image_upload_directory, get_course_file_upload_directory, \
+    get_video_upload_directory, get_chapter_upload_directory, get_category_upload_dir, certificate_upload_dir
 
 
 # Create your models here.
-def get_course_image_upload_directory(instance, filename):
-    return f'{instance.owner}/courses/{instance.title}/thumbnail/{filename}'
-
-
-def get_course_file_upload_directory(instance, filename):
-    return f'{instance.owner}/courses/{instance.title}/presentation/{filename}'
-
-
-def get_video_upload_directory(instance, filename):
-    return f'{instance.chapter.course.owner}/courses/{instance.chapter.course.title}/chapter_{instance.chapter.title}' \
-           f'/videos/{filename}'
-
-
-def get_chapter_upload_directory(instance, filename):
-    return f'{instance.course.owner}/courses/{instance.course.title}/chapter_{instance.title}/{filename}'
-
-
 class Hashtag(models.Model):
     name = models.CharField(max_length=20, default="")
 
     def __str__(self):
         return self.name
-
-
-def get_category_upload_dir(instance: 'Category', filename):
-    return f'categories/{instance.name}/{filename}'
 
 
 class Category(models.Model):
@@ -61,20 +41,10 @@ class Course(models.Model):
     ACCEPTED = 'app'
     REFUSED = 'rej'
 
-    BEGINNER = 'beg'
-    INTERMEDIATE = 'interm'
-    ADVANCED = 'advanced'
-
     STATUS_CHOICES = [
         (PENDING, _("Pending")),
         (ACCEPTED, _("Approved")),
         (REFUSED, _("Rejected")),
-    ]
-
-    LEVEL_CHOICES = [
-        (BEGINNER, _("Beginner")),
-        (INTERMEDIATE, _("Intermediate")),
-        (ADVANCED, _("Advanced")),
     ]
 
     title = models.CharField(max_length=300)
@@ -93,6 +63,7 @@ class Course(models.Model):
     duration = models.CharField(max_length=10, default="1h")
     used_programs = models.CharField(max_length=300, default="")
     language = models.CharField(max_length=30, default="Arabic")
+    average_rating = models.FloatField(default=0)
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses")
 
@@ -111,6 +82,12 @@ class Course(models.Model):
             videos += chapter.videos.count()
         return videos
 
+    def update_average_rating(self):
+        ratings = [chapter.average_rating for chapter in self.chapters.all()]
+        if len(ratings) > 0:
+            average = sum(ratings) / len(ratings)
+            self.average_rating = average
+
     def __str__(self):
         return self.title
 
@@ -119,8 +96,15 @@ class Chapter(models.Model):
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=300)
     thumbnail = models.ImageField(upload_to=get_chapter_upload_directory)
+    average_rating = models.FloatField(default=0)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
+
+    def update_average_rating(self):
+        ratings = [video.get_average_rating() for video in self.videos.all()]
+        if len(ratings) > 0:
+            average = sum(ratings) / len(ratings)
+            self.average_rating = average
 
     class Meta:
         ordering = ['pk']
@@ -185,6 +169,17 @@ class Video(models.Model):
 
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
 
+    def get_average_rating(self):
+        # value = cache.get(f'video_average_{self.pk}')
+        # if not value:
+        ratings = self.ratings.values_list('rating', flat=True)
+        if len(ratings) > 0:
+            value = sum(ratings) / len(ratings)
+        else:
+            value = 0
+        # cache.set(f'video_average_{self.pk}', value)
+        return value
+
     class Meta:
         ordering = ['pk']
 
@@ -208,10 +203,6 @@ class StudentProgress(models.Model):
         return f'StudentProgress {self.user.username} - {self.course.title}'
 
 
-def certificate_upload_dir(instance: "Certificate", filename):
-    return f'users/{instance.user.username}/courses/{instance.course.title}/certificate/{filename}'
-
-
 class Certificate(models.Model):
     user: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE)
     course: Course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -228,3 +219,10 @@ class Certificate(models.Model):
                                     save=True)
         self.save()
         # os.remove(f'certificate-{user.username}.png')
+
+
+class Rating(models.Model):
+    student: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    video: Video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name="ratings")
+
+    rating = models.FloatField(default=0)
