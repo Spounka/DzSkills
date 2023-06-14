@@ -14,6 +14,11 @@ class OrderAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin):
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
+        existing_order = Order.objects.filter(buyer=request.user, course=request.data.get('course')).filter(
+            payment__status__in=['p', 'a'])
+        if existing_order.exists():
+            return response.Response(data={'message': 'an existing order already exists'},
+                                     status=status.HTTP_400_BAD_REQUEST)
         return super().post(request, *args, **kwargs)
 
     def get_serializer_class(self):

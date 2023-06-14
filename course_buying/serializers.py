@@ -20,6 +20,7 @@ class ViewOrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = self.context['request'].user
         payment_data = validated_data.pop('payment')
+
         order = Order.objects.create(buyer=user, **validated_data)
         payment = Payment.objects.create(order=order, **payment_data)
         payment.save()

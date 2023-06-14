@@ -67,6 +67,9 @@ class Course(models.Model):
 
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="courses")
 
+    class Meta:
+        ordering = ['-average_rating']
+
     def approve(self):
         self.status = self.ACCEPTED
         self.save()

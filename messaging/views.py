@@ -31,10 +31,8 @@ class MessagesListAPIView(generics.ListAPIView):
 
     def check_permissions(self, request: WSGIRequest):
         super().check_permissions(request)
-        query: QuerySet[models.Conversation] = self.get_queryset()
-        user: UserModel = request.user
-        if not user.owns_course(query.first().course):
-            self.permission_denied(request)
+        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
+            self.permission_denied(request, message="You don't own this course!")
 
 
 class MessagesCreateAPIView(generics.CreateAPIView):
@@ -50,6 +48,11 @@ class ConversationsListAPIView(generics.ListAPIView):
     serializer_class = serializers.ConversationsSerializer
     permission_classes = [IsAuthenticated]
 
+    def check_permissions(self, request: WSGIRequest):
+        super().check_permissions(request)
+        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
+            self.permission_denied(request, message="You don't own this course!")
+
     def get_queryset(self):
         return models.Conversation.objects.filter(Q(teacher=self.request.user) | Q(student=self.request.user)).all()
 
@@ -57,6 +60,11 @@ class ConversationsListAPIView(generics.ListAPIView):
 class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.ConversationsSerializer
     permission_classes = [IsAuthenticated]
+
+    def check_permissions(self, request: WSGIRequest):
+        super().check_permissions(request)
+        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
+            self.permission_denied(request, message="You don't own this course!")
 
     def get_object(self):
         return self.get_queryset().first()

@@ -1,4 +1,4 @@
-from rest_framework import generics, response, mixins, status
+from rest_framework import generics, response, mixins, status, pagination
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
@@ -32,10 +32,17 @@ class ChapterAPI(generics.ListCreateAPIView):
         return response.Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
+class CoursePagination(pagination.CursorPagination):
+    page_size = 30
+    ordering = '-average_rating'
+    cursor_query_param = 'c'
+
+
 class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     serializer_class = app.CourseSerializer
-    queryset = m.Course.objects.filter()
+    queryset = m.Course.objects.filter().prefetch_related('hashtags', 'course_level', 'category')
 
+    # pagination_class = CoursePagination
     # permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
@@ -72,6 +79,11 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
     serializer_class = app.StudentProgressSerializer
 
     permission_classes = (IsAuthenticated,)
+
+    def check_permissions(self, request):
+        super().check_permissions(request)
+        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
+            self.permission_denied(request, message="You don't have access")
 
     def retrieve(self, request, *args, **kwargs):
         query = m.StudentProgress.objects.filter()
@@ -153,7 +165,7 @@ class GetLevelsAPI(generics.ListCreateAPIView):
 
 class GetCategoryAPI(generics.ListCreateAPIView):
     serializer_class = app.CategorySerializer
-    queryset = m.Category.objects.all()
+    queryset = m.Category.objects.all().prefetch_related('courses')
 
 
 class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):
