@@ -39,6 +39,7 @@ ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+# DOCKER_SETTINGS
 CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.fly.dev",
     'http://localhost:3000',
@@ -47,6 +48,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.vercel.app",
 ]
 
+# DOCKER_SETTINGS
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost',
 #     'http://localhost:3000',
@@ -55,9 +57,12 @@ CSRF_TRUSTED_ORIGINS = [
 #     "https://dzskills.vercel.app",
 # ]
 
+# DOCKER_SETTINGS
 CORS_ALLOW_ALL_ORIGINS = True
 
+# DOCKER_SETTINGS
 HOSTNAME = 'localhost'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,6 +103,7 @@ INSTALLED_APPS = [
     # 'allauth.socialaccount.providers.linkedin_oauth2',
 ]
 
+# DOCKER_SETTINGS
 SITE_ID = 1
 
 # Provider specific settings
@@ -141,7 +147,10 @@ SESSION_COOKIE_SECURE = True
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_ADAPTER = 'authentication.adapter.AccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'authentication.adapter.SocialAdapter'
+
+# DOCKER_SETTINGS
 EMAIL_ACTIVATION_URL = '/register/verify-email/'
+
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 REST_AUTH_REGISTER_VERIFICATION_ENABLED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
@@ -242,6 +251,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DOCKER_SETTINGS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -256,6 +266,8 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
 }
+
+# DOCKER_SETTINGS
 if os.environ.get('DATABASE_URL', None):
     DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
 
@@ -280,9 +292,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ar-ar'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Algiers'
 
 USE_I18N = True
 
@@ -303,4 +315,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
