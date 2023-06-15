@@ -132,12 +132,15 @@ class StudentProgressForRelatedStudents(serializers.ModelSerializer):
 
 
 class HashtagSerializer(serializers.ModelSerializer):
-    # courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = ['id', 'name', 'courses']
         depth = 0
         model = models.Hashtag
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class CreateHashtagSerializer(serializers.ModelSerializer):
@@ -148,21 +151,27 @@ class CreateHashtagSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    # courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = "__all__"
         depth = 0
         model = models.Category
 
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
+
 
 class LevelSerializer(serializers.ModelSerializer):
-    # courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = "__all__"
         depth = 0
         model = models.Level
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class CreateLevelSerializer(serializers.ModelSerializer):
