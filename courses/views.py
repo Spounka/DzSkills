@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import generics, response, mixins, status, pagination
 from rest_framework.permissions import IsAuthenticated
 
@@ -165,7 +166,7 @@ class GetLevelsAPI(generics.ListCreateAPIView):
 
 class GetCategoryAPI(generics.ListCreateAPIView):
     serializer_class = app.CategorySerializer
-    queryset = m.Category.objects.all().prefetch_related('courses')
+    queryset = m.Category.objects.annotate(course_count=Count('courses')).order_by('-course_count')
 
 
 class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):

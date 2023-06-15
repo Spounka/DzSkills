@@ -3,6 +3,7 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Group
 from django.shortcuts import redirect
 from rest_framework import response, generics, permissions, status, views
 from rest_framework.decorators import api_view
@@ -92,6 +93,7 @@ class CreateNewAdmin(views.APIView):
         user = models.User.objects.create(username=username, email=email,
                                           profile_image=profile_image)
         user.set_password(password)
+        user.groups.add(Group.objects.get(name="AdminGroup"))
         user.save()
 
         return response.Response(status=status.HTTP_201_CREATED, data={'id': user.pk})
