@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_cleanup',
 
     # Rest framework
     'rest_framework',
@@ -92,10 +93,8 @@ INSTALLED_APPS = [
     'support',
 
     # Social Accounts
-    # 'allauth.socialaccount.providers.discord',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.linkedin_oauth2',
 ]
 
 SITE_ID = 1
