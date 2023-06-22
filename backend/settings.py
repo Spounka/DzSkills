@@ -45,6 +45,9 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://localhost:8000',
     "https://dzskills.vercel.app",
+    'http://192.168.220.173:3000',
+    'http://192.168.220.173:8000',
+    'http://172.20.0.1:3000',
 ]
 
 # CORS_ALLOWED_ORIGINS = [
@@ -167,6 +170,8 @@ SUPPORT_EMAIL = "no-reply@dzskills.com"
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
 
+LANGUAGE_COOKIE_NAME = 'django_language'
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(weeks=4),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
@@ -211,6 +216,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -242,18 +248,18 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
-        'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-        'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
-        'PORT': 5432
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
+    #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
+    #     'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
+    #     'PORT': 5432
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 if os.environ.get('DATABASE_URL', None):
     DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])

@@ -104,3 +104,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_email_valid(self, user):
         return EmailAddress.objects.filter(email=user.email, verified=True).exists()
+
+
+class UsernamesSerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True)
+
+    class Meta:
+        model = UserModel
+        fields = ['id', 'username', 'groups']
+        depth = 1

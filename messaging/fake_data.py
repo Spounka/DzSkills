@@ -50,8 +50,8 @@ def create_random_file() -> (str, str):
     return STORAGE.abspath(filename), STORAGE.abspath(filename).split('/')[-1]
 
 
-def create_fake_messages(amount=10, course: int = 1, sender_id: int = 1, recipient_id: int = 2,
-                         vary_courses: bool = False):
+def create_course_fake_messages(amount=10, course: int = 1, sender_id: int = 1, recipient_id: int = 2,
+                                vary_courses: bool = False):
     sender = User.objects.filter(pk=sender_id).first()
     recipient = User.objects.filter(pk=recipient_id).first()
     course = Course.objects.filter(pk=course).first()
@@ -72,3 +72,22 @@ def create_fake_messages(amount=10, course: int = 1, sender_id: int = 1, recipie
         sender, recipient = recipient, sender
         if vary_courses:
             course = random.choice(Course.objects.all().exclude(course))
+
+
+def create_fake_messages(conversations: int = 10, amount: int = 10, ):
+    students = (User.objects.exclude(groups__name__in=['AdminGroup', 'TeacherGroup']).all())
+    teachers = (User.objects.filter(groups__name__in=['TeacherGroup'])).all()
+    courses = (Course.objects.all())
+    for i in range(conversations):
+        student: User = random.choice(list(students))
+        teacher: User = random.choice(list(teachers.exclude(username=student.username)))
+        course: Course = random.choice(list(teacher.courses.all()))
+        sender, recipient = student, teacher
+        for _ in range(amount):
+            message = services.MessageService.create(course=course,
+                                                     sender=sender,
+                                                     recipient=recipient,
+                                                     content=fake.text())
+            files = [models.MessageFile().generate(message, create_random_file()) for _ in range(4)]
+            message.messagefile_set.set(files)
+            sender, recipient = recipient, sender

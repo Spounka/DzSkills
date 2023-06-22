@@ -21,13 +21,6 @@ class FacebookLoginView(SocialLoginView):
 
 
 def password_reset_view(request, *args, **kwargs):
-    print('---------------')
-    print(request.GET)
-    print('---------------')
-    print(args)
-    print('---------------')
-    print(kwargs)
-    print('---------------')
     return redirect(f'/password-forgotten/confirm/?u={kwargs.get("uidb64")}&t={kwargs.get("token")}', )
     # return redirect('/password-forgotten/', kwargs={'u': kwargs.get('uidb64'), 't': kwargs.get('token')},
     #                 permanent=True)
@@ -101,6 +94,14 @@ class CreateNewAdmin(views.APIView):
 
 @api_view(['GET'])
 def get_usernames(request):
-    usernames = models.User.objects.values('username').all()
-    data = serializers.UserSerializer(usernames, many=True).data
-    return response.Response(status=status.HTTP_200_OK, data=data)
+    usernames = models.User.objects.all()
+    serializer = serializers.UsernamesSerializer(usernames, many=True)
+    return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class GetDzSkillsAdmin(generics.RetrieveAPIView):
+    queryset = models.User.objects.filter(pk=models.User.get_site_admin().pk)
+    serializer_class = serializers.UserSerializer
+
+    def get_object(self):
+        return self.get_queryset().first()
