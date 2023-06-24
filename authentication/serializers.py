@@ -88,7 +88,7 @@ class UserSerializer(serializers.ModelSerializer):
     groups = GroupSerializer(many=True, read_only=True)
     email_valid = serializers.SerializerMethodField(read_only=True)
 
-    # profile_image = serializers.SerializerMethodField(read_only=True)
+    profile_image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = UserModel
@@ -98,13 +98,14 @@ class UserSerializer(serializers.ModelSerializer):
                   'groups', 'socialaccount_set')
         read_only_fields = ['average_rating']
 
-    # def get_profile_image(self, user: UserModel):
-    #     # if user.is_admin():
-    #     return f'http://localhost:8000{user.profile_image.url}'
-    #     # return f'https://picsum.photos/1024/1024?random={user.pk}'
+    def get_profile_image(self, user: UserModel):
+        if user.is_admin():
+            return f'http://localhost:8000{user.profile_image.url}'
+        return f'https://picsum.photos/1024/1024?random={user.pk}'
 
     def get_email_valid(self, user):
-        return EmailAddress.objects.filter(email=user.email, verified=True).exists()
+        email = EmailAddress.objects.filter(email=user.email, verified=True)
+        return email.exists()
 
 
 class UsernamesSerializer(serializers.ModelSerializer):

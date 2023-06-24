@@ -27,8 +27,8 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # DOCKER_SETTINGS
-DEBUG = (os.environ.get('DEBUG', True) == "true")
-# DEBUG = True
+# DEBUG = (os.environ.get('DEBUG', True) == "true")
+DEBUG = True
 
 # DOCKER_SETTINGS
 ALLOWED_HOSTS = ['*']
@@ -246,18 +246,18 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # DOCKER_SETTINGS
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
-        'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
-        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-        'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
-        'PORT': 5432
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
+    #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
+    #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
+    #     'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
+    #     'PORT': 5432
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 # DOCKER_SETTINGS
@@ -292,8 +292,10 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-STATIC_URL = 'http://localhost/static/'
-MEDIA_URL = 'http://localhost/media/'
+# STATIC_URL = 'http://localhost/static/'
+# MEDIA_URL = 'http://localhost/media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -301,4 +303,4 @@ MEDIA_URL = 'http://localhost/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 ** 3

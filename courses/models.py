@@ -8,6 +8,8 @@ from certificate_generation.main import generate_certificate
 from courses.upload_paths import get_course_image_upload_directory, get_course_file_upload_directory, \
     get_video_upload_directory, get_chapter_upload_directory, get_category_upload_dir, certificate_upload_dir
 
+UserModel = get_user_model()
+
 
 # Create your models here.
 class Hashtag(models.Model):
@@ -86,7 +88,7 @@ class Course(models.Model):
         return videos
 
     def update_average_rating(self):
-        ratings = [chapter.average_rating for chapter in self.chapters.all()]
+        ratings = [chapter.average_rating for chapter in self.chapters.all() if chapter.average_rating > 0]
         if len(ratings) > 0:
             average = sum(ratings) / len(ratings)
             self.average_rating = average
@@ -104,7 +106,7 @@ class Chapter(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
 
     def update_average_rating(self):
-        ratings = [video.get_average_rating() for video in self.videos.all()]
+        ratings = [video.get_average_rating() for video in self.videos.all() if video.get_average_rating() > 0]
         if len(ratings) > 0:
             average = sum(ratings) / len(ratings)
             self.average_rating = average
@@ -131,13 +133,27 @@ class QuizzQuestion(models.Model):
         return f'{self.quizz.course.title}-question {self.pk:02}'
 
 
-class QuizzAnswer(models.Model):
-    question = models.ForeignKey(QuizzQuestion, on_delete=models.CASCADE, related_name="answers")
+class QuizzChoice(models.Model):
+    question = models.ForeignKey(QuizzQuestion, on_delete=models.CASCADE, related_name="choices")
     content = models.CharField(max_length=200, default="")
     is_correct_answer = models.BooleanField(default=False)
 
     def __str__(self):
         return f'{self.question.quizz.course.title}-question {self.question.pk:02} answer'
+
+
+class StudentAttempt(models.Model):
+    quizz = models.ForeignKey(CourseQuizz, on_delete=models.CASCADE, related_name='attempts')
+    student = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='attempts')
+    score = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['-pk']
+
+
+class StudentAnswer(models.Model):
+    attempt = models.ForeignKey(StudentAttempt, on_delete=models.CASCADE, related_name='answers')
+    answer = models.ForeignKey(QuizzChoice, on_delete=models.CASCADE, related_name='answer')
 
 
 def get_duration(video: 'Video'):
@@ -188,9 +204,6 @@ class Video(models.Model):
 
     def __str__(self):
         return f'{self.chapter.course.title}/{self.chapter.title}/{self.title}'
-
-
-UserModel = get_user_model()
 
 
 class StudentProgress(models.Model):

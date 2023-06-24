@@ -83,7 +83,7 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
 
     def check_permissions(self, request):
         super().check_permissions(request)
-        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
+        if not request.user.is_superuser and not request.user.owns_course(course_id=self.kwargs.get('pk')):
             self.permission_denied(request, message="You don't have access")
 
     def retrieve(self, request, *args, **kwargs):
@@ -169,21 +169,6 @@ class GetCategoryAPI(generics.ListCreateAPIView):
     queryset = m.Category.objects.annotate(course_count=Count('courses')).order_by('-course_count')
 
 
-class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):
-    serializer_class = app.CourseQuizzSerializer
-    queryset = m.CourseQuizz.objects.all()
-
-    def get_object(self):
-        lookup_field = self.lookup_url_kwarg or self.lookup_field
-        return m.CourseQuizz.objects.filter(course_id=self.kwargs[lookup_field]).first()
-
-    def get(self, request, *args, **kwargs):
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        return self.create(request, *args, **kwargs)
-
-
 class GetCertificate(generics.RetrieveAPIView):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter()
@@ -191,9 +176,15 @@ class GetCertificate(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
-        certificate = m.Certificate.objects.filter(user=request.user).filter(course=course).first()
-        serializer = app.CertificateSerializer(certificate)
-        return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        progress = m.StudentProgress.objects.filter(user=request.user, course=course)
+        if progress.exists():
+            certificate = m.Certificate.objects.filter(user=request.user).filter(course=course)
+            if not certificate.exists():
+                certificate = m.Certificate()
+                certificate.generate(request.user, course)
+            serializer = app.CertificateSerializer(certificate.first())
+            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        return response.Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin):
@@ -217,3 +208,23 @@ class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin):
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
+
+
+class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):
+    serializer_class = app.CourseQuizzSerializer
+    queryset = m.CourseQuizz.objects.all()
+
+    def get_object(self):
+        lookup_field = self.lookup_url_kwarg or self.lookup_field
+        return m.CourseQuizz.objects.filter(course_id=self.kwargs[lookup_field]).first()
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+#
+#
+# class QuizzAPIView(generics.ListCreateAPIView):
+#     serializer_class = app.CourseQuizzSerializer
+#     queryset = m.CourseQuizz.objects.all()
