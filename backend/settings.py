@@ -42,6 +42,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://localhost:8000',
     "https://dzskills.vercel.app",
+    "https://dzskills.com",
 ]
 
 # DOCKER_SETTINGS
@@ -57,7 +58,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 # DOCKER_SETTINGS
-HOSTNAME = 'localhost'
+HOSTNAME = 'dzskills.com'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -243,6 +244,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
 # DOCKER_SETTINGS
 DATABASES = {
@@ -292,8 +294,6 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# STATIC_URL = 'http://localhost/static/'
-# MEDIA_URL = 'http://localhost/media/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
