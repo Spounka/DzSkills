@@ -1,5 +1,5 @@
-from dj_rest_auth import serializers as dj_serializers
-from dj_rest_auth.serializers import UserDetailsSerializer
+from allauth.account.models import EmailAddress
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
@@ -17,22 +17,6 @@ try:
     from allauth.account.adapter import get_adapter
 except ImportError:
     raise ImportError('allauth needs to be added to INSTALLED_APPS.')
-
-
-class LoginSerializer(dj_serializers.LoginSerializer):
-    email = serializers.EmailField(required=False)
-
-    def update(self, instance, validated_data):
-        return super().update(instance, validated_data)
-
-    def create(self, validated_data):
-        return super().create(validated_data)
-
-    def get_fields(self):
-        fields = super().get_fields()
-        fields['username'] = None
-        fields['email'] = serializers.CharField(required=False)
-        return fields
 
 
 class RegistrationSerializer(serializers.Serializer):
@@ -65,9 +49,9 @@ class RegistrationSerializer(serializers.Serializer):
     def get_cleaned_data(self):
         return {
             'first_name': self.validated_data.get('first_name', ''),
-            'last_name':  self.validated_data.get('last_name', ''),
-            'password1':  self.validated_data.get('password1', ''),
-            'email':      self.validated_data.get('email', ''),
+            'last_name': self.validated_data.get('last_name', ''),
+            'password1': self.validated_data.get('password1', ''),
+            'email': self.validated_data.get('email', ''),
         }
 
     def update(self, instance, validated_data):
@@ -94,14 +78,40 @@ class RegistrationSerializer(serializers.Serializer):
         return user
 
 
-class UserDetails(UserDetailsSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
-        model = UserModel
-        fields = ('pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image', 'groups')
+        model = Group
+        fields = ['name']
 
 
 class UserSerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True, read_only=True)
+    email_valid = serializers.SerializerMethodField(read_only=True)
+
+    profile_image = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = UserModel
         depth = 1
-        fields = ['pk', 'username', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image', 'groups']
+        fields = ('pk', 'username', 'email', 'email_valid', 'first_name', 'last_name',
+                  'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'average_rating',
+                  'groups', 'socialaccount_set')
+        read_only_fields = ['average_rating']
+
+    def get_profile_image(self, user: UserModel):
+        if user.is_admin():
+            return f'http://localhost:8000{user.profile_image.url}'
+        return f'https://picsum.photos/1024/1024?random={user.pk}'
+
+    def get_email_valid(self, user):
+        email = EmailAddress.objects.filter(email=user.email, verified=True)
+        return email.exists()
+
+
+class UsernamesSerializer(serializers.ModelSerializer):
+    groups = GroupSerializer(many=True)
+
+    class Meta:
+        model = UserModel
+        fields = ['id', 'username', 'groups']
+        depth = 1

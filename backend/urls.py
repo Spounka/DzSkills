@@ -8,6 +8,7 @@ from backend import settings
 urlpatterns = [
     path('api/admin/', admin.site.urls),
 
+    path('api/accounts/', include('allauth.urls'), name="socialaccount_signup"),
     path('api/rest-auth/', include('dj_rest_auth.urls')),
     path('api/rest-auth/registration/', include('dj_rest_auth.registration.urls')),
     path('api/rest-auth/facebook/', views.FacebookLoginView.as_view(), name='fb_login'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
     path('api/comments/', include('comment.urls'), name="comments"),
     path('api/conversations/', include('messaging.urls'), name="conversations"),
+    path('api/support/tickets/', include('support.urls')),
 
 ]
 

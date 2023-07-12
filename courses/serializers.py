@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from django.contrib.auth import get_user_model
@@ -9,17 +10,83 @@ from . import models as models
 UserModel = get_user_model()
 
 
+class QuizzChoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        depth = 0
+        # fields = "__all__"
+        exclude = ('question',)
+        model = models.QuizzChoice
+
+
+class QuizzQuestionSerializer(serializers.ModelSerializer):
+    choices = QuizzChoiceSerializer(many=True)
+
+    class Meta:
+        exclude = ('quizz',)
+        depth = 0
+        model = models.QuizzQuestion
+
+
+class CourseQuizzSerializer(serializers.ModelSerializer):
+    questions = QuizzQuestionSerializer(many=True)
+
+    def create(self, validated_data):
+        questions_data = validated_data.pop('questions', None)
+        quizz = models.CourseQuizz.objects.create(**validated_data)
+        questions = []
+        for q in questions_data:
+            answers_data = q.pop('choices')
+            question = models.QuizzQuestion.objects.create(quizz=quizz, **q)
+            choices = [models.QuizzChoice.objects.create(question=question, **a) for a in answers_data]
+
+            question.choices.set(choices)
+            question.save()
+            questions.append(question)
+
+        quizz.questions.set(questions)
+
+        return quizz
+
+    class Meta:
+        fields = "__all__"
+        depth = 0
+        model = models.CourseQuizz
+
+
+class RatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Rating
+        fields = ['id', 'rating', 'student', 'video']
+        depth = 0
+        extra_kwargs = {
+            'video': {'write_only': True},
+        }
+
+
 class VideoSerializer(serializers.ModelSerializer):
+    ratings = RatingSerializer(many=True, read_only=True, required=False)
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Video
         fields = "__all__"
         depth = 0
 
+    def get_average_rating(self, video: models.Video):
+        return video.get_average_rating()
+
 
 class ChapterVideoSerializer(serializers.ModelSerializer):
+    ratings = RatingSerializer(many=True, required=False)
+    average_rating = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Video
-        fields = ['id', 'title', 'description', 'video', 'duration', ]
+        fields = ['id', 'title', 'description', 'video', 'duration', 'ratings', 'average_rating']
+        read_only_fields = ('average_rating', 'ratings')
+
+    def get_average_rating(self, video: models.Video):
+        return video.get_average_rating()
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
@@ -28,7 +95,8 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 0
-        fields = ['id', 'title', 'description', 'thumbnail', 'videos']
+        fields = ['id', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        read_only_fields = ('average_rating',)
 
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
@@ -40,13 +108,21 @@ class CourseChapterSerializer(serializers.ModelSerializer):
 
 class CourseSerializer(serializers.ModelSerializer):
     chapters = CourseChapterSerializer(many=True)
-    owner = authentication.serializers.UserDetails(read_only=True)
+    owner = authentication.serializers.UserSerializer(read_only=True)
     videos_count = serializers.ReadOnlyField()
+    quizz = CourseQuizzSerializer(required=False)
 
     def create(self, validated_data):
         chapters_data = validated_data.pop('chapters', None)
         owner = self.context['request'].user
         course = models.Course.objects.create(owner=owner, **validated_data)
+        quizz_data = self.context['request'].data.get('quizz')
+        if quizz_data:
+            data = json.loads(quizz_data)
+            data['course'] = course.pk
+            serializer = CourseQuizzSerializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         chapters = []
         for chapter_data in chapters_data:
             videos_data = chapter_data.pop('videos')
@@ -68,7 +144,19 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Course
         fields = "__all__"
+        read_only_fields = ('average_rating',)
         depth = 2
+
+
+class CourseListSerializer(serializers.ModelSerializer):
+    owner = authentication.serializers.UserSerializer(read_only=True)
+    videos_count = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.Course
+        fields = "__all__"
+        read_only_fields = ('average_rating',)
+        depth = 1
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -77,7 +165,8 @@ class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 2
-        fields = ['pk', 'title', 'description', 'thumbnail', 'videos']
+        fields = ['pk', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        read_only_fields = ('average_rating',)
 
 
 class StudentProgressSerializer(serializers.ModelSerializer):
@@ -106,12 +195,15 @@ class StudentProgressForRelatedStudents(serializers.ModelSerializer):
 
 
 class HashtagSerializer(serializers.ModelSerializer):
-    courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = ['id', 'name', 'courses']
         depth = 0
         model = models.Hashtag
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class CreateHashtagSerializer(serializers.ModelSerializer):
@@ -122,21 +214,27 @@ class CreateHashtagSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = "__all__"
-        depth = 1
+        depth = 0
         model = models.Category
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class LevelSerializer(serializers.ModelSerializer):
-    courses = CourseSerializer(many=True)
+    courses = serializers.SerializerMethodField()
 
     class Meta:
         fields = "__all__"
-        depth = 1
+        depth = 0
         model = models.Level
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class CreateLevelSerializer(serializers.ModelSerializer):
@@ -147,49 +245,26 @@ class CreateLevelSerializer(serializers.ModelSerializer):
 
 
 class CertificateSerializer(serializers.ModelSerializer):
+    # certificate_image = serializers.ImageField()
+
     class Meta:
-        fields = "__all__"
+        fields = ['id', 'user', 'course', 'certificate_image']
         depth = 0
         model = models.Certificate
 
 
-class QuizzAnswerSerializer(serializers.ModelSerializer):
-    class Meta:
-        depth = 0
-        # fields = "__all__"
-        exclude = ('question',)
-        model = models.QuizzAnswer
-
-
-class QuizzQuestionSerializer(serializers.ModelSerializer):
-    answers = QuizzAnswerSerializer(many=True)
-
-    class Meta:
-        exclude = ('quizz',)
-        depth = 0
-        model = models.QuizzQuestion
-
-
-class CourseQuizzSerializer(serializers.ModelSerializer):
-    questions = QuizzQuestionSerializer(many=True)
-
-    def create(self, validated_data):
-        questions_data = validated_data.pop('questions', None)
-        quizz = models.CourseQuizz.objects.create(**validated_data)
-        questions = []
-        for q in questions_data:
-            answers_data = q.pop('answers')
-            question = models.QuizzQuestion.objects.create(quizz=quizz, **q)
-            answers = [models.QuizzAnswer.objects.create(question=question, **q) for a in answers_data]
-
-            question.answers.set(answers)
-            questions.append(question)
-
-        quizz.questions.set(questions)
-
-        return quizz
-
+class StudentAnswerSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         depth = 0
-        model = models.CourseQuizz
+        model = models.StudentAnswer
+
+
+class StudentAttemptSerializer(serializers.ModelSerializer):
+    answers = serializers.PrimaryKeyRelatedField(many=True, queryset=models.StudentAnswer.objects.all(),
+                                                 source='answers')
+    student = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    class Meta:
+        fields = "__all__"
+        depth = 1

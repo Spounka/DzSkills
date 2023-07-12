@@ -2,12 +2,6 @@ from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 import datetime
 
-RES = settings.BASE_DIR / 'certificate_generation' / 'resources'
-
-arabic_font = ImageFont.truetype(str(RES / 'bold-ar.woff'), 220)
-latin_font = ImageFont.truetype(str(RES / 'bold.ttf'), 220)
-thin_font = ImageFont.truetype(str(RES / 'thin.ttf'), 72)
-
 
 def is_arabic(text):
     if '\u0600' <= text[0] <= '\u06FF':
@@ -16,6 +10,12 @@ def is_arabic(text):
 
 
 def generate_certificate(name):
+    RES = settings.BASE_DIR / 'certificate_generation' / 'resources'
+
+    arabic_font = ImageFont.truetype(str(RES / 'bold-ar.woff'), 220)
+    latin_font = ImageFont.truetype(str(RES / 'bold.ttf'), 220)
+    thin_font = ImageFont.truetype(str(RES / 'thin.ttf'), 72)
+
     image = Image.open(str(RES / 'vide.png'))
     x_res, y_res = image.size
 

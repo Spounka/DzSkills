@@ -9,6 +9,16 @@ class VideoInline(admin.StackedInline):
     extra = 1
 
 
+class RatingInline(admin.StackedInline):
+    model = models.Rating
+
+
+class VideoAdmin(admin.ModelAdmin):
+    inlines = [
+        RatingInline
+    ]
+
+
 class ChapterAdmin(admin.ModelAdmin):
     inlines = [
         VideoInline
@@ -30,6 +40,18 @@ class CategoryInline(admin.TabularInline):
     extra = 1
 
 
+class CourseInline(admin.TabularInline):
+    model = models.Course
+    extra = 1
+
+
+@admin.register(models.Category)
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = [
+        CourseInline,
+    ]
+
+
 class CourseAdmin(admin.ModelAdmin):
     inlines = [
         ChapterInline,
@@ -40,12 +62,12 @@ class CourseAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Course, CourseAdmin)
 admin.site.register(models.Chapter, ChapterAdmin)
-admin.site.register(models.Video, admin.ModelAdmin)
+admin.site.register(models.Video, VideoAdmin)
+admin.site.register(models.Rating, admin.ModelAdmin)
 admin.site.register(models.Hashtag, admin.ModelAdmin)
-admin.site.register(models.Category, admin.ModelAdmin)
 admin.site.register(models.Level, admin.ModelAdmin)
 admin.site.register(models.StudentProgress, admin.ModelAdmin)
 admin.site.register(models.Certificate, admin.ModelAdmin)
 admin.site.register(models.QuizzQuestion, admin.ModelAdmin)
-admin.site.register(models.QuizzAnswer, admin.ModelAdmin)
+admin.site.register(models.QuizzChoice, admin.ModelAdmin)
 admin.site.register(models.CourseQuizz, admin.ModelAdmin)

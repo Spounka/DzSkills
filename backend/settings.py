@@ -10,13 +10,13 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os.path
+import socket
 from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 if not os.path.isfile(BASE_DIR / '.env'):
@@ -24,36 +24,41 @@ if not os.path.isfile(BASE_DIR / '.env'):
 
 load_dotenv()
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# DOCKER_SETTINGS
 # DEBUG = (os.environ.get('DEBUG', True) == "true")
 DEBUG = True
 
+# DOCKER_SETTINGS
 ALLOWED_HOSTS = ['*']
 
 # Application definition
 
+# DOCKER_SETTINGS
 CSRF_TRUSTED_ORIGINS = [
     "https://dzskills.fly.dev",
     'http://localhost:3000',
     'http://localhost',
+    'http://localhost:8000',
     "https://dzskills.vercel.app",
+    "https://dzskills.com",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-    'http://localhost:3000',
-    'http://localhost:4173',
-    "https://dzskills.fly.dev",
-    "https://dzskills.vercel.app",
-]
+# DOCKER_SETTINGS
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost',
+#     'http://localhost:3000',
+#     'http://localhost:4173',
+#     "https://dzskills.fly.dev",
+#     "https://dzskills.vercel.app",
+# ]
 
-# CORS_ALLOW_ALL_ORIGINS = True
+# DOCKER_SETTINGS
+CORS_ALLOW_ALL_ORIGINS = True
+
+# DOCKER_SETTINGS
+HOSTNAME = 'dzskills.com'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -62,7 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'corsheaders',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
     'django.contrib.sites',
 
     # Rest framework
@@ -86,14 +91,14 @@ INSTALLED_APPS = [
     'course_buying',
     'comment',
     'messaging',
+    'support',
 
     # Social Accounts
-    'allauth.socialaccount.providers.discord',
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.linkedin_oauth2',
 ]
 
+# DOCKER_SETTINGS
 SITE_ID = 1
 
 # Provider specific settings
@@ -128,15 +133,25 @@ SOCIALACCOUNT_PROVIDERS = {
         'LOCALE_FUNC': lambda request: 'en_US',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v16.0',
-        'GRAPH_API_URL': 'https://graph.facebook.com/v13.0',
+        'GRAPH_API_URL': 'https://graph.facebook.com/v17.0',
     }
 }
 
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-REST_AUTH_REGISTER_VERIFICATION_ENABLED = False
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+ACCOUNT_ADAPTER = 'authentication.adapter.AccountAdapter'
+SOCIALACCOUNT_ADAPTER = 'authentication.adapter.SocialAdapter'
+
+# DOCKER_SETTINGS
+EMAIL_ACTIVATION_URL = '/register/verify-email/'
+
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+REST_AUTH_REGISTER_VERIFICATION_ENABLED = True
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
+SOCIALACCOUNT_STORE_TOKENS = True
 
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
@@ -157,14 +172,15 @@ SUPPORT_EMAIL = "no-reply@dzskills.com"
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
 
+LANGUAGE_COOKIE_NAME = 'django_language'
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(weeks=4),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
 }
 
 REST_AUTH = {
-    # 'LOGIN_SERIALIZER':    'authentication.serializers.LoginSerializer',
-    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserDetails',
+    'USER_DETAILS_SERIALIZER': 'authentication.serializers.UserSerializer',
     'REGISTER_SERIALIZER': 'authentication.serializers.RegistrationSerializer',
     'SESSION_LOGIN': False,
     'USE_JWT': True,
@@ -196,11 +212,12 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+# DOCKER SETTINGS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -227,17 +244,16 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
+ASGI_APPLICATION = 'backend.asgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
-
+# DOCKER_SETTINGS
 DATABASES = {
     # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     #     'NAME': os.environ.get('POSTGRES_DB', os.environ.get('DB', '')),
     #     'USER': os.environ.get('POSTGRES_USER', os.environ.get('DB_USER', '')),
     #     'PASSWORD': os.environ.get('POSTGRES_PASSWORD', os.environ.get('DB_PASS', '')),
-    #     'HOST': os.environ.get('POSTGRES_HOST', '127.0.0.1'),
+    #     'HOST': os.environ.get('POSTGRES_HOST', '172.20.0.2'),
     #     'PORT': 5432
     # }
     'default': {
@@ -245,11 +261,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DOCKER_SETTINGS
 if os.environ.get('DATABASE_URL', None):
     DATABASES['default'] = dj_database_url.parse(os.environ['DATABASE_URL'])
-
-# Password validation
-# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -266,12 +281,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
+LANGUAGE_CODE = 'ar-ar'
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Algiers'
 
 USE_I18N = True
 
@@ -282,12 +294,8 @@ USE_TZ = True
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-if not os.environ.get('DATABASE_URL', None):
-    STATIC_URL = 'static/'
-    MEDIA_URL = 'media/'
-else:
-    STATIC_URL = 'http://localhost/static/'
-    MEDIA_URL = 'http://localhost/media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -295,5 +303,4 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'authentication.User'
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 1024
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+FILE_UPLOAD_MAX_MEMORY_SIZE = 1024 ** 3

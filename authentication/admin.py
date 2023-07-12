@@ -8,7 +8,8 @@ from . import models
 class UserSite(UserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("first_name", "last_name", "email", "profile_image")}),
+        (_("Personal info"), {"fields": ("first_name", "last_name", "email", "profile_image",)}),
+        (_("Misc"), {"fields": ("description", "nationality", "speciality",)}),
         (
             _("Permissions"),
             {
