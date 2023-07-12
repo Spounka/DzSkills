@@ -43,8 +43,10 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter().prefetch_related('hashtags', 'course_level', 'category')
 
-    # pagination_class = CoursePagination
-    # permission_classes = (IsAuthenticated,)
+    def get_serializer_class(self):
+        if self.kwargs.get('pk', None):
+            return app.CourseSerializer
+        return app.CourseListSerializer
 
     def get(self, request, *args, **kwargs):
         if self.kwargs.get('pk', None):

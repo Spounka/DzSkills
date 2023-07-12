@@ -148,6 +148,17 @@ class CourseSerializer(serializers.ModelSerializer):
         depth = 2
 
 
+class CourseListSerializer(serializers.ModelSerializer):
+    owner = authentication.serializers.UserSerializer(read_only=True)
+    videos_count = serializers.ReadOnlyField()
+
+    class Meta:
+        model = models.Course
+        fields = "__all__"
+        read_only_fields = ('average_rating',)
+        depth = 1
+
+
 class ChapterSerializer(serializers.ModelSerializer):
     videos = VideoSerializer(many=True, read_only=True)
 
