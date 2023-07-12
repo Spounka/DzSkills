@@ -29,8 +29,6 @@ class RetrieveCurrentReceipt(generics.GenericAPIView):
             receipt.is_current = True
             receipt.count = 1
             receipt.save()
-        else:
-            receipt = receipt.increment()
         serializer = self.get_serializer(receipt, context={'request': request})
         return response.Response(status=status.HTTP_200_OK, data=serializer.data)
 
