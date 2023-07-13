@@ -186,7 +186,7 @@ class Video(models.Model):
     video = models.FileField(upload_to=get_video_upload_directory)
     duration = models.CharField(default="", blank=True, max_length=10)
 
-    thumbnail = models.ImageField(upload_to=get_video_upload_directory)
+    thumbnail = models.ImageField(upload_to=get_video_upload_directory, blank=True, null=True)
     presentation_file = models.FileField(upload_to=get_video_upload_directory, blank=True, null=True)
 
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
