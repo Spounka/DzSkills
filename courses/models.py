@@ -100,7 +100,7 @@ class Course(models.Model):
 class Chapter(models.Model):
     title = models.CharField(max_length=300)
     description = models.CharField(max_length=300)
-    thumbnail = models.ImageField(upload_to=get_chapter_upload_directory)
+    # thumbnail = models.ImageField(upload_to=get_chapter_upload_directory)
     average_rating = models.FloatField(default=0)
 
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="chapters")
@@ -185,6 +185,9 @@ class Video(models.Model):
     description = models.CharField(max_length=150)
     video = models.FileField(upload_to=get_video_upload_directory)
     duration = models.CharField(default="", blank=True, max_length=10)
+
+    thumbnail = models.ImageField(upload_to=get_video_upload_directory)
+    presentation_file = models.FileField(upload_to=get_video_upload_directory, blank=True, null=True)
 
     chapter = models.ForeignKey(Chapter, on_delete=models.CASCADE, related_name='videos')
 
