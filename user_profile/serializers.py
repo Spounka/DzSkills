@@ -24,7 +24,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        # exclude = ('user',)
         fields = '__all__'
 
     def create(self, validated_data: dict[str, Any]):

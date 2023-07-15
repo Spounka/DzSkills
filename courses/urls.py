@@ -4,6 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', views.CourseAPI.as_view(), name="courses-list"),
+    path('<int:pk>/<str:status>/', views.CourseStatusUpdateAPI.as_view(), name="update-course-status"),
 
     path('categories/', views.GetCategoryAPI.as_view(), name='categories'),
     path('levels/', views.GetLevelsAPI.as_view(), name='levels'),

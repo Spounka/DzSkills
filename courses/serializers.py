@@ -13,7 +13,6 @@ UserModel = get_user_model()
 class QuizzChoiceSerializer(serializers.ModelSerializer):
     class Meta:
         depth = 0
-        # fields = "__all__"
         exclude = ('question',)
         model = models.QuizzChoice
 
@@ -82,7 +81,8 @@ class ChapterVideoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Video
-        fields = ['id', 'title', 'description', 'video', 'duration', 'ratings', 'average_rating']
+        fields = ['id', 'title', 'description', 'video', 'thumbnail', 'presentation_file', 'duration', 'ratings',
+                  'average_rating']
         read_only_fields = ('average_rating', 'ratings')
 
     def get_average_rating(self, video: models.Video):
@@ -95,7 +95,7 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 0
-        fields = ['id', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        fields = ['id', 'title', 'description', 'videos', 'average_rating']
         read_only_fields = ('average_rating',)
 
     def create(self, validated_data: dict[str, Any]):
@@ -124,16 +124,16 @@ class CourseSerializer(serializers.ModelSerializer):
             serializer.is_valid(raise_exception=True)
             serializer.save()
         chapters = []
+
+        def update_video(video):
+            set_video_duration(video)
+            video.save()
+
         for chapter_data in chapters_data:
             videos_data = chapter_data.pop('videos')
             chapter = models.Chapter.objects.create(course=course, **chapter_data)
             videos = [models.Video.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
             from courses.models import set_video_duration
-
-            def update_video(video):
-                set_video_duration(video)
-                video.save()
-
             map(lambda video: update_video(video), videos)
 
             chapter.videos.set(videos)
@@ -165,7 +165,7 @@ class ChapterSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Chapter
         depth = 2
-        fields = ['pk', 'title', 'description', 'thumbnail', 'videos', 'average_rating']
+        fields = ['pk', 'title', 'description', 'videos', 'average_rating']
         read_only_fields = ('average_rating',)
 
 
@@ -177,17 +177,16 @@ class StudentProgressSerializer(serializers.ModelSerializer):
         model = models.StudentProgress
         fields = ('pk', 'last_chapter_index', 'last_video_index', 'user', 'course')
 
-    def create(self, validated_data):
-        pass
-
-    def update(self, instance, validated_data):
-        pass
+    # TODO: Find out why this is here?
+    # def create(self, validated_data):
+    #     pass
+    #
+    # def update(self, instance, validated_data):
+    #     pass
 
 
 class StudentProgressForRelatedStudents(serializers.ModelSerializer):
     user = authentication.serializers.UserSerializer()
-
-    # course = CourseSerializer()
 
     class Meta:
         model = models.StudentProgress
@@ -245,8 +244,6 @@ class CreateLevelSerializer(serializers.ModelSerializer):
 
 
 class CertificateSerializer(serializers.ModelSerializer):
-    # certificate_image = serializers.ImageField()
-
     class Meta:
         fields = ['id', 'user', 'course', 'certificate_image']
         depth = 0

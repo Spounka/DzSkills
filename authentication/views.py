@@ -20,12 +20,6 @@ class FacebookLoginView(SocialLoginView):
         return super().post(request, *args, **kwargs)
 
 
-def password_reset_view(request, *args, **kwargs):
-    return redirect(f'/password-forgotten/confirm/?u={kwargs.get("uidb64")}&t={kwargs.get("token")}', )
-    # return redirect('/password-forgotten/', kwargs={'u': kwargs.get('uidb64'), 't': kwargs.get('token')},
-    #                 permanent=True)
-
-
 class GoogleLogin(SocialLoginView):
     adapter_class = GoogleOAuth2Adapter
     callback_url = 'http://localhost:3000/register/google/'
@@ -59,7 +53,7 @@ class UpdatePassword(views.APIView):
         if not instance.check_password(validated_data['old_password']):
             make_password(password=validated_data['old_password'])
             return response.Response(data={"message": "Wrong Password"}, status=status.HTTP_400_BAD_REQUEST)
-        if not validated_data['password1'] == validated_data['password2']:
+        if validated_data['password1'] != validated_data['password2']:
             make_password(password=validated_data['old_password'])
             return response.Response(data={"message": "Passwords do not match"}, status=status.HTTP_400_BAD_REQUEST)
         instance.set_password(validated_data['password1'])
@@ -80,7 +74,7 @@ class CreateNewAdmin(views.APIView):
         password2 = request.data.get('password2')
         email = request.data.get('email')
         profile_image = request.data.get('profile_image')
-        if not password == password2:
+        if password != password2:
             make_password(password)
             return response.Response(status=status.HTTP_400_BAD_REQUEST, data={'message': "Passwords don't match"})
         user = models.User.objects.create(username=username, email=email,

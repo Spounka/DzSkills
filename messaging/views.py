@@ -4,6 +4,7 @@ from django.db.models import Q, QuerySet
 from django.shortcuts import render
 from rest_framework import viewsets, generics, pagination, permissions
 from rest_framework.permissions import IsAuthenticated
+from django.utils.translation import gettext_lazy as _
 
 import courses.models
 from authentication.permissions import IsAdmin
@@ -11,6 +12,7 @@ from . import models, serializers
 from .permissions import IsOwnerOrReadonly
 
 UserModel = get_user_model()
+COURSE_OWNERSHIP_ERROR = _("You Don't Own This Course!")
 
 
 # Create your views here.
@@ -32,7 +34,7 @@ class MessagesListAPIView(generics.ListAPIView):
     def check_permissions(self, request: WSGIRequest):
         super().check_permissions(request)
         if not request.user.owns_course(course_id=self.kwargs.get('pk')):
-            self.permission_denied(request, message="You don't own this course!")
+            self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
 
 
 class MessagesCreateAPIView(generics.CreateAPIView):
@@ -51,7 +53,7 @@ class ConversationsListAPIView(generics.ListAPIView):
     def check_permissions(self, request: WSGIRequest):
         super().check_permissions(request)
         if not request.user.owns_course(course_id=self.kwargs.get('pk')):
-            self.permission_denied(request, message="You don't own this course!")
+            self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
 
     def get_queryset(self):
         return models.Conversation.objects.filter(Q(teacher=self.request.user) | Q(student=self.request.user)).all()
@@ -64,7 +66,7 @@ class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
     def check_permissions(self, request: WSGIRequest):
         super().check_permissions(request)
         if not request.user.owns_course(course_id=self.kwargs.get('pk')):
-            self.permission_denied(request, message="You don't own this course!")
+            self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
 
     def get_object(self):
         return self.get_queryset().first()

@@ -7,21 +7,21 @@ UserModel = get_user_model()
 
 class CourseService:
     @classmethod
-    def create(cls, owner: UserModel = None, chapters: list[models.Chapter] = None):
-        chapters_data = validated_data.pop('chapters', None)
-        course = models.Course.objects.create(owner=owner, **validated_data)
-        chapters = []
+    def create(cls, owner: UserModel = None, course_data=None, chapters: list[models.Chapter] = None):
+        chapters_data = course_data.pop('chapters', None)
+        course = models.Course.objects.create(owner=owner, **course_data)
+
+        def update_video(video):
+            set_video_duration(video)
+            video.save()
+
         for chapter_data in chapters_data:
             videos_data = chapter_data.pop('videos')
             chapter = models.Chapter.objects.create(course=course, **chapter_data)
             videos = [models.Video.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
             from courses.models import set_video_duration
 
-            def update_video(video):
-                set_video_duration(video)
-                video.save()
-
-            map(lambda video: update_video(video), videos)
+            map(update_video, videos)
 
             chapter.videos.set(videos)
             chapters.append(chapter)

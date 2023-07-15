@@ -46,19 +46,20 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # DOCKER_SETTINGS
-# CORS_ALLOWED_ORIGINS = [
-#     'http://localhost',
-#     'http://localhost:3000',
-#     'http://localhost:4173',
-#     "https://dzskills.fly.dev",
-#     "https://dzskills.vercel.app",
-# ]
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost',
+    'http://localhost:3000',
+    'http://localhost:4173',
+    'http://0.0.0.0:3000',
+    "https://dzskills.fly.dev",
+    "https://dzskills.vercel.app",
+]
+
+# DOCKER SETTINGS
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # DOCKER_SETTINGS
-CORS_ALLOW_ALL_ORIGINS = True
-
-# DOCKER_SETTINGS
-HOSTNAME = 'dzskills.com'
+HOSTNAME = 'localhost'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -152,13 +153,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_STORE_TOKENS = True
-
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'boudaakkarnazih@gmail.com'
-# EMAIL_HOST_PASSWORD = 'xfbdmgszftyvycsr'
-#
 
 EMAIL_HOST = 'smtp.titan.email'
 EMAIL_HOST_USER = 'no-reply@dzskills.com'

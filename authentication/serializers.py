@@ -44,6 +44,7 @@ class RegistrationSerializer(serializers.Serializer):
         return data
 
     def custom_signup(self, request, user):
+        # TODO: Implement the function to fix Facebook / Google Signup
         pass
 
     def get_cleaned_data(self):

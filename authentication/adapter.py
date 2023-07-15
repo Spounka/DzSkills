@@ -19,5 +19,6 @@ class SocialAdapter(DefaultSocialAccountAdapter):
         return super().save_user(request, sociallogin, form)
 
     def populate_user(self, request, sociallogin, data):
-        user = super().populate_user(request, sociallogin, data)
+        # TODO: Implement this method to populate user with data
+        # user = super().populate_user(request, sociallogin, data)
         return self.save_user(request, sociallogin)

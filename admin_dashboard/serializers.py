@@ -35,8 +35,6 @@ class AdminConfigSerializer(serializers.ModelSerializer):
 
 
 class ReceiptSerializer(serializers.ModelSerializer):
-    # image = serializers.SerializerMethodField()
-
     class Meta:
         model = models.Receipt
         fields = "__all__"

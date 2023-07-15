@@ -19,5 +19,4 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Student
         depth = 1
-        # exclude = ['password']
         fields = "__all__"

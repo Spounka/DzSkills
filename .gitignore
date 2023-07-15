@@ -165,3 +165,5 @@ media/
 Certificate/
 data/
 *[.webm,.mp4,.flv,.mkv]
+sonar-project.properties
+course card.png

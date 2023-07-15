@@ -17,7 +17,7 @@ def landing_page_upload_dir(_: "LandingPageImage", filename: str) -> str:
 
 
 def validate_color(value):
-    expression = r"^#[0-9a-fA-F]{6}([0-9a-f-A-F]{2}|[0-9a-f-A-F]{4}){0,1}$"
+    expression = r"^#[0-9a-fA-F]{6}([0-9a-f-A-F]{2}|[0-9a-f-A-F]{4})?$"
     if not re.match(expression, value):
         raise ValidationError("Color invalid")
 

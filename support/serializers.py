@@ -7,8 +7,6 @@ from authentication.serializers import UserSerializer
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    # reported = UserSerializer()
-
     class Meta:
         model = models.Report
         read_only_fields = ('reporter',)
@@ -32,8 +30,6 @@ class MessageFileSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     files = MessageFileSerializer(many=True, required=False)
     sender = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    # course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
 
     class Meta:
         model = models.Message

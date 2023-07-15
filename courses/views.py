@@ -1,5 +1,6 @@
 from django.db.models import Count
 from rest_framework import generics, response, mixins, status, pagination
+from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
@@ -225,8 +226,26 @@ class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixi
 
     def post(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
-#
-#
-# class QuizzAPIView(generics.ListCreateAPIView):
-#     serializer_class = app.CourseQuizzSerializer
-#     queryset = m.CourseQuizz.objects.all()
+
+
+class CourseStatusUpdateAPI(generics.UpdateAPIView):
+    queryset = m.Course.objects.all()
+    serializer_class = app.CourseSerializer
+
+    def put(self, request, *args, **kwargs):
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def patch(self, request, *args, **kwargs):
+        course: m.Course = self.get_object()
+        serializer = self.get_serializer(course)
+        course_status = kwargs.get('status', None)
+        if course_status == 'approve' or course_status == 'accept':
+            course.approve()
+        elif course_status == 'reject' or course_status == 'refuse':
+            course.reject()
+        elif course_status == 'edit' or course_status == 'revisit':
+            course.revise()
+        else:
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
+        return response.Response(status=status.HTTP_200_OK, data=serializer.data)

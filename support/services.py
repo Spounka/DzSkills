@@ -18,7 +18,6 @@ class MessageService:
             content=content,
             conversation=conversation,
             sender=sender,
-            # recipient=recipient
         )
         if files:
             message_files = [models.MessageFile(message=message, file=file) for file in files]
