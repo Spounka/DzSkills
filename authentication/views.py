@@ -1,14 +1,17 @@
+from allauth.account.models import EmailAddress
 from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
-from django.shortcuts import redirect
 from rest_framework import response, generics, permissions, status, views
 from rest_framework.decorators import api_view
+from django.utils.translation import gettext_lazy as _
 
 from . import serializers, models
+
+PASSWORDS_DONT_MATCH_ERROR = _("Passwords don't match")
 
 
 # Create your views here.
@@ -76,11 +79,41 @@ class CreateNewAdmin(views.APIView):
         profile_image = request.data.get('profile_image')
         if password != password2:
             make_password(password)
-            return response.Response(status=status.HTTP_400_BAD_REQUEST, data={'message': "Passwords don't match"})
+            return response.Response(status=status.HTTP_400_BAD_REQUEST, data={'message': PASSWORDS_DONT_MATCH_ERROR})
         user = models.User.objects.create(username=username, email=email,
                                           profile_image=profile_image)
         user.set_password(password)
         user.groups.add(Group.objects.get(name="AdminGroup"))
+        user.save()
+        user.emailaddress_set.add(EmailAddress.objects.create(email=user.email, verified=True))
+        user.save()
+
+        return response.Response(status=status.HTTP_201_CREATED, data={'id': user.pk})
+
+
+class CreateNewTeacher(views.APIView):
+    # noinspection PyMethodMayBeStatic
+    def post(self, request, *args, **kwargs):
+        username = request.data.get('username')
+        if models.User.objects.filter(username=username).exists():
+            return response.Response(status=status.HTTP_400_BAD_REQUEST,
+                                     data={'message': _("a user with that username already exists")})
+        password = request.data.get('password1')
+        password2 = request.data.get('password2')
+        email = request.data.get('email')
+        if models.User.objects.filter(email=email).exists():
+            return response.Response(status=status.HTTP_400_BAD_REQUEST,
+                                     data={'message': _("A user is already registered with this e-mail address.")})
+        profile_image = request.data.get('profile_image')
+        if password != password2:
+            make_password(password)
+            return response.Response(status=status.HTTP_400_BAD_REQUEST, data={'message': PASSWORDS_DONT_MATCH_ERROR})
+        user = models.User.objects.create(username=username, email=email,
+                                          profile_image=profile_image)
+        user.set_password(password)
+        user.groups.add(Group.objects.get(name="TeacherGroup"))
+        user.save()
+        user.emailaddress_set.add(EmailAddress.objects.create(user=user, email=user.email, verified=True, primary=True))
         user.save()
 
         return response.Response(status=status.HTTP_201_CREATED, data={'id': user.pk})

@@ -1,3 +1,4 @@
+from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.db.models import Q
@@ -17,26 +18,28 @@ class User(AbstractUser):
 
     average_rating = models.FloatField(default=0.0, verbose_name=_('Average Rating'))
 
-    def update_average_rating(self):
+    def update_average_rating(self) -> None:
         ratings = [course.average_rating for course in self.courses.all()]
         if len(ratings) > 0:
             average = sum(ratings) / len(ratings)
             self.average_rating = average
 
-    def is_admin(self):
+    def is_admin(self) -> bool:
         return self.groups.filter(name="AdminGroup").exists()
 
-    def is_teacher(self):
+    def is_teacher(self) -> bool:
         return self.groups.filter(name="TeacherGroup").exists()
 
-    def owns_course(self, course_id: int = 1, course=None) -> bool:
-        query = self.order_set.filter(Q(course_id=course_id) | Q(course=course))
+    def owns_course(self, course_id: int = 0) -> bool:
+        if self.courses.filter(pk=course_id).exists():
+            return True
+        query = self.order_set.filter(course_id=course_id)
         if query.exists() and query.filter(payment__status='a'):
             return True
         return False
 
     @classmethod
-    def get_site_admin(cls):
+    def get_site_admin(cls) -> 'User':
         try:
             return cls.objects.get(username='dzskills')
         except cls.DoesNotExist:
@@ -53,6 +56,6 @@ class User(AbstractUser):
             user.profile_image.save(name='dzskills.png', content=open('logo.png', 'rb'))
             user.save()
             user.groups.add(Group.objects.get(name="AdminGroup"))
-            user.emailaddress_set.first().verified = True
+            user.emailaddress_set.add(EmailAddress.objects.create(email=user.email, verified=True, primary=True))
             user.save()
             return user

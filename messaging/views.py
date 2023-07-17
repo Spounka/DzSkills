@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Q, QuerySet
+from django.http import HttpRequest
 from django.shortcuts import render
 from rest_framework import viewsets, generics, pagination, permissions
 from rest_framework.permissions import IsAuthenticated
@@ -31,11 +32,6 @@ class MessagesListAPIView(generics.ListAPIView):
         conversation = models.Conversation.objects.get(pk=self.kwargs['pk'])
         return conversation.messages.all()
 
-    def check_permissions(self, request: WSGIRequest):
-        super().check_permissions(request)
-        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
-            self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
-
 
 class MessagesCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.MessageSerializer
@@ -50,7 +46,7 @@ class ConversationsListAPIView(generics.ListAPIView):
     serializer_class = serializers.ConversationsSerializer
     permission_classes = [IsAuthenticated]
 
-    def check_permissions(self, request: WSGIRequest):
+    def check_permissions(self, request: HttpRequest):
         super().check_permissions(request)
         if not request.user.owns_course(course_id=self.kwargs.get('pk')):
             self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)

@@ -41,6 +41,7 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost',
     'http://localhost:8000',
+    'http://192.168.1.14:3000',
     "https://dzskills.vercel.app",
     "https://dzskills.com",
 ]
@@ -51,6 +52,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:4173',
     'http://0.0.0.0:3000',
+    'http://192.168.1.14:3000',
     "https://dzskills.fly.dev",
     "https://dzskills.vercel.app",
 ]

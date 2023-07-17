@@ -1,6 +1,6 @@
 from django.db.models import Count
+from django.utils.translation import gettext_lazy as _
 from rest_framework import generics, response, mixins, status, pagination
-from rest_framework.decorators import api_view
 from rest_framework.permissions import IsAuthenticated
 
 from authentication.models import User
@@ -44,6 +44,23 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter().prefetch_related('hashtags', 'course_level', 'category')
 
+    def check_permissions(self, request):
+        super().check_permissions(request)
+        if not self.kwargs.get('pk'):
+            return
+        if self.request.user.is_authenticated and (self.request.user.is_superuser or self.request.user.is_admin()):
+            return
+        course: m.Course = self.get_object()
+        if course.status != course.ACCEPTED:
+            self.permission_denied(request, _("You can't view this course"))
+        if course.state != course.RUNNING:
+            self.permission_denied(request, _("You can't view this course"))
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
     def get_serializer_class(self):
         if self.kwargs.get('pk', None):
             return app.CourseSerializer
@@ -63,11 +80,7 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
         return super().partial_update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
-        chapters = request.data.get('chapters')
-        data = request.data.copy()
-        data["chapters"] = chapters
-
-        serializer = app.CourseSerializer(data=data, context={'request': request})
+        serializer = self.get_serializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
@@ -76,7 +89,44 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
 
 class TrendingCourses(generics.ListAPIView):
     serializer_class = app.CourseSerializer
-    queryset = m.Course.objects.filter(trending=True)
+    queryset = m.Course.objects.filter(trending=True, state='running', status='app')
+
+
+class MostSoldCourses(generics.ListAPIView):
+    serializer_class = app.CourseListSerializer
+    queryset = m.Course.objects.annotate(students_count=Count('studentprogress')).order_by('-students_count',
+                                                                                           '-average_rating')
+
+
+COURSE_OWNERSHIP_ERROR = _("You Don't Own This Course!")
+
+
+class CourseStateUpdate(generics.UpdateAPIView):
+    serializer_class = app.CourseSerializer
+    queryset = m.Course.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        course = self.get_object()
+        if request.user.is_admin() or request.user.is_superuser:
+            if request.user.owns_course(course_id=course.pk):
+                course.state = course.PAUSED if course.state == course.RUNNING else course.RUNNING
+            else:
+                course.state = course.BLOCKED if course.state == course.RUNNING else course.RUNNING
+            course.save()
+            return response.Response(data=self.get_serializer(course).data, status=status.HTTP_200_OK)
+        elif request.user.owns_course(course_id=course.pk):
+            course.state = course.PAUSED if course.state == course.RUNNING else course.RUNNING
+            course.save()
+            return response.Response(data=self.get_serializer(course).data, status=status.HTTP_200_OK)
+        return response.Response(status=status.HTTP_403_FORBIDDEN, data={'message': COURSE_OWNERSHIP_ERROR})
+
+
+class GetStudentCourses(generics.ListAPIView):
+    serializer_class = app.CourseListSerializer
+    queryset = m.Course.objects.all().prefetch_related('studentprogress_set')
+
+    def get_queryset(self):
+        return self.queryset.filter(studentprogress__in=m.StudentProgress.objects.filter(user=self.request.user))
 
 
 class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
@@ -86,16 +136,20 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
 
     def check_permissions(self, request):
         super().check_permissions(request)
-        if not request.user.is_superuser and not request.user.owns_course(course_id=self.kwargs.get('pk')):
+        if not (request.user.is_superuser or request.user.is_admin()) and not request.user.owns_course(
+                course_id=self.kwargs.get('pk')):
             self.permission_denied(request, message="You don't have access")
 
     def retrieve(self, request, *args, **kwargs):
         query = m.StudentProgress.objects.filter()
         filt = {'course': self.kwargs.get('pk'), 'user': request.user}
-        obj = query.filter(**filt).get()
-        serializer = self.get_serializer_class()
-        data = serializer(obj)
-        return response.Response(data=data.data, status=status.HTTP_200_OK)
+        try:
+            obj = query.filter(**filt).get()
+            serializer = self.get_serializer_class()
+            data = serializer(obj)
+            return response.Response(data=data.data, status=status.HTTP_200_OK)
+        except m.StudentProgress.DoesNotExist:
+            return response.Response(status=status.HTTP_403_FORBIDDEN)
 
     def get(self, request, *args, **kwargs):
         if not kwargs.get('pk'):
@@ -133,6 +187,9 @@ class GetCourseStudents(generics.RetrieveAPIView):
     serializer_class = app.StudentProgressForRelatedStudents
     queryset = m.Course.objects.filter()
 
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
         serializer = self.get_serializer_class()(course.studentprogress_set.all(), many=True)
@@ -145,7 +202,7 @@ class GetRelatedCourses(generics.RetrieveAPIView):
 
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
-        courses_serialized = self.get_serializer_class()(user.courses.all(), many=True)
+        courses_serialized = self.get_serializer_class()(user.courses.all(), many=True, context={'request': request})
         return response.Response(courses_serialized.data)
 
 
@@ -190,10 +247,13 @@ class GetCertificate(generics.RetrieveAPIView):
         return response.Response(status=status.HTTP_403_FORBIDDEN)
 
 
-class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin):
+class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin):
     serializer_class = app.RatingSerializer
     queryset = m.Rating.objects.all()
     permission_classes = [IsAuthenticated, ]
+
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
     def list(self, request, *args, **kwargs):
         video = m.Video.objects.get(pk=self.kwargs.get('pk'))
@@ -204,13 +264,10 @@ class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin):
     def get_object(self):
         video = m.Video.objects.filter(pk=self.kwargs.get('pk')).first()
         query = m.Rating.objects.filter(video=video, student=self.request.user)
-        return query.first()
+        return query.last()
 
     def patch(self, request, *args, **kwargs):
         return self.partial_update(request, *args, **kwargs)
-
-    def create(self, request, *args, **kwargs):
-        return super().create(request, *args, **kwargs)
 
 
 class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixins.CreateModelMixin):

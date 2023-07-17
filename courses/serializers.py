@@ -5,9 +5,46 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 import authentication.serializers
+import courses.models
 from . import models as models
 
 UserModel = get_user_model()
+
+
+class LevelSerializer(serializers.ModelSerializer):
+    courses = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = "__all__"
+        depth = 0
+        model = models.Level
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    courses = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = "__all__"
+        depth = 0
+        model = models.Category
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
+
+
+class HashtagSerializer(serializers.ModelSerializer):
+    courses = serializers.SerializerMethodField()
+
+    class Meta:
+        fields = ['id', 'name', 'courses']
+        depth = 0
+        model = models.Hashtag
+
+    def get_courses(self, hashtag):
+        return hashtag.courses.count()
 
 
 class QuizzChoiceSerializer(serializers.ModelSerializer):
@@ -109,20 +146,31 @@ class CourseChapterSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     chapters = CourseChapterSerializer(many=True)
     owner = authentication.serializers.UserSerializer(read_only=True)
-    videos_count = serializers.ReadOnlyField()
+    videos_count = serializers.ReadOnlyField(required=False)
+    hashtags = HashtagSerializer(many=True, required=False)
+    course_level = LevelSerializer(required=False)
+    category = CategorySerializer(required=False)
     quizz = CourseQuizzSerializer(required=False)
+    students_count = serializers.SerializerMethodField()
 
     def create(self, validated_data):
         chapters_data = validated_data.pop('chapters', None)
         owner = self.context['request'].user
+        if owner.is_admin() and not owner.is_superuser:
+            owner = UserModel.get_size_admin()
+            validated_data['state'] = courses.models.Course.RUNNING
+            validated_data['status'] = courses.models.Course.ACCEPTED
+
         course = models.Course.objects.create(owner=owner, **validated_data)
         quizz_data = self.context['request'].data.get('quizz')
+
         if quizz_data:
             data = json.loads(quizz_data)
             data['course'] = course.pk
             serializer = CourseQuizzSerializer(data=data)
             serializer.is_valid(raise_exception=True)
             serializer.save()
+
         chapters = []
 
         def update_video(video):
@@ -138,7 +186,26 @@ class CourseSerializer(serializers.ModelSerializer):
 
             chapter.videos.set(videos)
             chapters.append(chapter)
+
         course.chapters.set(chapters)
+
+        hashtags = []
+        hashtags_data = None
+        hashtags_str = self.context['request'].data.get('hashtags')
+        if hashtags_str:
+            hashtags_data = json.loads(hashtags_str)
+        if hashtags_data:
+            for hashtag_data in hashtags_data.get('objs'):
+                data = HashtagSerializer(data=hashtag_data)
+                data.is_valid(raise_exception=True)
+                del hashtag_data['courses']
+                hashtags.append(models.Hashtag.objects.get(**hashtag_data))
+        if hashtags:
+            course.hashtags.set(hashtags)
+        if (level := self.context['request'].data.pop('course_level', None)) is not None:
+            course.course_level = models.Level.objects.get(pk=level[0])
+        if (category := self.context['request'].data.pop('category', None)) is not None:
+            course.category = models.Category.objects.get(pk=category[0])
         return course
 
     class Meta:
@@ -147,16 +214,23 @@ class CourseSerializer(serializers.ModelSerializer):
         read_only_fields = ('average_rating',)
         depth = 2
 
+    def get_students_count(self, instance: models.Course):
+        return models.StudentProgress.objects.filter(course=instance).count()
+
 
 class CourseListSerializer(serializers.ModelSerializer):
     owner = authentication.serializers.UserSerializer(read_only=True)
     videos_count = serializers.ReadOnlyField()
+    students_count = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Course
         fields = "__all__"
         read_only_fields = ('average_rating',)
         depth = 1
+
+    def get_students_count(self, instance: models.Course):
+        return models.StudentProgress.objects.filter(course=instance).count()
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -193,47 +267,11 @@ class StudentProgressForRelatedStudents(serializers.ModelSerializer):
         fields = ['user', 'last_video_index', 'last_chapter_index', ]
 
 
-class HashtagSerializer(serializers.ModelSerializer):
-    courses = serializers.SerializerMethodField()
-
-    class Meta:
-        fields = ['id', 'name', 'courses']
-        depth = 0
-        model = models.Hashtag
-
-    def get_courses(self, hashtag):
-        return hashtag.courses.count()
-
-
 class CreateHashtagSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id', 'name']
         depth = 0
         model = models.Hashtag
-
-
-class CategorySerializer(serializers.ModelSerializer):
-    courses = serializers.SerializerMethodField()
-
-    class Meta:
-        fields = "__all__"
-        depth = 0
-        model = models.Category
-
-    def get_courses(self, hashtag):
-        return hashtag.courses.count()
-
-
-class LevelSerializer(serializers.ModelSerializer):
-    courses = serializers.SerializerMethodField()
-
-    class Meta:
-        fields = "__all__"
-        depth = 0
-        model = models.Level
-
-    def get_courses(self, hashtag):
-        return hashtag.courses.count()
 
 
 class CreateLevelSerializer(serializers.ModelSerializer):
