@@ -9,11 +9,15 @@ from authentication.serializers import UserSerializer
 class MessageFileSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ['id', 'file']
+        read_only_fileds = ['id']
         model = models.MessageFile
 
+    def create(self, validated_data):
+        return models.MessageFile.objects.create(message=validated_data['message'], file=validated_data['file'])
 
-class MessageSerializer(serializers.ModelSerializer):
-    files = MessageFileSerializer(many=True, required=False)
+
+class MessageCreateSerializer(serializers.ModelSerializer):
+    files = serializers.ListField(required=False, child=serializers.FileField(), write_only=True)
     sender = serializers.PrimaryKeyRelatedField(read_only=True)
     course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
 
@@ -39,6 +43,17 @@ class MessageSerializer(serializers.ModelSerializer):
         )
 
         return message
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    files = MessageFileSerializer(required=False, many=True)
+    sender = serializers.PrimaryKeyRelatedField(read_only=True)
+    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
+
+    class Meta:
+        model = models.Message
+        fields = ['id', 'content', 'date', 'files', 'sender', 'course', 'recipient']
+        depth = 0
 
 
 class ConversationsSerializer(serializers.ModelSerializer):
