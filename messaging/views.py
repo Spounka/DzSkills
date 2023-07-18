@@ -51,7 +51,7 @@ class ConversationsListAPIView(generics.ListAPIView):
             self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
 
     def get_queryset(self):
-        return models.Conversation.objects.filter(Q(teacher=self.request.user) | Q(student=self.request.user)).all()
+        return models.Conversation.objects.filter(Q(recipient=self.request.user) | Q(student=self.request.user)).all()
 
 
 class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):

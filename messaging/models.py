@@ -9,12 +9,12 @@ UserModel = get_user_model()
 
 
 class Conversation(models.Model):
-    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE)
+    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, null=True, blank=True)
     student = models.ForeignKey(UserModel, related_name="conversation_student", on_delete=models.CASCADE)
-    teacher = models.ForeignKey(UserModel, related_name="conversation_teacher", on_delete=models.CASCADE)
+    recipient = models.ForeignKey(UserModel, related_name="conversation_recipient", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.course.title} {self.student.username} {self.teacher.username} conversation'
+        return f'{self.course.title} {self.student.username} {self.recipient.username} conversation'
 
 
 class Message(models.Model):

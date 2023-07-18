@@ -183,9 +183,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "file",
-                    models.FileField(
-                        upload_to=support.models.message_file_upload_folder
-                    ),
+                    models.FileField(),
                 ),
                 (
                     "message",
