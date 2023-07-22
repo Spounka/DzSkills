@@ -80,7 +80,7 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
         payment.save()
         receipt = receipt.increment()
         receipt.save()
-        progress = StudentProgress(user=payment.order.buyer, course=payment.order.course)
+        progress = StudentProgress(user=payment.order.buyer, course=payment.order.course, disabled=False)
         progress.save()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 

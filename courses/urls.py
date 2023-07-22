@@ -8,10 +8,14 @@ urlpatterns = [
     path('<int:pk>/', views.CourseAPI.as_view(), name="course"),
     path('<int:pk>/flip/', views.CourseStateUpdate.as_view(), name="course"),
     path('<int:pk>/students/', views.GetCourseStudents.as_view(), name="course"),
+    path('<int:pk>/students/remove/', views.RemoveStudentsFromCourseAPI.as_view(), name='remove-students'),
 
     path('categories/', views.GetCategoryAPI.as_view(), name='categories'),
     path('levels/', views.GetLevelsAPI.as_view(), name='levels'),
     path('hashtags/', views.GetHashtagsAPI.as_view(), name="hashtags"),
+    path('levels/<int:pk>/', views.EditDeleteLevel.as_view(), name='levels'),
+    path('hashtags/<int:pk>/', views.EditDeleteHashtag.as_view(), name="hashtags"),
+    path('hashtags/delete/', views.HashtagsDelete.as_view(), name="hashtags"),
 
     path('trending/', views.TrendingCourses.as_view(), name="trending-courses"),
 
@@ -24,6 +28,7 @@ urlpatterns = [
 
     path('owner/<int:pk>/related/', views.GetRelatedCourses.as_view(), name='related-courses'),
     path('student/related/', views.GetStudentCourses.as_view(), name='student-reltated-courses'),
+    path('student/<int:pk>/related/', views.GetStudentCourses.as_view(), name='student-reltated-courses'),
 
     path('<int:pk>/quizz/', views.QuizzRetrieveUpdateDestroyView.as_view(), name="quizz-list-create"),
 

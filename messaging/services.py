@@ -1,5 +1,7 @@
+from django.core.exceptions import ValidationError
 from django.db.models import Q
 
+from django.utils.translation import gettext_lazy as _
 from authentication.models import User
 from courses.models import Course
 from support.models import Ticket
@@ -30,16 +32,21 @@ class MessageService:
     @classmethod
     def create(cls, sender: User, recipient: User, content: str, admin: User = None,
                course: Course = None, ticket: Ticket = None, files=None):
+        if sender.is_admin():
+            sender = User.get_site_admin()
         if course:
             owner = course.owner
+            student = sender if course.owner.pk != sender.pk else recipient
         elif admin:
             owner = admin
+            student = sender if admin.pk != sender.pk else recipient
         elif ticket:
+            if ticket.state == ticket.CLOSED:
+                raise ValidationError(_("Ticket Closed"))
             owner = User.get_site_admin()
+            student = sender if User.get_site_admin().pk != sender.pk else recipient
         else:
             raise ValueError('Admin, Course and ticket are all None, aborting')
-
-        student = sender if course.owner.pk != sender.pk else recipient
 
         conversation = ConversationService.get_or_create(
             student=student,

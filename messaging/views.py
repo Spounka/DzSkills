@@ -2,11 +2,11 @@ import zipfile
 
 from django.contrib.auth import get_user_model
 from django.core.handlers.wsgi import WSGIRequest
-from django.db.models import Q
-from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
-from rest_framework import generics, pagination, permissions
-from rest_framework.permissions import IsAuthenticated
+from django.db.models import Q, OuterRef, Subquery
+from django.http import HttpResponse, HttpResponseBadRequest
+from rest_framework import generics, pagination, permissions, decorators
 from django.utils.translation import gettext_lazy as _
+from authentication.models import User
 
 import courses.models
 from . import models, serializers
@@ -17,7 +17,7 @@ COURSE_OWNERSHIP_ERROR = _("You Don't Own This Course!")
 
 # Create your views here.
 class MessagePagination(pagination.CursorPagination):
-    page_size = 20
+    page_size = 25
     ordering = '-date'
     cursor_query_param = 'c'
 
@@ -34,7 +34,7 @@ class MessagesListAPIView(generics.ListAPIView):
 
 class MessagesCreateAPIView(generics.CreateAPIView):
     serializer_class = serializers.MessageCreateSerializer
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = models.Message.objects.all()
 
     def create(self, request, *args, **kwargs):
@@ -43,23 +43,36 @@ class MessagesCreateAPIView(generics.CreateAPIView):
 
 class ConversationsListAPIView(generics.ListAPIView):
     serializer_class = serializers.ConversationsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
-    def check_permissions(self, request: HttpRequest):
-        super().check_permissions(request)
-        if not request.user.owns_course(course_id=self.kwargs.get('pk')):
-            self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        return models.Conversation.objects.filter(Q(recipient=self.request.user) | Q(student=self.request.user)).all()
+        latest_date_subquery = models.Message.objects.filter(conversation=OuterRef('pk')).order_by('-date').values(
+            'date')[:1]
+        if self.request.user.is_admin():
+            user = User.get_site_admin()
+        else:
+            user = self.request.user
+        conversations = models.Conversation.objects.filter(
+            Q(recipient=user) | Q(student=user))
+        if not user.is_admin():
+            conversations = conversations.filter(course__state=courses.models.Course.RUNNING,
+                                                 course__status=courses.models.Course.ACCEPTED)
+        return conversations.annotate(last_date=Subquery(latest_date_subquery)).order_by('-last_date',
+                                                                                         'ticket__date').all()
 
 
 class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.ConversationsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def check_permissions(self, request: WSGIRequest):
         super().check_permissions(request)
+        course = courses.models.Course.objects.get(pk=self.kwargs.get('pk'))
+        if User.get_site_admin().pk == course.owner.pk and request.user.is_admin():
+            return
         if not request.user.owns_course(course_id=self.kwargs.get('pk')):
             self.permission_denied(request, message=COURSE_OWNERSHIP_ERROR)
 
@@ -69,11 +82,14 @@ class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
     def get_queryset(self):
         student = self.request.user
         course = courses.models.Course.objects.get(pk=self.kwargs.get('pk'))
-        conversation = models.Conversation.objects.filter(student=student, course=course)
+        conversation = models.Conversation.objects.filter(
+            Q(student=student, course=course) | Q(recipient=student, course=course)
+        )
         query = conversation.all()
         return query
 
 
+@decorators.permission_classes([permissions.IsAuthenticated])
 def download_message_files(_, pk, *__, **___):
     message = models.Message.objects.get(pk=pk)
     files = message.files.all()

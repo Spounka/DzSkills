@@ -1,8 +1,14 @@
+from django.core import cache
 from django.db.models import Count
+from django.utils.cache import get_cache_key
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from rest_framework import generics, response, mixins, status, pagination
-from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
+from rest_framework import generics, response, mixins, status, pagination, permissions
+from rest_framework.decorators import api_view, permission_classes
 
+import course_buying.models
 from authentication.models import User
 from . import serializers as app, models as m
 
@@ -40,6 +46,9 @@ class CoursePagination(pagination.CursorPagination):
     cursor_query_param = 'c'
 
 
+COURSE_BLOCKED_ERROR = _('This Course is either paused or blocked')
+
+
 class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter().prefetch_related('hashtags', 'course_level', 'category')
@@ -66,6 +75,7 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
             return app.CourseSerializer
         return app.CourseListSerializer
 
+    # @method_decorator(cache_page(60 * 60 * 24, key_prefix='courses'))
     def get(self, request, *args, **kwargs):
         if self.kwargs.get('pk', None):
             return self.retrieve(request, *args, **kwargs)
@@ -91,11 +101,19 @@ class TrendingCourses(generics.ListAPIView):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter(trending=True, state='running', status='app')
 
+    # @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
 
 class MostSoldCourses(generics.ListAPIView):
     serializer_class = app.CourseListSerializer
     queryset = m.Course.objects.annotate(students_count=Count('studentprogress')).order_by('-students_count',
                                                                                            '-average_rating')
+
+    # @method_decorator(cache_page(60 * 60 * 24))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 COURSE_OWNERSHIP_ERROR = _("You Don't Own This Course!")
@@ -104,6 +122,7 @@ COURSE_OWNERSHIP_ERROR = _("You Don't Own This Course!")
 class CourseStateUpdate(generics.UpdateAPIView):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         course = self.get_object()
@@ -124,15 +143,25 @@ class CourseStateUpdate(generics.UpdateAPIView):
 class GetStudentCourses(generics.ListAPIView):
     serializer_class = app.CourseListSerializer
     queryset = m.Course.objects.all().prefetch_related('studentprogress_set')
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return self.queryset.filter(studentprogress__in=m.StudentProgress.objects.filter(user=self.request.user))
+        if self.kwargs.get('pk'):
+            return self.queryset.filter(
+                studentprogress__in=m.StudentProgress.objects.filter(user_id=self.kwargs.get('pk'), disabled=False))
+        return self.queryset.filter(
+            studentprogress__in=m.StudentProgress.objects.filter(user=self.request.user.pk, disabled=False))
+
+    # @method_decorator(vary_on_headers('Authorization'))
+    # @method_decorator(cache_page(60 * 30))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
     serializer_class = app.StudentProgressSerializer
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated]
 
     def check_permissions(self, request):
         super().check_permissions(request)
@@ -141,7 +170,7 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
             self.permission_denied(request, message="You don't have access")
 
     def retrieve(self, request, *args, **kwargs):
-        query = m.StudentProgress.objects.filter()
+        query = m.StudentProgress.objects.filter(disabled=False)
         filt = {'course': self.kwargs.get('pk'), 'user': request.user}
         try:
             obj = query.filter(**filt).get()
@@ -151,6 +180,7 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
         except m.StudentProgress.DoesNotExist:
             return response.Response(status=status.HTTP_403_FORBIDDEN)
 
+    # @method_decorator(cache_page(60 * 30))
     def get(self, request, *args, **kwargs):
         if not kwargs.get('pk'):
             return self.list(request, *args, **kwargs)
@@ -158,9 +188,9 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
 
 
 class UpdateProgressAPI(generics.UpdateAPIView):
-    queryset = m.StudentProgress.objects.filter()
+    queryset = m.StudentProgress.objects.filter(disabled=False)
     serializer_class = app.StudentProgressSerializer
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [permissions.IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         progression = self.get_queryset().all()
@@ -186,10 +216,12 @@ class UpdateProgressAPI(generics.UpdateAPIView):
 class GetCourseStudents(generics.RetrieveAPIView):
     serializer_class = app.StudentProgressForRelatedStudents
     queryset = m.Course.objects.filter()
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
 
+    # @method_decorator(cache_page(60 * 60 * 4))
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
         serializer = self.get_serializer_class()(course.studentprogress_set.all(), many=True)
@@ -199,16 +231,27 @@ class GetCourseStudents(generics.RetrieveAPIView):
 class GetRelatedCourses(generics.RetrieveAPIView):
     serializer_class = app.CourseSerializer
     queryset = User.objects.filter()
+    permission_classes = [permissions.IsAuthenticated]
 
+    # @method_decorator(cache_page(60 * 60 * 4))
+    # @method_decorator(vary_on_headers('Authorization'))
     def retrieve(self, request, *args, **kwargs):
         user = self.get_object()
-        courses_serialized = self.get_serializer_class()(user.courses.all(), many=True, context={'request': request})
+        if user.is_admin():
+            courses = User.get_site_admin().courses.all()
+        else:
+            courses = user.courses.all()
+        courses_serialized = self.get_serializer_class()(courses, many=True, context={'request': request})
         return response.Response(courses_serialized.data)
 
 
 class GetHashtagsAPI(generics.ListCreateAPIView):
     serializer_class = app.HashtagSerializer
     queryset = m.Hashtag.objects.all()
+
+    # @method_decorator(cache_page(60 * 60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         self.serializer_class = app.CreateHashtagSerializer
@@ -228,21 +271,44 @@ class GetCategoryAPI(generics.ListCreateAPIView):
     serializer_class = app.CategorySerializer
     queryset = m.Category.objects.annotate(course_count=Count('courses')).order_by('-course_count')
 
+    # @method_decorator(cache_page(60 * 60))
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+
+class EditDeleteHashtag(generics.UpdateAPIView, mixins.DestroyModelMixin):
+    serializer_class = app.HashtagSerializer
+    queryset = m.Hashtag.objects.all()
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class EditDeleteLevel(generics.UpdateAPIView, mixins.DestroyModelMixin):
+    serializer_class = app.LevelSerializer
+    queryset = m.Level.objects.all()
+
+
+class EditDeleteCategory(generics.UpdateAPIView, mixins.DestroyModelMixin):
+    ...
+
 
 class GetCertificate(generics.RetrieveAPIView):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter()
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticated]
 
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
-        progress = m.StudentProgress.objects.filter(user=request.user, course=course)
+        progress = m.StudentProgress.objects.filter(user=request.user, course=course, disabled=False)
         if progress.exists():
             certificate = m.Certificate.objects.filter(user=request.user).filter(course=course)
             if not certificate.exists():
                 certificate = m.Certificate()
                 certificate.generate(request.user, course)
-            serializer = app.CertificateSerializer(certificate.first())
+                serializer = app.CertificateSerializer(certificate)
+            else:
+                serializer = app.CertificateSerializer(certificate.first())
             return response.Response(data=serializer.data, status=status.HTTP_200_OK)
         return response.Response(status=status.HTTP_403_FORBIDDEN)
 
@@ -250,11 +316,12 @@ class GetCertificate(generics.RetrieveAPIView):
 class ListCreateRatings(generics.ListCreateAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin):
     serializer_class = app.RatingSerializer
     queryset = m.Rating.objects.all()
-    permission_classes = [IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
+    # @method_decorator(cache_page(60 * 60 * 2))
     def list(self, request, *args, **kwargs):
         video = m.Video.objects.get(pk=self.kwargs.get('pk'))
         ratings = video.ratings.all()
@@ -278,6 +345,7 @@ class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixi
         lookup_field = self.lookup_url_kwarg or self.lookup_field
         return m.CourseQuizz.objects.filter(course_id=self.kwargs[lookup_field]).first()
 
+    # @method_decorator(cache_page(60 * 60 * 8))
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
@@ -288,6 +356,7 @@ class QuizzRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView, mixi
 class CourseStatusUpdateAPI(generics.UpdateAPIView):
     queryset = m.Course.objects.all()
     serializer_class = app.CourseSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
     def put(self, request, *args, **kwargs):
         return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -306,3 +375,52 @@ class CourseStatusUpdateAPI(generics.UpdateAPIView):
             return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
         return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+
+
+class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
+    serializer_class = app.StudentProgressCourseDeleteSerializer
+    queryset = m.StudentProgress.objects.filter(disabled=False)
+
+    def update(self, request, *args, **kwargs):
+        try:
+            course = m.Course.objects.get(pk=self.kwargs.get('pk'))
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            for student_id in serializer.validated_data.get('students'):
+                try:
+                    progression = m.StudentProgress.objects.get(course=course.pk, user_id=student_id)
+                    progression.delete()
+                    order = course_buying.models.Order.objects.get(buyer_id=student_id, course_id=course.pk)
+                    order.payment.status = order.payment.REFUSED
+                    order.payment.save()
+                    order.save()
+                    return response.Response(status=status.HTTP_200_OK)
+                except (m.StudentProgress.DoesNotExist, course_buying.models.Order.DoesNotExist):
+                    continue
+
+        except m.Course.DoesNotExist:
+            return response.Response(status=status.HTTP_404_NOT_FOUND, data={'message': _('Couse does not exist')})
+        return response.Response(status=status.HTTP_404_NOT_FOUND, data={'message': _('Couse does not exist')})
+
+
+class HashtagsDelete(generics.UpdateAPIView):
+    serializer_class = app.HashtagsDeleteSerializer
+    queryset = m.Hashtag.objects.filter()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        for pk in serializer.validated_data.get('hashtags'):
+            try:
+                hashtag = self.queryset.get(pk=pk)
+                hashtag.delete()
+            except m.Hashtag.DoesNotExist:
+                continue
+        return response.Response(status=status.HTTP_200_OK)

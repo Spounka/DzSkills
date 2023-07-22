@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
     path('api/comments/', include('comment.urls'), name="comments"),
     path('api/conversations/', include('messaging.urls'), name="conversations"),
-    path('api/support/tickets/', include('support.urls')),
+    path('api/support/', include('support.urls')),
 
 ]
 

@@ -9,7 +9,7 @@ def is_arabic(text):
     return False
 
 
-def generate_certificate(name):
+def generate_certificate(name, course_name: str):
     RES = settings.BASE_DIR / 'certificate_generation' / 'resources'
 
     arabic_font = ImageFont.truetype(str(RES / 'bold-ar.woff'), 220)
@@ -26,6 +26,9 @@ def generate_certificate(name):
 
     text_length = drawing.textlength(name, font=font)
     drawing.text(((x_res - text_length) // 2, 1500), name, fill=(83, 83, 173), font=font)
+    drawing.text(((x_res - text_length) // 2, 1600 + drawing.textsize(course_name, font=font)[1]),
+                 f'Course: {course_name}',
+                 fill=(83, 83, 173), font=font)
 
     drawing.text((1300, 2500), str(datetime.date.today()), fill=(0, 0, 155), font=thin_font)
     return image.resize((x_res // 2, y_res // 2))

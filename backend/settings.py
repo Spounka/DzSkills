@@ -58,9 +58,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # DOCKER SETTINGS
-# CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
-# DOCKER_SETTINGS
+# DOCKER SETTINGS
 HOSTNAME = 'localhost'
 
 INSTALLED_APPS = [
@@ -201,8 +201,8 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     # Needed to log in by username in Django admin, regardless of `allauth`
-    'django.contrib.auth.backends.ModelBackend',
     'authentication.auths.AuthWithEmail',
+    'django.contrib.auth.backends.ModelBackend',
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',

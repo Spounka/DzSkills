@@ -215,7 +215,7 @@ class CourseSerializer(serializers.ModelSerializer):
         depth = 2
 
     def get_students_count(self, instance: models.Course):
-        return models.StudentProgress.objects.filter(course=instance).count()
+        return models.StudentProgress.objects.filter(course=instance, disabled=False).count()
 
 
 class CourseListSerializer(serializers.ModelSerializer):
@@ -230,7 +230,7 @@ class CourseListSerializer(serializers.ModelSerializer):
         depth = 1
 
     def get_students_count(self, instance: models.Course):
-        return models.StudentProgress.objects.filter(course=instance).count()
+        return models.StudentProgress.objects.filter(course=instance, disabled=False).count()
 
 
 class ChapterSerializer(serializers.ModelSerializer):
@@ -246,10 +246,19 @@ class ChapterSerializer(serializers.ModelSerializer):
 class StudentProgressSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
     course = serializers.PrimaryKeyRelatedField(queryset=models.Course.objects.filter())
+    percentage = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.StudentProgress
-        fields = ('pk', 'last_chapter_index', 'last_video_index', 'user', 'course')
+        fields = ('pk', 'last_chapter_index', 'last_video_index', 'finished', 'user', 'course', 'percentage')
+
+    def get_percentage(self, instance: models.StudentProgress):
+        if instance.finished:
+            return 100
+        chapters = instance.course.chapters.all()[:instance.last_chapter_index]
+        watched_videos = sum([chapter.videos.count() for chapter in chapters])
+        watched_videos += instance.last_video_index
+        return round(watched_videos / instance.course.videos_count * 100, 2)
 
     # TODO: Find out why this is here?
     # def create(self, validated_data):
@@ -303,3 +312,19 @@ class StudentAttemptSerializer(serializers.ModelSerializer):
     class Meta:
         fields = "__all__"
         depth = 1
+
+
+class StudentProgressCourseDeleteSerializer(serializers.Serializer):
+    students = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+
+
+class HashtagsDeleteSerializer(serializers.Serializer):
+    hashtags = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+
+
+class LevelsDeleteSerializer(serializers.Serializer):
+    levels = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+
+
+class CategoriesDeleteSerializer(serializers.Serializer):
+    categories = serializers.ListSerializer(child=serializers.IntegerField(), required=True)

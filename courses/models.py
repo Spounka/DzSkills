@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.cache import cache
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -222,12 +221,12 @@ class Video(models.Model):
 
 
 class StudentProgress(models.Model):
-    user: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    user: UserModel = models.ForeignKey(UserModel, on_delete=models.CASCADE, null=True)
     course: Course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    disabled = models.BooleanField(default=False)
 
     last_video_index = models.SmallIntegerField(default=0)
     last_chapter_index = models.SmallIntegerField(default=0)
-    progress_percentage = models.FloatField(default=0.0)
     finished = models.BooleanField(default=False)
 
     def __str__(self):
@@ -241,7 +240,7 @@ class Certificate(models.Model):
     certificate_image = models.ImageField(upload_to=certificate_upload_dir)
 
     def generate(self, user, course):
-        certificate_image = generate_certificate(f'{user.first_name} {user.last_name}')
+        certificate_image = generate_certificate(f'{user.first_name} {user.last_name}', course.title)
         certificate_image.save(f'/tmp/certificate-{user.username}.png')
         self.user = user
         self.course = course

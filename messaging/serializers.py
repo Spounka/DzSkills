@@ -1,9 +1,13 @@
 from rest_framework import serializers
 
 import courses.models
+import courses.serializers
 import support.models
 from . import models
 from .services import MessageService
+import authentication.serializers
+from authentication.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class MessageFileSerializer(serializers.ModelSerializer):
@@ -19,20 +23,28 @@ class MessageFileSerializer(serializers.ModelSerializer):
 class MessageCreateSerializer(serializers.ModelSerializer):
     files = serializers.ListField(required=False, child=serializers.FileField(), write_only=True)
     sender = serializers.PrimaryKeyRelatedField(read_only=True)
-    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
+    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True,
+                                                required=False)
     ticket = serializers.PrimaryKeyRelatedField(queryset=support.models.Ticket.objects.filter(), write_only=True,
                                                 required=False)
+    type = serializers.CharField(required=False, write_only=True)
 
     class Meta:
         model = models.Message
-        fields = ['id', 'content', 'date', 'files', 'sender', 'course', 'ticket', 'recipient']
+        fields = ['id', 'content', 'date', 'files', 'sender', 'course', 'ticket', 'recipient', 'type']
+
         depth = 0
 
     def create(self, validated_data):
         request = self.context.get('request')
-        sender = request.user
-        recipient = validated_data.get('recipient')
-        content = validated_data.get('content')
+        if validated_data.get('type', None):
+            sender = User.get_site_admin()
+            content = validated_data.get(_('Hello, How can I help you?'))
+            recipient = request.user
+        else:
+            sender = request.user
+            content = validated_data.get('content')
+            recipient = validated_data.get('recipient')
         files = validated_data.get('files')
         course = validated_data.get('course')
         ticket = validated_data.get('ticket')
@@ -64,10 +76,14 @@ class ConversationsSerializer(serializers.ModelSerializer):
     course = serializers.PrimaryKeyRelatedField(read_only=True)
     student = serializers.PrimaryKeyRelatedField(read_only=True)
     recipient = serializers.PrimaryKeyRelatedField(read_only=True)
-    last_message = serializers.SerializerMethodField()
+    last_message = serializers.SerializerMethodField(read_only=True)
+    course_title = serializers.SerializerMethodField(read_only=True)
+    course_owner = serializers.SerializerMethodField(read_only=True)
+    student_data = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        fields = ['id', 'course', 'student', 'recipient', 'last_message']
+        fields = ['id', 'course', 'student', 'recipient', 'ticket', 'last_message', 'course_title', 'course_owner',
+                  'student_data']
         depth = 1
         model = models.Conversation
 
@@ -76,3 +92,18 @@ class ConversationsSerializer(serializers.ModelSerializer):
         if last_message:
             return MessageSerializer(last_message).data
         return None
+
+    def get_course_title(self, instance):
+        if instance.course:
+            return courses.serializers.CourseListSerializer(instance.course).data.get('title')
+        return ''
+
+    def get_course_owner(self, instance):
+        if instance.course:
+            return courses.serializers.CourseListSerializer(instance.course).data.get('owner')
+        elif hasattr(instance, 'ticket'):
+            return authentication.serializers.UserSerializer(User.get_site_admin()).data
+        return ''
+
+    def get_student_data(self, instance):
+        return authentication.serializers.UserSerializer(instance.student).data

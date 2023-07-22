@@ -9,8 +9,8 @@ UserModel = get_user_model()
 
 
 class Ticket(models.Model):
-    OPEN = 'o'
-    CLOSED = 'c'
+    OPEN = 'open'
+    CLOSED = 'closed'
 
     STATES = (
         (OPEN, _('Open')),
@@ -19,3 +19,6 @@ class Ticket(models.Model):
     state = models.CharField(choices=STATES, default=OPEN, max_length=30)
     date = models.DateTimeField(default=timezone.now)
     conversation = models.OneToOneField(messaging.models.Conversation, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return f'Ticket {self.pk} - {self.date} - {self.state.__str__()}'

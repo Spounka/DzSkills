@@ -14,7 +14,11 @@ class Conversation(models.Model):
     recipient = models.ForeignKey(UserModel, related_name="conversation_recipient", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.course.title} {self.student.username} {self.recipient.username} conversation'
+        if self.course:
+            return f'{self.course.title} {self.student.username} {self.recipient.username} conversation'
+        elif hasattr(self, 'ticket') and self.ticket:
+            return f'Ticket Conversation {self.student.username} {self.ticket.date}'
+        return 'Null Conversation'
 
 
 class Message(models.Model):
@@ -30,7 +34,9 @@ class Message(models.Model):
 
 
 def message_file_upload_folder(instance: 'MessageFile', filename: str):
-    return f'messages/{instance.message.sender.username}/{instance.message.conversation.course.title}/{filename}'
+    if instance.message.conversation.course:
+        return f'messages/{instance.message.sender.username}/{instance.message.conversation.course.title}/{filename}'
+    return f'messages/{instance.message.sender.username}/{instance.message.conversation.ticket.__str__()}/{filename}'
 
 
 class MessageFile(models.Model):
