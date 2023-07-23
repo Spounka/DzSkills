@@ -17,6 +17,7 @@ class User(AbstractUser):
     speciality = models.CharField(max_length=300, default="", verbose_name=_('Speciality'))
 
     average_rating = models.FloatField(default=0.0, verbose_name=_('Average Rating'))
+    is_favorite = models.BooleanField(default=False, verbose_name=_('Favorite'))
 
     def update_average_rating(self) -> None:
         ratings = [course.average_rating for course in self.courses.all()]

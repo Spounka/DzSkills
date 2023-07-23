@@ -90,13 +90,14 @@ class UserSerializer(serializers.ModelSerializer):
     email_valid = serializers.SerializerMethodField(read_only=True)
 
     profile_image = serializers.SerializerMethodField(read_only=True)
+    is_favorite = serializers.BooleanField(required=False)
 
     class Meta:
         model = UserModel
         depth = 1
         fields = ('pk', 'username', 'email', 'email_valid', 'first_name', 'last_name',
-                  'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'average_rating',
-                  'groups', 'socialaccount_set')
+                  'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'is_favorite',
+                  'average_rating', 'groups', 'socialaccount_set',)
         read_only_fields = ['average_rating']
 
     def get_profile_image(self, user: UserModel):

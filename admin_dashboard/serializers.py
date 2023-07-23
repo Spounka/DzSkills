@@ -37,7 +37,12 @@ class AdminConfigSerializer(serializers.ModelSerializer):
 class ReceiptSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Receipt
+        read_only_fields = ['count', 'is_current']
         fields = "__all__"
+
+
+class ReceiptsListDeleteSerializer(serializers.Serializer):
+    receipts = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
 
 
 class CreateReceiptSerializer(serializers.ModelSerializer):

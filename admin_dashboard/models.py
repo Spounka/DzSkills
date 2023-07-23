@@ -32,12 +32,8 @@ class CertificateTemplate(models.Model):
 
 
 class LandingPageImage(models.Model):
-    image = models.FileField()
+    image = models.FileField(upload_to=landing_page_upload_dir)
     config = models.ForeignKey('AdminConfig', on_delete=models.CASCADE, null=True, related_name='images')
-
-
-class ChosenTeacher(models.Model):
-    ...
 
 
 class Comments(models.Model):

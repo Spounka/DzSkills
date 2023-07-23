@@ -15,7 +15,9 @@ urlpatterns = [
     path('hashtags/', views.GetHashtagsAPI.as_view(), name="hashtags"),
     path('levels/<int:pk>/', views.EditDeleteLevel.as_view(), name='levels'),
     path('hashtags/<int:pk>/', views.EditDeleteHashtag.as_view(), name="hashtags"),
+    path('categories/<int:pk>/', views.EditDeleteCategory.as_view(), name='categories'),
     path('hashtags/delete/', views.HashtagsDelete.as_view(), name="hashtags"),
+    path('levels/delete/', views.LevelsDelete.as_view(), name='levels'),
 
     path('trending/', views.TrendingCourses.as_view(), name="trending-courses"),
 

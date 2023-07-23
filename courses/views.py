@@ -288,9 +288,19 @@ class EditDeleteLevel(generics.UpdateAPIView, mixins.DestroyModelMixin):
     serializer_class = app.LevelSerializer
     queryset = m.Level.objects.all()
 
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
 
 class EditDeleteCategory(generics.UpdateAPIView, mixins.DestroyModelMixin):
-    ...
+    serializer_class = app.CategorySerializer
+    queryset = m.Category.objects.all()
+
+    def update(self, request, *args, **kwargs):
+        return super().update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class GetCertificate(generics.RetrieveAPIView):
@@ -422,5 +432,28 @@ class HashtagsDelete(generics.UpdateAPIView):
                 hashtag = self.queryset.get(pk=pk)
                 hashtag.delete()
             except m.Hashtag.DoesNotExist:
+                continue
+        return response.Response(status=status.HTTP_200_OK)
+
+
+class LevelsDelete(generics.UpdateAPIView):
+    serializer_class = app.LevelsDeleteSerializer
+    queryset = m.Level.objects.filter()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        return response.Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        for pk in serializer.validated_data.get('levels'):
+            try:
+                level = self.queryset.get(pk=pk)
+                level.delete()
+            except m.Level.DoesNotExist:
                 continue
         return response.Response(status=status.HTTP_200_OK)

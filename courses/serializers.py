@@ -24,7 +24,7 @@ class LevelSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    courses = serializers.SerializerMethodField()
+    courses = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         fields = "__all__"
@@ -33,6 +33,10 @@ class CategorySerializer(serializers.ModelSerializer):
 
     def get_courses(self, hashtag):
         return hashtag.courses.count()
+
+    def update(self, instance, validated_data):
+        validated_data['image'] = validated_data.get('image') or instance.image
+        return super().update(instance, validated_data)
 
 
 class HashtagSerializer(serializers.ModelSerializer):
