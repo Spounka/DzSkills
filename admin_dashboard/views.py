@@ -72,5 +72,28 @@ class RetrieveUpdateAdminSettingsView(generics.RetrieveUpdateAPIView):
     queryset = models.AdminConfig.objects.filter().prefetch_related('images')
     serializer_class = serializers.AdminConfigSerializer
 
+    def get_serializer_class(self):
+        if self.request.method in ['GET', 'OPTIONS']:
+            return serializers.AdminConfigSerializer
+        return serializers.AdminConfigUpdateSerializer
+
+    def patch(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)
+
     def get_object(self):
+        models.AdminConfig.load()
         return self.queryset.first()
+
+
+class CreateListRatingsAPI(generics.ListCreateAPIView):
+    serializer_class = serializers.LandingPageRatingSerializer
+    queryset = models.LandingPageRating.objects.all()
+
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class UpdateDeleteRatingAPI(generics.UpdateAPIView, mixins.DestroyModelMixin):
+    serializer_class = serializers.LandingPageRatingSerializer
+    queryset = models.LandingPageRating.objects.all()

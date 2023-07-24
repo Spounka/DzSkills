@@ -2,6 +2,8 @@ from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 import datetime
 
+from admin_dashboard.models import AdminConfig
+
 
 def is_arabic(text):
     if '\u0600' <= text[0] <= '\u06FF':
@@ -16,7 +18,11 @@ def generate_certificate(name, course_name: str):
     latin_font = ImageFont.truetype(str(RES / 'bold.ttf'), 220)
     thin_font = ImageFont.truetype(str(RES / 'thin.ttf'), 72)
 
-    image = Image.open(str(RES / 'vide.png'))
+    if AdminConfig.load().certificate_template.template is None:
+        image = Image.open(str(RES / 'vide.png'))
+    else:
+        image = Image.open(AdminConfig.load().certificate_template.template.path)
+
     x_res, y_res = image.size
 
     drawing = ImageDraw.Draw(image)

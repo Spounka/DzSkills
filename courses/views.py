@@ -71,7 +71,7 @@ class CourseAPI(generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.Up
         return context
 
     def get_serializer_class(self):
-        if self.kwargs.get('pk', None):
+        if self.kwargs.get('pk', None) or self.request.method not in ['GET', 'OPTIONS']:
             return app.CourseSerializer
         return app.CourseListSerializer
 

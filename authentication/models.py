@@ -19,6 +19,11 @@ class User(AbstractUser):
     average_rating = models.FloatField(default=0.0, verbose_name=_('Average Rating'))
     is_favorite = models.BooleanField(default=False, verbose_name=_('Favorite'))
 
+    instagram_link = models.CharField(max_length=300, default="", blank=True, null=True)
+    facebook_link = models.CharField(max_length=300, default="", blank=True, null=True)
+    twitter_link = models.CharField(max_length=300, default="", blank=True, null=True)
+    linkedin_link = models.CharField(max_length=300, default="", blank=True, null=True)
+
     def update_average_rating(self) -> None:
         ratings = [course.average_rating for course in self.courses.all()]
         if len(ratings) > 0:

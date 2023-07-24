@@ -161,7 +161,7 @@ class CourseSerializer(serializers.ModelSerializer):
         chapters_data = validated_data.pop('chapters', None)
         owner = self.context['request'].user
         if owner.is_admin() and not owner.is_superuser:
-            owner = UserModel.get_size_admin()
+            owner = UserModel.get_site_admin()
             validated_data['state'] = courses.models.Course.RUNNING
             validated_data['status'] = courses.models.Course.ACCEPTED
 

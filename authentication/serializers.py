@@ -96,8 +96,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = UserModel
         depth = 1
         fields = ('pk', 'username', 'email', 'email_valid', 'first_name', 'last_name',
-                  'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'is_favorite',
-                  'average_rating', 'groups', 'socialaccount_set',)
+                  'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'instagram_link',
+                  'facebook_link', 'twitter_link', 'linkedin_link', 'is_favorite', 'average_rating', 'groups',)
         read_only_fields = ['average_rating']
 
     def get_profile_image(self, user: UserModel):

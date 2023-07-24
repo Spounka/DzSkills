@@ -36,8 +36,15 @@ class LandingPageImage(models.Model):
     config = models.ForeignKey('AdminConfig', on_delete=models.CASCADE, null=True, related_name='images')
 
 
-class Comments(models.Model):
-    ...
+def get_rating_image_upload_dir(instance, filename):
+    return f'ratings/{instance.full_name}/{filename}'
+
+
+class LandingPageRating(models.Model):
+    full_name = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=300, default='')
+    rating = models.PositiveSmallIntegerField(default=5)
+    image = models.ImageField(upload_to=get_rating_image_upload_dir, null=True)
 
 
 class Receipt(models.Model):
@@ -94,4 +101,9 @@ class AdminConfig(models.Model):
         try:
             return cls.objects.get()
         except cls.DoesNotExist:
-            return cls().save()
+            instance = cls()
+            instance.save()
+            instance.images.create()
+            instance.images.create()
+            instance.images.create()
+            return instance.save()
