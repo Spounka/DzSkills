@@ -1,9 +1,13 @@
 from allauth.account.models import EmailAddress
+from dj_rest_auth.serializers import PasswordResetSerializer
+from django.conf import settings
+from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+import authentication.forms
 from .models import User as UserModel
 
 try:
@@ -71,12 +75,21 @@ class RegistrationSerializer(serializers.Serializer):
                 adapter.clean_password(self.cleaned_data['password1'], user=user)
             except DjangoValidationError as exc:
                 raise serializers.ValidationError(
-                    detail=serializers.as_s60erializer_error(exc)
+                    detail=serializers.as_serializer_error(exc)
                 )
         user.save()
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
         return user
+
+
+class UserPasswordResetSerializer(PasswordResetSerializer):
+    @property
+    def password_reset_form_class(self):
+        if 'allauth' in settings.INSTALLED_APPS:
+            return authentication.forms.PasswordResetForm
+        else:
+            return PasswordResetForm
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -89,7 +102,7 @@ class UserSerializer(serializers.ModelSerializer):
     groups = GroupSerializer(many=True, read_only=True)
     email_valid = serializers.SerializerMethodField(read_only=True)
 
-    profile_image = serializers.SerializerMethodField(read_only=True)
+    # profile_image = serializers.SerializerMethodField(read_only=True)
     is_favorite = serializers.BooleanField(required=False)
 
     class Meta:
@@ -100,10 +113,11 @@ class UserSerializer(serializers.ModelSerializer):
                   'facebook_link', 'twitter_link', 'linkedin_link', 'is_favorite', 'average_rating', 'groups',)
         read_only_fields = ['average_rating']
 
-    def get_profile_image(self, user: UserModel):
-        if user.is_admin():
-            return f'http://localhost:8000{user.profile_image.url}'
-        return f'https://picsum.photos/1024/1024?random={user.pk}'
+    #
+    # def get_profile_image(self, user: UserModel):
+    #     if user.is_admin():
+    #         return f'http://localhost:8000{user.profile_image.url}'
+    #     return f'https://picsum.photos/1024/1024?random={user.pk}'
 
     def get_email_valid(self, user):
         email = EmailAddress.objects.filter(email=user.email, verified=True)
