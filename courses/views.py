@@ -398,7 +398,7 @@ class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
             serializer.is_valid(raise_exception=True)
             for student_id in serializer.validated_data.get('students'):
                 try:
-                    progression = m.StudentProgress.objects.get(course=course.pk, user_id=student_id)
+                    progression = m.StudentProgress.objects.filter(course=course.pk, user_id=student_id)
                     progression.delete()
                     order = course_buying.models.Order.objects.get(buyer_id=student_id, course_id=course.pk)
                     order.payment.status = order.payment.REFUSED
@@ -457,3 +457,16 @@ class LevelsDelete(generics.UpdateAPIView):
             except m.Level.DoesNotExist:
                 continue
         return response.Response(status=status.HTTP_200_OK)
+
+
+@api_view(['PATCH'])
+@permission_classes([permissions.IsAuthenticated])
+def make_course_favourite(request, *args, **kwargs):
+    try:
+        course = m.Course.objects.get(pk=kwargs.get('pk', None))
+        course.trending = not course.trending
+        course.save()
+        return response.Response(status=status.HTTP_200_OK, data=app.CourseSerializer(course).data)
+    except m.Course.DoesNotExist:
+        return response.Response(status=status.HTTP_400_BAD_REQUEST,
+                                 data={'code': 'not_found', 'message': _('Course not found')})
