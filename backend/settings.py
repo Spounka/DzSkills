@@ -87,6 +87,7 @@ INSTALLED_APPS = [
     # My Apps
     'authentication',
     'admin_dashboard',
+    'ban',
 
     'student',
     'courses',
