@@ -147,6 +147,7 @@ SOCIALACCOUNT_ADAPTER = 'authentication.adapter.SocialAdapter'
 
 # DOCKER_SETTINGS
 EMAIL_ACTIVATION_URL = '/register/verify-email/'
+PASSWOR_RESET_URL = '/password/reset/'
 
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 REST_AUTH_REGISTER_VERIFICATION_ENABLED = True
@@ -155,14 +156,24 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_STORE_TOKENS = True
 
-EMAIL_HOST = 'smtp.titan.email'
-EMAIL_HOST_USER = 'no-reply@dzskills.com'
-EMAIL_HOST_PASSWORD = 'DZskills2023@'
+# EMAIL_HOST = 'smtp.titan.email'
+# EMAIL_HOST_USER = 'no-reply@dzskills.com'
+# EMAIL_HOST_PASSWORD = 'DZskills2023@'
+# EMAIL_PORT = 465
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_SSL = True
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'boudaakkarnazih@gmail.com'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASS', '')
 EMAIL_PORT = 465
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_SSL = True
 
-ADMIN_EMAIL = "no-reply@dzskills.com"
+# ADMIN_EMAIL = "no-reply@dzskills.com"
+# SUPPORT_EMAIL = "no-reply@dzskills.com"
+
+ADMIN_EMAIL = "boudaakkarnazih@gmail.com"
 SUPPORT_EMAIL = "no-reply@dzskills.com"
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
@@ -182,6 +193,7 @@ REST_AUTH = {
     'JWT_AUTH_COOKIE': 'dz-skills-token',
     'JWT_AUTH_REFRESH_COOKIE': 'dz-skills-refresh',
     'JWT_AUTH_HTTPONLY': False,
+    'PASSWORD_RESET_SERIALIZER': 'authentication.serializers.UserPasswordResetSerializer',
 }
 
 REST_FRAMEWORK = {
@@ -199,12 +211,13 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to log in by username in Django admin, regardless of `allauth`
-    'authentication.auths.AuthWithEmail',
     'django.contrib.auth.backends.ModelBackend',
 
     # `allauth` specific authentication methods, such as login by e-mail
     'allauth.account.auth_backends.AuthenticationBackend',
+
+    # Needed to log in by username in Django admin, regardless of `allauth`
+    'authentication.auths.AuthWithEmail',
 ]
 
 # DOCKER SETTINGS
