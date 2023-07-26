@@ -27,8 +27,11 @@ class MessagesListAPIView(generics.ListAPIView):
     pagination_class = MessagePagination
     permission_classes = [permissions.IsAuthenticated]
 
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
     def get_queryset(self):
-        conversation = models.Conversation.objects.get(pk=self.kwargs['pk'])
+        conversation = models.Conversation.objects.filter(pk=self.kwargs['pk']).first()
         return conversation.messages.all()
 
 
@@ -58,8 +61,9 @@ class ConversationsListAPIView(generics.ListAPIView):
         conversations = models.Conversation.objects.filter(
             Q(recipient=user) | Q(student=user))
         if not user.is_admin():
-            conversations = conversations.filter(course__state=courses.models.Course.RUNNING,
-                                                 course__status=courses.models.Course.ACCEPTED)
+            conversations = conversations.filter(Q(course__state=courses.models.Course.RUNNING,
+                                                   course__status=courses.models.Course.ACCEPTED) |
+                                                 Q(ticket__isnull=False))
         return conversations.annotate(last_date=Subquery(latest_date_subquery)).order_by('-last_date',
                                                                                          'ticket__date').all()
 
