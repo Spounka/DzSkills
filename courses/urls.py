@@ -6,8 +6,9 @@ urlpatterns = [
     path('', views.CourseAPI.as_view(), name="courses-list"),
     path('most-sold/', views.MostSoldCourses.as_view(), name="most-sold-courses"),
     path('<int:pk>/', views.CourseAPI.as_view(), name="course"),
-    path('<int:pk>/flip/', views.CourseStateUpdate.as_view(), name="course"),
-    path('<int:pk>/students/', views.GetCourseStudents.as_view(), name="course"),
+    path('<int:pk>/flip-trending/', views.make_course_favourite, name="course-favourite"),
+    path('<int:pk>/flip/', views.CourseStateUpdate.as_view(), name="course-flip-state"),
+    path('<int:pk>/students/', views.GetCourseStudents.as_view(), name="course-students"),
     path('<int:pk>/students/remove/', views.RemoveStudentsFromCourseAPI.as_view(), name='remove-students'),
 
     path('categories/', views.GetCategoryAPI.as_view(), name='categories'),

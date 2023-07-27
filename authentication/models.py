@@ -2,6 +2,7 @@ from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 
@@ -43,6 +44,13 @@ class User(AbstractUser):
         if query.exists() and query.filter(payment__status='a'):
             return True
         return False
+
+    def is_banned(self):
+        bans = self.bans.filter(duration__gt=timezone.now())
+        return bans.exists()
+
+    def get_last_ban(self):
+        return self.bans.filter(duration__gt=timezone.now()).first()
 
     @classmethod
     def get_site_admin(cls) -> 'User':

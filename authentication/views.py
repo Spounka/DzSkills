@@ -5,6 +5,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from dj_rest_auth.registration.views import SocialLoginView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group
+from django.shortcuts import redirect
 from rest_framework import response, generics, permissions, status, views
 from rest_framework.decorators import api_view, permission_classes
 from django.utils.translation import gettext_lazy as _
@@ -53,7 +54,8 @@ class UpdatePassword(views.APIView):
     # noinspection PyMethodMayBeStatic
     def update(self, request, *args, **kwargs):
         instance = request.user
-        validated_data = {'old_password': request.data.get('old_password'), 'password1': request.data.get('password1'),
+        validated_data = {'old_password': request.data.get('old_password', ''),
+                          'password1': request.data.get('password1'),
                           'password2': request.data.get('password2')}
         if not instance.check_password(validated_data['old_password']):
             make_password(password=validated_data['old_password'])
@@ -161,3 +163,9 @@ class GetDzSkillsAdmin(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.get_queryset().filter(pk=models.User.get_site_admin().pk).first()
+
+
+def password_reset_view(request, *args, **kwargs):
+    return redirect(f'/password-forgotten/confirm/?u={kwargs.get("uidb64")}&t={kwargs.get("token")}', )
+    # return redirect('/password-forgotten/', kwargs={'u': kwargs.get('uidb64'), 't': kwargs.get('token')},
+    #                 permanent=True)
