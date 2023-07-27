@@ -1,5 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from rest_framework.authentication import TokenAuthentication, BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+from django.utils.translation import gettext_lazy as _
 
 UserModel = get_user_model()
 
@@ -19,6 +22,3 @@ class AuthWithEmail(ModelBackend):
         else:
             if user.check_password(password) and self.user_can_authenticate(user):
                 return user
-
-    # def user_can_authenticate(self, user):
-    #     ...

@@ -101,6 +101,8 @@ class GroupSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     groups = GroupSerializer(many=True, read_only=True)
     email_valid = serializers.SerializerMethodField(read_only=True)
+    is_banned = serializers.SerializerMethodField(read_only=True)
+    last_ban = serializers.SerializerMethodField(read_only=True)
 
     # profile_image = serializers.SerializerMethodField(read_only=True)
     is_favorite = serializers.BooleanField(required=False)
@@ -110,7 +112,8 @@ class UserSerializer(serializers.ModelSerializer):
         depth = 1
         fields = ('pk', 'username', 'email', 'email_valid', 'first_name', 'last_name',
                   'date_joined', 'profile_image', 'description', 'speciality', 'nationality', 'instagram_link',
-                  'facebook_link', 'twitter_link', 'linkedin_link', 'is_favorite', 'average_rating', 'groups',)
+                  'facebook_link', 'twitter_link', 'linkedin_link', 'is_favorite', 'average_rating', 'is_banned',
+                  'last_ban', 'groups',)
         read_only_fields = ['average_rating']
 
     #
@@ -122,6 +125,14 @@ class UserSerializer(serializers.ModelSerializer):
     def get_email_valid(self, user):
         email = EmailAddress.objects.filter(email=user.email, verified=True)
         return email.exists()
+
+    def get_is_banned(self, user):
+        return user.is_banned()
+
+    def get_last_ban(self, user):
+        if not user.is_banned():
+            return None
+        return user.get_last_ban().duration
 
 
 class UsernamesSerializer(serializers.ModelSerializer):

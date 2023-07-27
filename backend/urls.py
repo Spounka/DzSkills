@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/comments/', include('comment.urls'), name="comments"),
     path('api/conversations/', include('messaging.urls'), name="conversations"),
     path('api/support/', include('support.urls')),
+    path('api/ban/', include('ban.urls')),
 
 ]
 
