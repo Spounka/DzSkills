@@ -17,7 +17,7 @@ def landing_page_upload_dir(_: "LandingPageImage", filename: str) -> str:
 
 
 def validate_color(value):
-    expression = r"^#[0-9a-fA-F]{6}([0-9a-f-A-F]{2}|[0-9a-f-A-F]{4}){0,1}$"
+    expression = r"^#[0-9a-fA-F]{6}([0-9a-f-A-F]{2}|[0-9a-f-A-F]{4})?$"
     if not re.match(expression, value):
         raise ValidationError("Color invalid")
 
@@ -32,16 +32,19 @@ class CertificateTemplate(models.Model):
 
 
 class LandingPageImage(models.Model):
-    image = models.FileField()
+    image = models.FileField(upload_to=landing_page_upload_dir)
     config = models.ForeignKey('AdminConfig', on_delete=models.CASCADE, null=True, related_name='images')
 
 
-class ChosenTeacher(models.Model):
-    ...
+def get_rating_image_upload_dir(instance, filename):
+    return f'ratings/{instance.full_name}/{filename}'
 
 
-class Comments(models.Model):
-    ...
+class LandingPageRating(models.Model):
+    full_name = models.CharField(max_length=100, default='')
+    description = models.CharField(max_length=300, default='')
+    rating = models.PositiveSmallIntegerField(default=5)
+    image = models.ImageField(upload_to=get_rating_image_upload_dir, null=True)
 
 
 class Receipt(models.Model):
@@ -98,4 +101,9 @@ class AdminConfig(models.Model):
         try:
             return cls.objects.get()
         except cls.DoesNotExist:
-            return cls().save()
+            instance = cls()
+            instance.save()
+            instance.images.create()
+            instance.images.create()
+            instance.images.create()
+            return instance.save()

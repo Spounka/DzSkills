@@ -87,8 +87,6 @@ def create_fake_chapters(amount: int = 2, course: models.Course = None) -> list[
             "description": fake.text(max_nb_chars=300),
         }
         chapter = models.Chapter(course=course, **kwargs)
-        thumbnail_path, thumbnail_name = create_random_file()
-        chapter.thumbnail.save(name=thumbnail_name, content=open(thumbnail_path, 'rb'))
         chapter.save()
         chapter.videos.set(create_fake_videos(chapter=chapter))
         chapters.append(chapter)

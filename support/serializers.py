@@ -1,77 +1,51 @@
 from rest_framework import serializers
 
-from .services import MessageService
+from .services import TicketService
 from . import models
-
-from authentication.serializers import UserSerializer
-
-
-class TicketSerializer(serializers.ModelSerializer):
-    # reported = UserSerializer()
-
-    class Meta:
-        model = models.Report
-        read_only_fields = ('reporter',)
-        exclude = ['report_date', ]
-        extra_kwargs = {
-            'reported': {'required': False}
-        }
-        depth = 0
-
-    def create(self, validated_data):
-        validated_data['reporter'] = self.context['request'].user
-        return super().create(validated_data)
+import messaging.serializers
+import messaging.models
+import courses.models
+import authentication.serializers
 
 
-class MessageFileSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = ['id', 'file']
-        model = models.MessageFile
-
-
-class MessageSerializer(serializers.ModelSerializer):
-    files = MessageFileSerializer(many=True, required=False)
-    sender = serializers.PrimaryKeyRelatedField(read_only=True)
-
-    # course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
+class CourseSerializer(serializers.ModelSerializer):
+    owner = authentication.serializers.UserSerializer(read_only=True)
 
     class Meta:
-        model = models.Message
-        fields = ['id', 'content', 'date', 'files', 'sender', 'recipient']
-        depth = 0
-
-    def create(self, validated_data):
-        request = self.context.get('request')
-        sender = request.user
-        recipient = validated_data.get('recipient')
-        content = validated_data.get('content')
-        files = validated_data.get('files')
-        course = validated_data.get('course')
-
-        message = MessageService.create(
-            sender=sender,
-            recipient=recipient,
-            content=content,
-            files=files,
-            course=course,
-        )
-
-        return message
+        model = courses.models.Course
+        fields = ['id', 'owner', 'title']
+        read_only_fields = ('average_rating',)
+        depth = 1
 
 
-class ConversationsSerializer(serializers.ModelSerializer):
-    course = serializers.PrimaryKeyRelatedField(read_only=True)
+class ConversationSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(read_only=True)
     student = serializers.PrimaryKeyRelatedField(read_only=True)
-    teacher = serializers.PrimaryKeyRelatedField(read_only=True)
+    recipient = serializers.PrimaryKeyRelatedField(read_only=True)
     last_message = serializers.SerializerMethodField()
 
     class Meta:
-        fields = ['id', 'course', 'student', 'teacher', 'last_message']
+        fields = ['id', 'course', 'student', 'recipient', 'ticket', 'last_message']
         depth = 1
-        model = models.Conversation
+        model = messaging.models.Conversation
 
     def get_last_message(self, conversation):
         last_message = conversation.messages.last()
         if last_message:
-            return MessageSerializer(last_message).data
+            return messaging.serializers.MessageSerializer(last_message).data
         return None
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    conversation = ConversationSerializer(required=False)
+    state = serializers.CharField(required=False)
+
+    class Meta:
+        model = models.Ticket
+        fields = "__all__"
+        depth = 1
+
+    def create(self, validated_data):
+        validated_data['sender'] = self.context.get('request').user
+        validated_data.pop('date', None)
+        return TicketService.get_or_create(**validated_data)

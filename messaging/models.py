@@ -1,17 +1,24 @@
 import datetime
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils import timezone
 
-
 # Create your models here.
+UserModel = get_user_model()
+
+
 class Conversation(models.Model):
-    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE)
-    student = models.ForeignKey('authentication.User', related_name="conversation_student", on_delete=models.CASCADE)
-    teacher = models.ForeignKey('authentication.User', related_name="conversation_teacher", on_delete=models.CASCADE)
+    course = models.ForeignKey('courses.Course', on_delete=models.CASCADE, null=True, blank=True)
+    student = models.ForeignKey(UserModel, related_name="conversation_student", on_delete=models.CASCADE)
+    recipient = models.ForeignKey(UserModel, related_name="conversation_recipient", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.course.title} {self.student.username} {self.teacher.username} conversation'
+        if self.course:
+            return f'{self.course.title} {self.student.username} {self.recipient.username} conversation'
+        elif hasattr(self, 'ticket') and self.ticket:
+            return f'Ticket Conversation {self.student.username} {self.ticket.date}'
+        return 'Null Conversation'
 
 
 class Message(models.Model):
@@ -19,15 +26,17 @@ class Message(models.Model):
     date = models.DateTimeField(default=timezone.now)
 
     conversation = models.ForeignKey(Conversation, related_name="messages", on_delete=models.CASCADE)
-    sender = models.ForeignKey('authentication.User', related_name="sender_messages", on_delete=models.CASCADE)
-    recipient = models.ForeignKey('authentication.User', related_name="recipient_messages", on_delete=models.CASCADE)
+    sender = models.ForeignKey(UserModel, related_name="sender_messages", on_delete=models.CASCADE)
+    recipient = models.ForeignKey(UserModel, related_name="recipient_messages", on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.conversation} message {self.pk}'
 
 
 def message_file_upload_folder(instance: 'MessageFile', filename: str):
-    return f'messages/{instance.message.sender.username}/{instance.message.conversation.course.title}/{filename}'
+    if instance.message.conversation.course:
+        return f'messages/{instance.message.sender.username}/{instance.message.conversation.course.title}/{filename}'
+    return f'messages/{instance.message.sender.username}/{instance.message.conversation.ticket.__str__()}/{filename}'
 
 
 class MessageFile(models.Model):

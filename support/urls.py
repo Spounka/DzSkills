@@ -1,10 +1,8 @@
-from django.urls import include, path
-from rest_framework import routers
+from django.urls import path
 from . import views
 
-router = routers.DefaultRouter()
-router.register('', views.TicketViewSet)
-
 urlpatterns = [
-    path('', include(router.urls))
+    path('', views.TicketCreate.as_view(), name='create-ticket'),
+    path('<int:pk>/', views.RetrieveUpdateTicket.as_view(), name="retrieve-update-ticket"),
+    path('<int:pk>/conversation/', views.GetSupportConversationAPIView.as_view(), name='retrieve-ticket-conversation')
 ]

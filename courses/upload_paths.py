@@ -6,9 +6,9 @@ def get_course_file_upload_directory(instance, filename):
     return f'{instance.owner}/courses/{instance.title}/presentation/{filename}'
 
 
-def get_video_upload_directory(instance, filename):
+def get_video_upload_directory(instance: 'Video', filename):
     return f'{instance.chapter.course.owner}/courses/{instance.chapter.course.title}/chapter_{instance.chapter.title}' \
-           f'/videos/{filename}'
+           f'/videos/{instance.pk}/{filename}'
 
 
 def get_chapter_upload_directory(instance, filename):

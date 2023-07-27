@@ -15,7 +15,6 @@ def create_permission_groups(sender: AppConfig, **kwargs: dict) -> None:
             try:
                 Group.objects.get_or_create(name=group)
             except (Group.DoesNotExist, IntegrityError) as e:  # type Exception
-                e: Exception = e
                 print(f'Creating {group} raised an error {e}')
 
 

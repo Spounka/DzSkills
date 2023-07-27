@@ -77,8 +77,7 @@ def create_course_fake_messages(amount=10, course: int = 1, sender_id: int = 1, 
 def create_fake_messages(conversations: int = 10, amount: int = 10, ):
     students = (User.objects.exclude(groups__name__in=['AdminGroup', 'TeacherGroup']).all())
     teachers = (User.objects.filter(groups__name__in=['TeacherGroup'])).all()
-    courses = (Course.objects.all())
-    for i in range(conversations):
+    for __ in range(conversations):
         student: User = random.choice(list(students))
         teacher: User = random.choice(list(teachers.exclude(username=student.username)))
         course: Course = random.choice(list(teacher.courses.all()))
@@ -88,6 +87,6 @@ def create_fake_messages(conversations: int = 10, amount: int = 10, ):
                                                      sender=sender,
                                                      recipient=recipient,
                                                      content=fake.text())
-            files = [models.MessageFile().generate(message, create_random_file()) for _ in range(4)]
+            files = [models.MessageFile().generate(message, create_random_file()) for ___ in range(4)]
             message.messagefile_set.set(files)
             sender, recipient = recipient, sender

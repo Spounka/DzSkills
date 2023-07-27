@@ -5,6 +5,7 @@ from . import serializers
 from courses.models import StudentProgress
 from authentication.models import User
 from admin_dashboard import models
+from django.utils.translation import gettext_lazy as _
 
 
 # Create your views here.
@@ -76,11 +77,15 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
     def update(self, request, *args, **kwargs):
         receipt: models.Receipt = models.Receipt.objects.filter(is_current=True).last()
         payment = Payment.objects.get(pk=kwargs['pk'])
+        if payment.status == payment.ACCEPTED:
+            return response.Response(status=status.HTTP_400_BAD_REQUEST,
+                                     data={'code': 'payment_already_accepted',
+                                           'message': _('The payment is already accepted')})
         payment.status = payment.ACCEPTED
         payment.save()
         receipt = receipt.increment()
         receipt.save()
-        progress = StudentProgress(user=payment.order.buyer, course=payment.order.course)
+        progress = StudentProgress(user=payment.order.buyer, course=payment.order.course, disabled=False)
         progress.save()
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 

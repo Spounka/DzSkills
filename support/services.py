@@ -2,26 +2,26 @@ from django.db.models import Q
 
 from authentication.models import User
 from . import models
+from messaging.models import Conversation
+from messaging.services import ConversationService, MessageService
+
+from django.utils.translation import gettext_lazy as _
 
 
-class MessageService:
+class TicketService:
     @classmethod
-    def create(cls, sender: User, content: str, ticket: models.Ticket, files=None):
-        conversation = models.Conversation.objects.filter(
-            sender=sender).filter(ticket=ticket).first()
-        if not conversation:
-            conversation = models.Conversation.objects.create(
-                sender=sender,
-                ticket=ticket
-            )
-        message = models.Message.objects.create(
-            content=content,
-            conversation=conversation,
-            sender=sender,
-            # recipient=recipient
-        )
-        if files:
-            message_files = [models.MessageFile(message=message, file=file) for file in files]
-            models.MessageFile.objects.bulk_create(message_files)
+    def get_or_create(cls, sender: User, conversation: Conversation = None):
+        ticket = None
+        if conversation:
+            ticket = models.Ticket.objects.filter(conversation=conversation, sender=sender)
+        if not ticket:
+            ticket = models.Ticket.objects.create()
+            dzskills_user = User.get_site_admin()
+            convo = ConversationService.get_or_create(sender, recipient=dzskills_user, ticket=ticket)
+            ticket.conversation = convo
+            ticket.save()
+            content = _('Hello, How can I help you?')
+            MessageService.create(sender=User.get_site_admin(), recipient=sender, ticket=ticket,
+                                  content=content)
 
-        return message
+        return ticket
