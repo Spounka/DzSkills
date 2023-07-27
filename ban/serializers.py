@@ -23,4 +23,6 @@ class BanSerializer(serializers.ModelSerializer):
         duration = validated_data['duration']
         if duration <= datetime.date.today():
             raise ValidationError({'code': 'date_is_past', 'message': _('Duration cannot be in the past')})
+        if validated_data.get('user').is_admin():
+            raise ValidationError({'code': 'user_is_admin', 'message': _("You can't ban another admin")})
         return super().create(validated_data)

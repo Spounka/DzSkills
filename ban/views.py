@@ -23,6 +23,11 @@ def ban_user(request, pk, *args, **kwargs):
                 'code': 'ban_exists',
                 'message': _(f'User under a running ban until {user.bans.first().duration}')
             })
+        if request.user.pk == user.pk:
+            return response.Response(status=status.HTTP_400_BAD_REQUEST, data={
+                'code': 'ban_self',
+                'message': _('You cannot ban yourself!')
+            })
         serializer = serializers.BanSerializer(data=request.data, context={'user': user})
         serializer.is_valid(raise_exception=True)
         serializer.save()
