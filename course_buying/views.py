@@ -94,7 +94,8 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
             recipient_user=payment.order.buyer,
             notification_type='payment_accepted',
             extra_data={
-                'course': course_serializers.CourseListSerializer(payment.order.course).data
+                'course': course_serializers.CourseListSerializer(payment.order.course,
+                                                                  context={'request': request}).data
             }
         )
         NotificationService.create(
@@ -102,7 +103,7 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
             recipient_user=payment.order.course.owner,
             notification_type='course_bought',
             extra_data={
-                'order': serializers.OrderSerializer(payment.order).data
+                'order': serializers.OrderSerializer(payment.order, context={'request': request}).data
             }
         )
         return response.Response(status=status.HTTP_204_NO_CONTENT)
@@ -119,7 +120,8 @@ class RejectPaymentAPI(generics.UpdateAPIView):
             recipient_user=payment.order.buyer,
             notification_type='payment_refused',
             extra_data={
-                'course': course_serializers.CourseListSerializer(payment.order.course).data
+                'course': course_serializers.CourseListSerializer(payment.order.course,
+                                                                  context={'request': request}).data
             }
         )
         return response.Response(status=status.HTTP_204_NO_CONTENT)

@@ -20,6 +20,8 @@ class NotificationsAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        if self.request.user.is_admin() or self.request.user.is_superuser:
+            return queryset.filter(recipient=self.request.user.get_site_admin())
         return queryset.filter(recipient=self.request.user)
 
     def list(self, request, *args, **kwargs):
@@ -29,6 +31,9 @@ class NotificationsAPIView(generics.ListAPIView):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def mark_notifications_as_read(request, *args, **kwargs):
-    notifications = models.Notification.objects.filter(recipient=request.user, is_read=False)
+    if request.user.is_admin() or request.user.is_superuser:
+        notifications = models.Notification.objects.filter(recipient=request.user.get_site_admin(), is_read=False)
+    else:
+        notifications = models.Notification.objects.filter(recipient=request.user, is_read=False)
     notifications.update(is_read=True)
     return response.Response(status=status.HTTP_204_NO_CONTENT)

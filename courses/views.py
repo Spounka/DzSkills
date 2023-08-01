@@ -132,7 +132,7 @@ class CourseStateUpdate(generics.UpdateAPIView):
                     recipient_user=course.owner,
                     notification_type='course_blocked',
                     extra_data={
-                        'course': app.CourseListSerializer(course).data
+                        'course': app.CourseListSerializer(course).data(context={'request': request})
                     }
                 )
             course.save()
@@ -228,7 +228,8 @@ class GetCourseStudents(generics.RetrieveAPIView):
     # @method_decorator(cache_page(60 * 60 * 4))
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
-        serializer = self.get_serializer_class()(course.studentprogress_set.all(), many=True)
+        serializer = self.get_serializer_class()(course.studentprogress_set.all(), context={'request': request},
+                                                 many=True)
         return response.Response(serializer.data)
 
 
@@ -386,7 +387,7 @@ class CourseStatusUpdateAPI(generics.UpdateAPIView):
                 recipient_user=course.owner,
                 notification_type='course_accepted',
                 extra_data={
-                    'course': app.CourseListSerializer(course).data
+                    'course': app.CourseListSerializer(course, context={'request': request}).data
                 }
             )
         elif course_status == 'reject' or course_status == 'refuse':
@@ -396,7 +397,7 @@ class CourseStatusUpdateAPI(generics.UpdateAPIView):
                 recipient_user=course.owner,
                 notification_type='course_refused',
                 extra_data={
-                    'course': app.CourseListSerializer(course).data
+                    'course': app.CourseListSerializer(course, context={'request': request}).data
                 }
             )
         elif course_status == 'edit' or course_status == 'revisit':
@@ -418,18 +419,18 @@ class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
             serializer.is_valid(raise_exception=True)
             for student_id in serializer.validated_data.get('students'):
                 try:
-                    progression = m.StudentProgress.objects.filter(course=course.pk, user_id=student_id)
-                    progression.delete()
-                    order = course_buying.models.Order.objects.get(buyer_id=student_id, course_id=course.pk)
+                    order = course_buying.models.Order.objects.filter(buyer_id=student_id, course_id=course.pk).first()
                     order.payment.status = order.payment.REFUSED
                     order.payment.save()
                     order.save()
+                    progression = m.StudentProgress.objects.filter(course=course.pk, user_id=student_id)
+                    progression.delete()
                     NotificationService.create(
                         sender=User.get_site_admin(),
                         recipient_user=order.buyer,
                         notification_type='removed_from_course',
                         extra_data={
-                            'course': app.CourseListSerializer(course).data
+                            'course': app.CourseListSerializer(course, context={'request': request}).data
                         }
                     )
                     return response.Response(status=status.HTTP_200_OK)
@@ -499,7 +500,7 @@ def make_course_favourite(request, *args, **kwargs):
             recipient_user=course.owner,
             notification_type='course_favourite',
             extra_data={
-                'course': app.CourseSerializer(course).data
+                'course': app.CourseListSerializer(course, context={'request': request}).data
             }
         )
         return response.Response(status=status.HTTP_200_OK, data=app.CourseSerializer(course).data)

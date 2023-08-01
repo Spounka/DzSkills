@@ -19,3 +19,4 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Notification
         fields = '__all__'
+        depth = 3

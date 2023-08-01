@@ -231,7 +231,7 @@ class CourseListSerializer(serializers.ModelSerializer):
         model = models.Course
         fields = "__all__"
         read_only_fields = ('average_rating',)
-        depth = 1
+        depth = 2
 
     def get_students_count(self, instance: models.Course):
         return models.StudentProgress.objects.filter(course=instance, disabled=False).count()
@@ -278,6 +278,7 @@ class StudentProgressForRelatedStudents(serializers.ModelSerializer):
     class Meta:
         model = models.StudentProgress
         fields = ['user', 'last_video_index', 'last_chapter_index', ]
+        depth = 2
 
 
 class CreateHashtagSerializer(serializers.ModelSerializer):
