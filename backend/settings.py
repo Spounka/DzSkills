@@ -89,12 +89,12 @@ INSTALLED_APPS = [
     'admin_dashboard',
     'ban',
 
-    'student',
     'courses',
     'course_buying',
     'comment',
     'messaging',
     'support',
+    'notifications',
 
     # Social Accounts
     'allauth.socialaccount.providers.facebook',
@@ -254,6 +254,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 ASGI_APPLICATION = 'backend.asgi.application'
+ASGI_THREADS = 4
 
 # DOCKER_SETTINGS
 DATABASES = {

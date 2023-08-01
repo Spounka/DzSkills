@@ -22,7 +22,7 @@ class ViewOrderSerializer(serializers.ModelSerializer):
         payment_data = validated_data.pop('payment')
 
         order = Order.objects.create(buyer=user, **validated_data)
-        payment = Payment.objects.get_or_create(order=order, **payment_data)
+        payment, _ = Payment.objects.get_or_create(order=order, **payment_data)
         payment.save()
         return order
 

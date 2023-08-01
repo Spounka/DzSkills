@@ -16,13 +16,13 @@ urlpatterns = [
 
     path('api/users/', include('authentication.urls')),
     path('api/courses/', include('courses.urls'), name="courses"),
-    path('api/students/', include('student.urls'), name="students"),
     path('api/orders/', include('course_buying.urls'), name="orders"),
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
     path('api/comments/', include('comment.urls'), name="comments"),
     path('api/conversations/', include('messaging.urls'), name="conversations"),
     path('api/support/', include('support.urls')),
     path('api/ban/', include('ban.urls')),
+    path('api/notifications/', include('notifications.urls')),
 
 ]
 

@@ -1,12 +1,8 @@
-from django.core import cache
 from django.db.models import Count
-from django.utils.cache import get_cache_key
-from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.cache import cache_page
-from django.views.decorators.vary import vary_on_headers
 from rest_framework import generics, response, mixins, status, pagination, permissions
 from rest_framework.decorators import api_view, permission_classes
+from notifications.service import NotificationService
 
 import course_buying.models
 from authentication.models import User
@@ -131,6 +127,14 @@ class CourseStateUpdate(generics.UpdateAPIView):
                 course.state = course.PAUSED if course.state == course.RUNNING else course.RUNNING
             else:
                 course.state = course.BLOCKED if course.state == course.RUNNING else course.RUNNING
+                NotificationService.create(
+                    sender=User.get_site_admin(),
+                    recipient_user=course.owner,
+                    notification_type='course_blocked',
+                    extra_data={
+                        'course': app.CourseListSerializer(course).data
+                    }
+                )
             course.save()
             return response.Response(data=self.get_serializer(course).data, status=status.HTTP_200_OK)
         elif request.user.owns_course(course_id=course.pk):
@@ -377,8 +381,24 @@ class CourseStatusUpdateAPI(generics.UpdateAPIView):
         course_status = kwargs.get('status', None)
         if course_status == 'approve' or course_status == 'accept':
             course.approve()
+            NotificationService.create(
+                sender=User.get_site_admin(),
+                recipient_user=course.owner,
+                notification_type='course_accepted',
+                extra_data={
+                    'course': app.CourseListSerializer(course).data
+                }
+            )
         elif course_status == 'reject' or course_status == 'refuse':
             course.reject()
+            NotificationService.create(
+                sender=User.get_site_admin(),
+                recipient_user=course.owner,
+                notification_type='course_refused',
+                extra_data={
+                    'course': app.CourseListSerializer(course).data
+                }
+            )
         elif course_status == 'edit' or course_status == 'revisit':
             course.revise()
         else:
@@ -404,6 +424,14 @@ class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
                     order.payment.status = order.payment.REFUSED
                     order.payment.save()
                     order.save()
+                    NotificationService.create(
+                        sender=User.get_site_admin(),
+                        recipient_user=order.buyer,
+                        notification_type='removed_from_course',
+                        extra_data={
+                            'course': app.CourseListSerializer(course).data
+                        }
+                    )
                     return response.Response(status=status.HTTP_200_OK)
                 except (m.StudentProgress.DoesNotExist, course_buying.models.Order.DoesNotExist):
                     continue
@@ -466,6 +494,14 @@ def make_course_favourite(request, *args, **kwargs):
         course = m.Course.objects.get(pk=kwargs.get('pk', None))
         course.trending = not course.trending
         course.save()
+        NotificationService.create(
+            sender=User.get_site_admin(),
+            recipient_user=course.owner,
+            notification_type='course_favourite',
+            extra_data={
+                'course': app.CourseSerializer(course).data
+            }
+        )
         return response.Response(status=status.HTTP_200_OK, data=app.CourseSerializer(course).data)
     except m.Course.DoesNotExist:
         return response.Response(status=status.HTTP_400_BAD_REQUEST,

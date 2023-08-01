@@ -6,6 +6,8 @@ from courses.models import StudentProgress
 from authentication.models import User
 from admin_dashboard import models
 from django.utils.translation import gettext_lazy as _
+from notifications.service import NotificationService
+from courses import serializers as course_serializers
 
 
 # Create your views here.
@@ -87,6 +89,22 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
         receipt.save()
         progress = StudentProgress(user=payment.order.buyer, course=payment.order.course, disabled=False)
         progress.save()
+        NotificationService.create(
+            sender=User.get_site_admin(),
+            recipient_user=payment.order.buyer,
+            notification_type='payment_accepted',
+            extra_data={
+                'course': course_serializers.CourseListSerializer(payment.order.course).data
+            }
+        )
+        NotificationService.create(
+            sender=User.get_site_admin(),
+            recipient_user=payment.order.course.owner,
+            notification_type='course_bought',
+            extra_data={
+                'order': serializers.OrderSerializer(payment.order).data
+            }
+        )
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -95,4 +113,13 @@ class RejectPaymentAPI(generics.UpdateAPIView):
         payment = Payment.objects.get(pk=kwargs['pk'])
         payment.status = payment.REFUSED
         payment.save()
+
+        NotificationService.create(
+            sender=User.get_site_admin(),
+            recipient_user=payment.order.buyer,
+            notification_type='payment_refused',
+            extra_data={
+                'course': course_serializers.CourseListSerializer(payment.order.course).data
+            }
+        )
         return response.Response(status=status.HTTP_204_NO_CONTENT)
