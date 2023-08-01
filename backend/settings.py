@@ -27,41 +27,29 @@ load_dotenv()
 SECRET_KEY = os.environ.get('SECRET_KEY', '')
 
 # DOCKER_SETTINGS
-# DEBUG = (os.environ.get('DEBUG', True) == "true")
-DEBUG = True
+DEBUG = (os.environ.get('DEBUG', True) == "true")
+# DEBUG = True
 
 # DOCKER_SETTINGS
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['dzskills.com']
 
 # Application definition
 
 # DOCKER_SETTINGS
 CSRF_TRUSTED_ORIGINS = [
-    "https://dzskills.fly.dev",
-    'http://localhost:3000',
-    'http://localhost',
-    'http://localhost:8000',
-    'http://192.168.1.14:3000',
-    "https://dzskills.vercel.app",
     "https://dzskills.com",
 ]
 
 # DOCKER_SETTINGS
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost',
-    'http://localhost:3000',
-    'http://localhost:4173',
-    'http://0.0.0.0:3000',
-    'http://192.168.1.14:3000',
-    "https://dzskills.fly.dev",
-    "https://dzskills.vercel.app",
+    "https://dzskills.com",
 ]
 
 # DOCKER SETTINGS
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # DOCKER SETTINGS
-HOSTNAME = 'localhost'
+HOSTNAME = 'dzskills.com'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
