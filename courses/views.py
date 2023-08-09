@@ -309,7 +309,7 @@ class EditDeleteCategory(generics.UpdateAPIView, mixins.DestroyModelMixin):
 
 
 class GetCertificate(generics.RetrieveAPIView):
-    serializer_class = app.CourseSerializer
+    serializer_class = app.CertificateSerializer
     queryset = m.Course.objects.filter()
     permission_classes = [permissions.IsAuthenticated]
 
@@ -321,9 +321,9 @@ class GetCertificate(generics.RetrieveAPIView):
             if not certificate.exists():
                 certificate = m.Certificate()
                 certificate.generate(request.user, course)
-                serializer = app.CertificateSerializer(certificate)
+                serializer = self.get_serializer(certificate)
             else:
-                serializer = app.CertificateSerializer(certificate.first())
+                serializer = self.get_serializer(certificate.first())
             return response.Response(data=serializer.data, status=status.HTTP_200_OK)
         return response.Response(status=status.HTTP_403_FORBIDDEN)
 

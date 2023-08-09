@@ -296,9 +296,11 @@ class CreateLevelSerializer(serializers.ModelSerializer):
 
 
 class CertificateSerializer(serializers.ModelSerializer):
+    certificate_image = serializers.ImageField()
+
     class Meta:
         fields = ['id', 'user', 'course', 'certificate_image']
-        depth = 0
+        depth = 1
         model = models.Certificate
 
 
