@@ -22,13 +22,14 @@ class ViewOrderSerializer(serializers.ModelSerializer):
         payment_data = validated_data.pop('payment')
 
         order = Order.objects.create(buyer=user, **validated_data)
-        payment = Payment.objects.get_or_create(order=order, **payment_data)
+        payment, _ = Payment.objects.get_or_create(order=order, **payment_data)
         payment.save()
         return order
 
     class Meta:
         model = Order
         fields = '__all__'
+        depth = 2
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -39,6 +40,7 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = '__all__'
+        depth = 2
 
 
 class ListPaymentsForAdminSerializer(serializers.ModelSerializer):

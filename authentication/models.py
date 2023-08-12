@@ -1,7 +1,7 @@
 from allauth.account.models import EmailAddress
 from django.contrib.auth.models import AbstractUser, Group
 from django.db import models
-from django.db.models import Q
+from account_balance.models import AccountBalance
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -71,5 +71,6 @@ class User(AbstractUser):
             user.save()
             user.groups.add(Group.objects.get(name="AdminGroup"))
             user.emailaddress_set.add(EmailAddress.objects.create(email=user.email, verified=True, primary=True))
+            user.accountbalance = AccountBalance.objects.create(user=user)
             user.save()
             return user

@@ -1,11 +1,11 @@
-from django.shortcuts import render
 from rest_framework import generics, mixins, response, status, permissions
 from .models import Order, Payment
 from . import serializers
 from courses.models import StudentProgress
-from authentication.models import User
 from admin_dashboard import models
 from django.utils.translation import gettext_lazy as _
+from account_balance.models import AccountBalance
+from authentication.models import User
 
 
 # Create your views here.
@@ -87,6 +87,19 @@ class AcceptPaymentAPI(generics.UpdateAPIView):
         receipt.save()
         progress = StudentProgress(user=payment.order.buyer, course=payment.order.course, disabled=False)
         progress.save()
+        teacher = payment.order.course.owner
+        if not hasattr(teacher, 'accountbalance'):
+            teacher.accountbalance = AccountBalance.objects.create(user=teacher)
+            teacher.save()
+        amount = payment.order.course.price
+        if teacher.pk != User.get_site_admin().pk:
+            teacher.accountbalance.balance += int(amount * 0.6)
+            User.get_site_admin().accountbalance.balance += int(amount * 0.4)
+        else:
+            User.get_site_admin().accountbalance.balance += int(amount)
+        teacher.accountbalance.save()
+        User.get_site_admin().accountbalance.save()
+
         return response.Response(status=status.HTTP_204_NO_CONTENT)
 
 

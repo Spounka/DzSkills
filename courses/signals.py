@@ -7,16 +7,16 @@ from . import models
 UserModel = get_user_model()
 
 
-@receiver(post_save, sender=models.Video)
-def update_chapter_average_rating(sender, instance: models.Video, **kwargs):
-    chapter = instance.chapter
+@receiver(post_save, sender=models.Rating)
+def update_chapter_average_rating(sender, instance: models.Rating, **kwargs):
+    chapter = instance.video.chapter
     chapter.update_average_rating()
     chapter.save()
 
 
-@receiver(post_delete, sender=models.Video)
-def update_chapter_average_rating_delete(sender, instance, **kwargs):
-    chapter = instance.chapter
+@receiver(post_delete, sender=models.Rating)
+def update_chapter_average_rating_delete(sender, instance: models.Rating, **kwargs):
+    chapter = instance.video.chapter
     chapter.update_average_rating()
     chapter.save()
 
