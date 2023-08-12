@@ -2,4 +2,4 @@ from django.contrib import admin
 from . import models
 
 # Register your models here.
-admin.site.register(models.Student, admin.ModelAdmin)
+admin.site.register(models.Notification, admin.ModelAdmin)

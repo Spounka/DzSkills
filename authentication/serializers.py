@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
 import authentication.forms
+import notifications
 from .models import User as UserModel
 
 try:
@@ -66,6 +67,7 @@ class RegistrationSerializer(serializers.Serializer):
         return super().create(validated_data)
 
     def save(self, request):
+        import notifications.service
         adapter = get_adapter()
         user = adapter.new_user(request)
         self.cleaned_data = self.get_cleaned_data()
@@ -80,6 +82,12 @@ class RegistrationSerializer(serializers.Serializer):
         user.save()
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
+        notifications.service.NotificationService.create(
+            sender=user,
+            recipient_user=user.get_site_admin(),
+            notification_type='user_registration',
+            extra_data={}
+        )
         return user
 
 
