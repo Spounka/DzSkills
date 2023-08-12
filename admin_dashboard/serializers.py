@@ -27,7 +27,7 @@ class AdminConfigUpdateSerializer(serializers.ModelSerializer):
     main_title_text = TitleScreenTextSerializer()
     secondary_title_text = TitleScreenTextSerializer()
     certificate_template = CertificateTemplateSerializer()
-    images = serializers.ListSerializer(child=serializers.FileField(), required=False)
+    images = LandingPageImageSerializer(many=True, required=False)
 
     def update(self, instance: models.AdminConfig, validated_data):
         images = validated_data.pop('images', [])
@@ -49,9 +49,11 @@ class AdminConfigUpdateSerializer(serializers.ModelSerializer):
             instance.secondary_title_text.color = secondary_text['color']
             instance.secondary_title_text.save()
 
-        for i, image in enumerate(images):
-            instance.images.all()[i].image = image
-            instance.images.all()[i].save()
+        # for i, image in enumerate(images):
+        #     img = instance.images.filter(image=image)
+        #     if img.exists():
+        #         img.first().image = image
+        #         img.first().save()
         if instance.certificate_template is None:
             instance.certificate_template = models.CertificateTemplate.objects.create()
         if certificate_template:

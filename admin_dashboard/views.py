@@ -79,6 +79,24 @@ class RetrieveUpdateAdminSettingsView(generics.RetrieveUpdateAPIView):
 
     def patch(self, request, *args, **kwargs):
         kwargs['partial'] = True
+        if request.data.get('images[0].id', False):
+            image = request.FILES.get('images[0].image')
+            id = request.data.get('images[0].id')
+            instance = models.LandingPageImage.objects.get(pk=id)
+            instance.image = image
+            instance.save()
+        if request.data.get('images[1].id', False):
+            image = request.FILES.get('images[1].image')
+            id = int(request.data.get('images[1].id'))
+            instance = models.LandingPageImage.objects.get(pk=id)
+            instance.image = image
+            instance.save()
+        if request.data.get('images[2].id', False):
+            image = request.FILES.get('images[2].image')
+            id = int(request.data.get('images[2].id'))
+            instance = models.LandingPageImage.objects.get(pk=id)
+            instance.image = image
+            instance.save()
         return super().update(request, *args, **kwargs)
 
     def get_object(self):
