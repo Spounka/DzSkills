@@ -17,6 +17,7 @@ urlpatterns = [
     path('api/users/', include('authentication.urls')),
     path('api/courses/', include('courses.urls'), name="courses"),
     path('api/orders/', include('course_buying.urls'), name="orders"),
+    path('api/balance/', include('account_balance.urls'), name="balance"),
     path('api/configs/', include('admin_dashboard.urls'), name="configs"),
     path('api/comments/', include('comment.urls'), name="comments"),
     path('api/conversations/', include('messaging.urls'), name="conversations"),

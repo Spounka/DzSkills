@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'authentication',
     'admin_dashboard',
     'ban',
+    'account_balance',
 
     'courses',
     'course_buying',
