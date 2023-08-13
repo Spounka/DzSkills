@@ -132,15 +132,17 @@ class CourseStateUpdate(generics.UpdateAPIView):
                     recipient_user=course.owner,
                     notification_type='course_blocked',
                     extra_data={
-                        'course': app.CourseListSerializer(course).data(context={'request': request})
+                        'course': app.CourseListSerializer(course, context={'request': request}).data
                     }
                 )
             course.save()
-            return response.Response(data=self.get_serializer(course).data, status=status.HTTP_200_OK)
+            return response.Response(data=self.get_serializer(course, context={'request': request}).data,
+                                     status=status.HTTP_200_OK)
         elif request.user.owns_course(course_id=course.pk):
             course.state = course.PAUSED if course.state == course.RUNNING else course.RUNNING
             course.save()
-            return response.Response(data=self.get_serializer(course).data, status=status.HTTP_200_OK)
+            return response.Response(data=self.get_serializer(course, context={'request': request}).data,
+                                     status=status.HTTP_200_OK)
         return response.Response(status=status.HTTP_403_FORBIDDEN, data={'message': COURSE_OWNERSHIP_ERROR})
 
 
