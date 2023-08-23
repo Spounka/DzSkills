@@ -9,7 +9,12 @@ class GetAccountBalance(generics.RetrieveAPIView):
     queryset = models.AccountBalance.objects.all()
 
     def get_object(self):
-        return self.request.user.accountbalance
+        user = self.request.user
+        if user.is_admin() or user.is_superuser:
+            return user.get_site_admin().accountbalance
+        elif hasattr(user, 'accountbalance'):
+            return user.accountbalance
+        return None
 
 
 class RequestMoneyView(generics.ListCreateAPIView):

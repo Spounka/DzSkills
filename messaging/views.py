@@ -31,7 +31,8 @@ class MessagesListAPIView(generics.ListAPIView):
         return super().list(request, *args, **kwargs)
 
     def get_queryset(self):
-        conversation = models.Conversation.objects.filter(pk=self.kwargs['pk']).first()
+        conversation = models.Conversation.objects.filter(
+            pk=self.kwargs['pk']).first()
         return conversation.messages.all()
 
 
@@ -68,6 +69,25 @@ class ConversationsListAPIView(generics.ListAPIView):
                                                                                          'ticket__date').all()
 
 
+class TeacherConversationsListAPIView(generics.ListAPIView):
+    serializer_class = serializers.ConversationsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        latest_date_subquery = models.Message.objects.filter(conversation=OuterRef('pk')).order_by('-date').values(
+            'date')[:1]
+        user = self.request.user
+        if user.is_admin() or user.is_superuser:
+            user = user.get_site_admin()
+        conversations = models.Conversation.objects.filter(
+            Q(recipient=user, ticket__isnull=True) | Q(student=user, ticket__isnull=True))
+        return conversations.annotate(last_date=Subquery(latest_date_subquery)).order_by('-last_date',
+                                                                                         'ticket__date').all()
+
+
 class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
     serializer_class = serializers.ConversationsSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -87,7 +107,8 @@ class GetTeacherStudentConversationAPIView(generics.RetrieveAPIView):
         student = self.request.user
         course = courses.models.Course.objects.get(pk=self.kwargs.get('pk'))
         conversation = models.Conversation.objects.filter(
-            Q(student=student, course=course) | Q(recipient=student, course=course)
+            Q(student=student, course=course) | Q(
+                recipient=student, course=course)
         )
         query = conversation.all()
         return query
@@ -104,7 +125,8 @@ def download_message_files(_, pk, *__, **___):
 
         with zipfile.ZipFile(response, 'w') as zipfiles:
             for file in files:
-                zipfiles.writestr(file.file.name.split('/')[-1], file.file.read())
+                zipfiles.writestr(file.file.name.split('/')
+                                  [-1], file.file.read())
         response['Content-Length'] = response.tell()
         return response
     return HttpResponseBadRequest(_('No Files for this message'))
