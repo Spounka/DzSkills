@@ -29,11 +29,12 @@ def generate_certificate(name, course_name: str):
     drawing.fontmode = 'L'
 
     font = arabic_font if is_arabic(name) else latin_font
+    course_font = arabic_font if is_arabic(course_name) else latin_font
 
     text_length = drawing.textlength(name, font=font)
-    course_length = drawing.textlength(f'Course: {course_name}', font=font)
+    course_length = drawing.textlength(f'Course: {course_name}', font=course_font)
     drawing.text(((x_res - text_length) // 2, 1500), name, fill=(83, 83, 173), font=font)
-    drawing.text(((x_res - course_length) // 2, 1600 + drawing.textsize(course_name, font=font)[1]),
+    drawing.text(((x_res - course_length) // 2, 1600 + drawing.textsize(course_name, font=course_font)[1]),
                  f'Course: {course_name}', fill=(83, 83, 173), font=font)
 
     drawing.text((1300, 2500), str(datetime.date.today()), fill=(0, 0, 155), font=thin_font)

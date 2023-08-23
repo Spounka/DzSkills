@@ -21,7 +21,8 @@ class MessageFileSerializer(serializers.ModelSerializer):
 
 
 class MessageCreateSerializer(serializers.ModelSerializer):
-    files = serializers.ListField(required=False, child=serializers.FileField(), write_only=True)
+    files = serializers.ListField(
+        required=False, child=serializers.FileField(), write_only=True)
     sender = serializers.PrimaryKeyRelatedField(read_only=True)
     course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True,
                                                 required=False)
@@ -31,7 +32,8 @@ class MessageCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Message
-        fields = ['id', 'content', 'date', 'files', 'sender', 'course', 'ticket', 'recipient', 'type']
+        fields = ['id', 'content', 'date', 'files', 'sender',
+                  'course', 'ticket', 'recipient', 'type']
 
         depth = 0
 
@@ -64,11 +66,13 @@ class MessageCreateSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     files = MessageFileSerializer(required=False, many=True)
     sender = serializers.PrimaryKeyRelatedField(read_only=True)
-    course = serializers.PrimaryKeyRelatedField(queryset=courses.models.Course.objects.filter(), write_only=True)
+    course = serializers.PrimaryKeyRelatedField(
+        queryset=courses.models.Course.objects.filter(), write_only=True)
 
     class Meta:
         model = models.Message
-        fields = ['id', 'content', 'date', 'files', 'sender', 'course', 'recipient']
+        fields = ['id', 'content', 'date', 'files',
+                  'sender', 'course', 'recipient']
         depth = 0
 
 
@@ -95,15 +99,15 @@ class ConversationsSerializer(serializers.ModelSerializer):
 
     def get_course_title(self, instance):
         if instance.course:
-            return courses.serializers.CourseListSerializer(instance.course).data.get('title')
+            return courses.serializers.CourseListSerializer(instance.course, context={"request": self.context.get('request', None)}).data.get('title')
         return ''
 
     def get_course_owner(self, instance):
         if instance.course:
-            return courses.serializers.CourseListSerializer(instance.course).data.get('owner')
+            return courses.serializers.CourseListSerializer(instance.course, context=self.context).data.get('owner')
         elif hasattr(instance, 'ticket'):
-            return authentication.serializers.UserSerializer(User.get_site_admin()).data
+            return authentication.serializers.UserSerializer(User.get_site_admin(), context=self.context).data
         return ''
 
     def get_student_data(self, instance):
-        return authentication.serializers.UserSerializer(instance.student).data
+        return authentication.serializers.UserSerializer(instance.student, context=self.context).data

@@ -160,13 +160,13 @@ class CourseSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         chapters_data = validated_data.pop('chapters', None)
         owner = self.context['request'].user
-        if owner.is_admin() and not owner.is_superuser:
+        if owner.is_admin() or owner.is_superuser:
             owner = UserModel.get_site_admin()
             validated_data['state'] = courses.models.Course.RUNNING
             validated_data['status'] = courses.models.Course.ACCEPTED
 
         course = models.Course.objects.create(owner=owner, **validated_data)
-        quizz_data = self.context['request'].data.get('quizz')
+        quizz_data = self.context['request'].data.get('quizz', None)
 
         if quizz_data:
             data = json.loads(quizz_data)
