@@ -7,6 +7,7 @@ from rest_framework import serializers
 import authentication.serializers
 import courses.models
 from . import models as models
+from .services import CourseService
 
 UserModel = get_user_model()
 
@@ -77,7 +78,8 @@ class CourseQuizzSerializer(serializers.ModelSerializer):
         for q in questions_data:
             answers_data = q.pop('choices')
             question = models.QuizzQuestion.objects.create(quizz=quizz, **q)
-            choices = [models.QuizzChoice.objects.create(question=question, **a) for a in answers_data]
+            choices = [models.QuizzChoice.objects.create(
+                question=question, **a) for a in answers_data]
 
             question.choices.set(choices)
             question.save()
@@ -109,7 +111,8 @@ class VideoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Video
-        fields = "__all__"
+        fields = ['id', 'title', 'description', 'video', 'thumbnail', 'presentation_file', 'duration', 'ratings',
+                  'average_rating']
         depth = 0
 
     def get_average_rating(self, video: models.Video):
@@ -117,8 +120,10 @@ class VideoSerializer(serializers.ModelSerializer):
 
 
 class ChapterVideoSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(required=False)
     ratings = RatingSerializer(many=True, required=False)
     average_rating = serializers.SerializerMethodField()
+    video = serializers.FileField(required=False)
 
     class Meta:
         model = models.Video
@@ -131,7 +136,8 @@ class ChapterVideoSerializer(serializers.ModelSerializer):
 
 
 class CourseChapterSerializer(serializers.ModelSerializer):
-    videos = ChapterVideoSerializer(many=True)
+    id = serializers.IntegerField(required=False)
+    videos = ChapterVideoSerializer(many=True, required=False)
 
     class Meta:
         model = models.Chapter
@@ -142,7 +148,8 @@ class CourseChapterSerializer(serializers.ModelSerializer):
     def create(self, validated_data: dict[str, Any]):
         videos_data = validated_data.pop('videos', None)
         chapter = models.Chapter.objects.create(**validated_data)
-        videos = [models.Video.objects.create(chapter=chapter, **data) for data in videos_data]
+        videos = [models.Video.objects.create(
+            chapter=chapter, **data) for data in videos_data]
         chapter.videos.set(videos)
         return chapter
 
@@ -155,62 +162,14 @@ class CourseSerializer(serializers.ModelSerializer):
     course_level = LevelSerializer(required=False)
     category = CategorySerializer(required=False)
     quizz = CourseQuizzSerializer(required=False)
+    thumbnail = serializers.ImageField(required=False)
     students_count = serializers.SerializerMethodField()
 
     def create(self, validated_data):
-        chapters_data = validated_data.pop('chapters', None)
-        owner = self.context['request'].user
-        if owner.is_admin() or owner.is_superuser:
-            owner = UserModel.get_site_admin()
-            validated_data['state'] = courses.models.Course.RUNNING
-            validated_data['status'] = courses.models.Course.ACCEPTED
+        return CourseService.create(self.context['request'], validated_data)
 
-        course = models.Course.objects.create(owner=owner, **validated_data)
-        quizz_data = self.context['request'].data.get('quizz', None)
-
-        if quizz_data:
-            data = json.loads(quizz_data)
-            data['course'] = course.pk
-            serializer = CourseQuizzSerializer(data=data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-        chapters = []
-
-        def update_video(video):
-            set_video_duration(video)
-            video.save()
-
-        for chapter_data in chapters_data:
-            videos_data = chapter_data.pop('videos')
-            chapter = models.Chapter.objects.create(course=course, **chapter_data)
-            videos = [models.Video.objects.create(chapter=chapter, **video_data) for video_data in videos_data]
-            from courses.models import set_video_duration
-            map(lambda video: update_video(video), videos)
-
-            chapter.videos.set(videos)
-            chapters.append(chapter)
-
-        course.chapters.set(chapters)
-
-        hashtags = []
-        hashtags_data = None
-        hashtags_str = self.context['request'].data.get('hashtags')
-        if hashtags_str:
-            hashtags_data = json.loads(hashtags_str)
-        if hashtags_data:
-            for hashtag_data in hashtags_data.get('objs'):
-                data = HashtagSerializer(data=hashtag_data)
-                data.is_valid(raise_exception=True)
-                del hashtag_data['courses']
-                hashtags.append(models.Hashtag.objects.get(**hashtag_data))
-        if hashtags:
-            course.hashtags.set(hashtags)
-        if (level := self.context['request'].data.pop('course_level', None)) is not None:
-            course.course_level = models.Level.objects.get(pk=level[0])
-        if (category := self.context['request'].data.pop('category', None)) is not None:
-            course.category = models.Category.objects.get(pk=category[0])
-        return course
+    def update(self, instance, validated_data):
+        return CourseService.update(instance, self.context['request'], validated_data)
 
     class Meta:
         model = models.Course
@@ -249,12 +208,14 @@ class ChapterSerializer(serializers.ModelSerializer):
 
 class StudentProgressSerializer(serializers.ModelSerializer):
     user = serializers.PrimaryKeyRelatedField(read_only=True)
-    course = serializers.PrimaryKeyRelatedField(queryset=models.Course.objects.filter())
+    course = serializers.PrimaryKeyRelatedField(
+        queryset=models.Course.objects.filter())
     percentage = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.StudentProgress
-        fields = ('pk', 'last_chapter_index', 'last_video_index', 'finished', 'user', 'course', 'percentage')
+        fields = ('pk', 'last_chapter_index', 'last_video_index',
+                  'finished', 'user', 'course', 'percentage')
 
     def get_percentage(self, instance: models.StudentProgress):
         if instance.finished:
@@ -263,13 +224,6 @@ class StudentProgressSerializer(serializers.ModelSerializer):
         watched_videos = sum([chapter.videos.count() for chapter in chapters])
         watched_videos += instance.last_video_index
         return round(watched_videos / instance.course.videos_count * 100, 2)
-
-    # TODO: Find out why this is here?
-    # def create(self, validated_data):
-    #     pass
-    #
-    # def update(self, instance, validated_data):
-    #     pass
 
 
 class StudentProgressForRelatedStudents(serializers.ModelSerializer):
@@ -322,16 +276,26 @@ class StudentAttemptSerializer(serializers.ModelSerializer):
 
 
 class StudentProgressCourseDeleteSerializer(serializers.Serializer):
-    students = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+    students = serializers.ListSerializer(
+        child=serializers.IntegerField(), required=True)
 
 
 class HashtagsDeleteSerializer(serializers.Serializer):
-    hashtags = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+    hashtags = serializers.ListSerializer(
+        child=serializers.IntegerField(), required=True)
 
 
 class LevelsDeleteSerializer(serializers.Serializer):
-    levels = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+    levels = serializers.ListSerializer(
+        child=serializers.IntegerField(), required=True)
 
 
 class CategoriesDeleteSerializer(serializers.Serializer):
-    categories = serializers.ListSerializer(child=serializers.IntegerField(), required=True)
+    categories = serializers.ListSerializer(
+        child=serializers.IntegerField(), required=True)
+
+
+class EditReasonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CourseEditRequest
+        fields = "__all__"

@@ -25,24 +25,21 @@ class ChapterAdmin(admin.ModelAdmin):
     ]
 
 
-class ChapterInline(admin.TabularInline):
+class ChapterInline(admin.StackedInline):
     model = models.Chapter
-    extra = 1
+    extra = 0
 
 
 class LevelInline(admin.TabularInline):
     model = models.Chapter
-    extra = 1
 
 
 class CategoryInline(admin.TabularInline):
     model = models.Chapter
-    extra = 1
 
 
 class CourseInline(admin.TabularInline):
     model = models.Course
-    extra = 1
 
 
 @admin.register(models.Category)
@@ -52,15 +49,39 @@ class CategoryAdmin(admin.ModelAdmin):
     ]
 
 
+class QuizzChoiceInline(admin.StackedInline):
+    model = models.QuizzChoice
+
+
+class QuizzQuestionAdmin(admin.ModelAdmin):
+    inlines = [
+        QuizzChoiceInline
+    ]
+
+
+class QuizzQuestionInline(admin.StackedInline):
+    model = models.QuizzQuestion
+
+
+class QuizzInline(admin.StackedInline):
+    model = models.CourseQuizz
+
+
+class QuizzAdmin(admin.ModelAdmin):
+    inlines = [
+        QuizzQuestionInline
+    ]
+
+
 class CourseAdmin(admin.ModelAdmin):
     inlines = [
         ChapterInline,
         CategoryInline,
         LevelInline,
+        QuizzInline,
     ]
 
 
-admin.site.register(models.Course, CourseAdmin)
 admin.site.register(models.Chapter, ChapterAdmin)
 admin.site.register(models.Video, VideoAdmin)
 admin.site.register(models.Rating, admin.ModelAdmin)
@@ -68,6 +89,8 @@ admin.site.register(models.Hashtag, admin.ModelAdmin)
 admin.site.register(models.Level, admin.ModelAdmin)
 admin.site.register(models.StudentProgress, admin.ModelAdmin)
 admin.site.register(models.Certificate, admin.ModelAdmin)
-admin.site.register(models.QuizzQuestion, admin.ModelAdmin)
+admin.site.register(models.QuizzQuestion, QuizzQuestionAdmin)
 admin.site.register(models.QuizzChoice, admin.ModelAdmin)
-admin.site.register(models.CourseQuizz, admin.ModelAdmin)
+admin.site.register(models.CourseQuizz, QuizzAdmin)
+admin.site.register(models.CourseEditRequest, admin.ModelAdmin)
+admin.site.register(models.Course, CourseAdmin)
