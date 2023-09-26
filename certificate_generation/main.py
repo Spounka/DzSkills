@@ -21,7 +21,8 @@ def generate_certificate(name, course_name: str):
     if AdminConfig.load().certificate_template.template is None:
         image = Image.open(str(RES / 'vide.png'))
     else:
-        image = Image.open(AdminConfig.load().certificate_template.template.path)
+        image = Image.open(
+            AdminConfig.load().certificate_template.template.path)
 
     x_res, y_res = image.size
 
@@ -29,13 +30,16 @@ def generate_certificate(name, course_name: str):
     drawing.fontmode = 'L'
 
     font = arabic_font if is_arabic(name) else latin_font
-    course_font = arabic_font if is_arabic(course_name) else latin_font
+    course_font = arabic_font
 
     text_length = drawing.textlength(name, font=font)
-    course_length = drawing.textlength(f'Course: {course_name}', font=course_font)
-    drawing.text(((x_res - text_length) // 2, 1500), name, fill=(83, 83, 173), font=font)
+    course_length = drawing.textlength(
+        f'Course: {course_name}', font=course_font)
+    drawing.text(((x_res - text_length) // 2, 1500),
+                 name, fill=(83, 83, 173), font=font)
     drawing.text(((x_res - course_length) // 2, 1600 + drawing.textsize(course_name, font=course_font)[1]),
-                 f'Course: {course_name}', fill=(83, 83, 173), font=font)
+                 f'Course: {course_name}', fill=(83, 83, 173), font=course_font)
 
-    drawing.text((1300, 2500), str(datetime.date.today()), fill=(0, 0, 155), font=thin_font)
+    drawing.text((1300, 2500), str(datetime.date.today()),
+                 fill=(0, 0, 155), font=thin_font)
     return image.resize((x_res // 2, y_res // 2))

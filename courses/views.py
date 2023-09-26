@@ -48,7 +48,10 @@ COURSE_BLOCKED_ERROR = _("This Course is either paused or blocked")
 
 
 class CourseAPI(
-    generics.ListCreateAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin
+    generics.ListCreateAPIView,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
 ):
     serializer_class = app.CourseSerializer
     queryset = m.Course.objects.filter().prefetch_related(
@@ -60,10 +63,15 @@ class CourseAPI(
         if not self.kwargs.get("pk"):
             return
         if self.request.user.is_authenticated and (
-            self.request.user.is_superuser or self.request.user.is_admin()
+                self.request.user.is_superuser or self.request.user.is_admin()
         ):
             return
         course: m.Course = self.get_object()
+        owns_course = request.user.owns_course(course.pk)
+        if request.method == "DELETE" and owns_course:
+            return
+        if owns_course:
+            return
         if course.status != course.ACCEPTED:
             self.permission_denied(request, _("You can't view this course"))
         if course.state != course.RUNNING:
@@ -91,10 +99,10 @@ class CourseAPI(
                 status=status.HTTP_400_BAD_REQUEST,
                 data={"message": "no course provided"},
             )
-        # if (course := self.get_queryset().filter(pk=self.kwargs.get('pk'))) is not None:
-        #     # course.app
-        #     pass
         return super().partial_update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(
@@ -107,10 +115,14 @@ class CourseAPI(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
+    def delete(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
+
 
 class TrendingCourses(generics.ListAPIView):
     serializer_class = app.CourseSerializer
-    queryset = m.Course.objects.filter(trending=True, state="running", status="app")
+    queryset = m.Course.objects.filter(
+        trending=True, state="running", status="app")
 
     # @method_decorator(cache_page(60 * 60 * 24))
     def list(self, request, *args, **kwargs):
@@ -161,20 +173,23 @@ class CourseStateUpdate(generics.UpdateAPIView):
                     )
             course.save()
             return response.Response(
-                data=self.get_serializer(course, context={"request": request}).data,
+                data=self.get_serializer(
+                    course, context={"request": request}).data,
                 status=status.HTTP_200_OK,
             )
         elif request.user.owns_course(course_id=course.pk):
-            course.state = (
-                course.PAUSED if course.state == course.RUNNING else course.RUNNING
-            )
+            course.state = (course.PAUSED if course.state == course.RUNNING
+                            else course.RUNNING
+                            )
             course.save()
             return response.Response(
-                data=self.get_serializer(course, context={"request": request}).data,
+                data=self.get_serializer(
+                    course, context={"request": request}).data,
                 status=status.HTTP_200_OK,
             )
         return response.Response(
-            status=status.HTTP_403_FORBIDDEN, data={"message": COURSE_OWNERSHIP_ERROR}
+            status=status.HTTP_403_FORBIDDEN, data={
+                "message": COURSE_OWNERSHIP_ERROR}
         )
 
 
@@ -210,7 +225,7 @@ class StudentProgressAPI(generics.RetrieveAPIView, mixins.ListModelMixin):
     def check_permissions(self, request):
         super().check_permissions(request)
         if not (
-            request.user.is_superuser or request.user.is_admin()
+                request.user.is_superuser or request.user.is_admin()
         ) and not request.user.owns_course(course_id=self.kwargs.get("pk")):
             self.permission_denied(request, message="You don't have access")
 
@@ -243,15 +258,18 @@ class UpdateProgressAPI(generics.UpdateAPIView):
             user=self.request.user, course=self.kwargs.get("pk")
         ).get()
         index_of_last_video = (
-            progression.course.chapters.all()[
-                progression.last_chapter_index
-            ].videos.count()
-            - 1
+                progression.course.chapters.all()[
+                    progression.last_chapter_index
+                ].videos.count()
+                - 1
         )
 
         index_of_last_chapter = progression.course.chapters.count() - 1
         if progression.finished:
-            return response.Response(status=status.HTTP_204_NO_CONTENT)
+            serializer_data = self.get_serializer(progression)
+            return response.Response(
+                status=status.HTTP_200_OK, data=serializer_data.data
+            )
         if progression.last_video_index < index_of_last_video:
             progression.last_video_index += 1
         elif progression.last_chapter_index < index_of_last_chapter:
@@ -262,7 +280,9 @@ class UpdateProgressAPI(generics.UpdateAPIView):
             certificate = m.Certificate()
             certificate.generate(request.user, progression.course)
         progression.save()
-        return response.Response(status=status.HTTP_200_OK)
+        serializer_data = self.get_serializer(progression)
+        return response.Response(status=status.HTTP_200_OK,
+                                 data=serializer_data.data)
 
 
 class GetCourseStudents(generics.RetrieveAPIView):
@@ -277,7 +297,9 @@ class GetCourseStudents(generics.RetrieveAPIView):
     def retrieve(self, request, *args, **kwargs):
         course = self.get_object()
         serializer = self.get_serializer_class()(
-            course.studentprogress_set.all(), context={"request": request}, many=True
+            course.studentprogress_set.all(),
+            context={"request": request},
+            many=True
         )
         return response.Response(serializer.data)
 
@@ -325,9 +347,8 @@ class GetLevelsAPI(generics.ListCreateAPIView):
 
 class GetCategoryAPI(generics.ListCreateAPIView):
     serializer_class = app.CategorySerializer
-    queryset = m.Category.objects.annotate(course_count=Count("courses")).order_by(
-        "-course_count"
-    )
+    queryset = m.Category.objects.annotate(course_count=Count("courses")) \
+        .order_by("-course_count")
 
     # @method_decorator(cache_page(60 * 60))
     def list(self, request, *args, **kwargs):
@@ -372,21 +393,23 @@ class GetCertificate(generics.RetrieveAPIView):
             user=request.user, course=course, disabled=False
         )
         if progress.exists():
-            certificate = m.Certificate.objects.filter(user=request.user).filter(
-                course=course
-            )
+            certificate = m.Certificate.objects.filter(
+                user=request.user).filter(course=course)
             if not certificate.exists():
                 certificate = m.Certificate()
                 certificate.generate(request.user, course)
                 serializer = self.get_serializer(certificate)
             else:
                 serializer = self.get_serializer(certificate.first())
-            return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+            return response.Response(data=serializer.data,
+                                     status=status.HTTP_200_OK)
         return response.Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ListCreateRatings(
-    generics.ListCreateAPIView, mixins.UpdateModelMixin, mixins.RetrieveModelMixin
+    generics.ListCreateAPIView,
+    mixins.UpdateModelMixin,
+    mixins.RetrieveModelMixin
 ):
     serializer_class = app.RatingSerializer
     queryset = m.Rating.objects.all()
@@ -400,7 +423,8 @@ class ListCreateRatings(
         video = m.Video.objects.get(pk=self.kwargs.get("pk"))
         ratings = video.ratings.all()
         serializer = self.get_serializer(ratings, many=True)
-        return response.Response(data=serializer.data, status=status.HTTP_200_OK)
+        return response.Response(data=serializer.data,
+                                 status=status.HTTP_200_OK)
 
     def get_object(self):
         video = m.Video.objects.filter(pk=self.kwargs.get("pk")).first()
@@ -419,7 +443,9 @@ class QuizzRetrieveUpdateDestroyView(
 
     def get_object(self):
         lookup_field = self.lookup_url_kwarg or self.lookup_field
-        return m.CourseQuizz.objects.filter(course_id=self.kwargs[lookup_field]).first()
+        return m.CourseQuizz.objects.filter(
+            course_id=self.kwargs[lookup_field]
+        ).first()
 
     # @method_decorator(cache_page(60 * 60 * 8))
     def get(self, request, *args, **kwargs):
@@ -441,36 +467,51 @@ class CourseStatusUpdateAPI(generics.UpdateAPIView):
         course: m.Course = self.get_object()
         serializer = self.get_serializer(course)
         course_status = kwargs.get("status", None)
+        owner = course.owner
         if course_status == "approve" or course_status == "accept":
             course.approve()
-            NotificationService.create(
-                sender=User.get_site_admin(),
-                recipient_user=course.owner,
-                notification_type="course_accepted",
-                extra_data={
-                    "course": app.CourseListSerializer(
-                        course, context={"request": request}
-                    ).data
-                },
-            )
+            if not (owner.is_admin() or owner.is_superuser):
+                NotificationService.create(
+                    sender=User.get_site_admin(),
+                    recipient_user=course.owner,
+                    notification_type="course_accepted",
+                    extra_data={
+                        "course": app.CourseListSerializer(
+                            course, context={"request": request}
+                        ).data
+                    },
+                )
         elif course_status == "reject" or course_status == "refuse":
             course.reject()
-            NotificationService.create(
-                sender=User.get_site_admin(),
-                recipient_user=course.owner,
-                notification_type="course_refused",
-                extra_data={
-                    "course": app.CourseListSerializer(
-                        course, context={"request": request}
-                    ).data
-                },
-            )
+            if not (owner.is_admin() or owner.is_superuser):
+                NotificationService.create(
+                    sender=User.get_site_admin(),
+                    recipient_user=course.owner,
+                    notification_type="course_refused",
+                    extra_data={
+                        "course": app.CourseListSerializer(
+                            course, context={"request": request}
+                        ).data
+                    },
+                )
         elif course_status == "edit" or course_status == "revisit":
+            revision_reason = request.data.get("reason", None)
+            if not revision_reason:
+                return response.Response(
+                    status=status.HTTP_400_BAD_REQUEST,
+                    data={
+                        "code": "revision_reason_missing",
+                        "message": _("Please supply a revision message"),
+                    },
+                )
+            m.CourseEditRequest.objects.create(
+                course=course, reason=revision_reason)
             course.revise()
         else:
             return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
-        return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+        return response.Response(status=status.HTTP_200_OK,
+                                 data=serializer.data)
 
 
 class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
@@ -506,8 +547,8 @@ class RemoveStudentsFromCourseAPI(generics.UpdateAPIView):
                     )
                     return response.Response(status=status.HTTP_200_OK)
                 except (
-                    m.StudentProgress.DoesNotExist,
-                    course_buying.models.Order.DoesNotExist,
+                        m.StudentProgress.DoesNotExist,
+                        course_buying.models.Order.DoesNotExist,
                 ):
                     continue
 
@@ -575,16 +616,17 @@ def make_course_favourite(request, *args, **kwargs):
         course = m.Course.objects.get(pk=kwargs.get("pk", None))
         course.trending = not course.trending
         course.save()
-        NotificationService.create(
-            sender=User.get_site_admin(),
-            recipient_user=course.owner,
-            notification_type="course_favourite",
-            extra_data={
-                "course": app.CourseListSerializer(
-                    course, context={"request": request}
-                ).data
-            },
-        )
+        if course.trending:
+            NotificationService.create(
+                sender=User.get_site_admin(),
+                recipient_user=course.owner,
+                notification_type="course_favourite",
+                extra_data={
+                    "course": app.CourseListSerializer(
+                        course, context={"request": request}
+                    ).data
+                },
+            )
         return response.Response(
             status=status.HTTP_200_OK, data=app.CourseSerializer(course).data
         )
@@ -593,3 +635,23 @@ def make_course_favourite(request, *args, **kwargs):
             status=status.HTTP_400_BAD_REQUEST,
             data={"code": "not_found", "message": _("Course not found")},
         )
+
+
+@api_view(['GET'])
+# @permission_classes([permissions.IsAuthenticated])
+def get_course_edit_reason(request, pk, *args, **kwargs):
+    try:
+        course = m.Course.objects.get(pk=pk)
+        edit_reason = course.courseeditrequest_set.all()
+        if edit_reason.exists():
+            serializer = app.EditReasonSerializer(edit_reason.last())
+            return response.Response(status=status.HTTP_200_OK, data=serializer.data)
+        return response.Response(status=status.HTTP_404_NOT_FOUND, data={
+            'code': 'no_edits',
+            'message': _('Course has no edit requests')
+        })
+    except m.Course.DoesNotExist:
+        return response.Response(status=status.HTTP_404_NOT_FOUND, data={
+            'code': 'does_not_exist',
+            'message': _('Course does not exist')
+        })
