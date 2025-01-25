@@ -31,4 +31,4 @@ RUN python3 manage.py migrate --noinput
 
 EXPOSE 8000
 
-CMD ["gunicorn", "--bind", ":8000", "--workers", "3", "backend.wsgi"]
+CMD ["gunicorn", "--bind", ":8000", "--workers", "4", "backend.wsgi"]

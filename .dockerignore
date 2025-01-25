@@ -3,7 +3,6 @@ fly.toml
 .idea/
 *.sqlite3
 .venv/
-media/
 data/
 conception/
 .python-version
