@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 import os.path
-import socket
 from datetime import timedelta
 from pathlib import Path
 
@@ -150,25 +149,15 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = True
 SOCIALACCOUNT_STORE_TOKENS = True
 
-# EMAIL_HOST = 'smtp.titan.email'
-# EMAIL_HOST_USER = 'no-reply@dzskills.com'
-# EMAIL_HOST_PASSWORD = 'DZskills2023@'
-# EMAIL_PORT = 465
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_SSL = True
-
 EMAIL_HOST = "smtp.gmail.com"
-EMAIL_HOST_USER = "boudaakkarnazih@gmail.com"
+EMAIL_HOST_USER = os.environ.get("EMAIL_USER", "")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_PASS", "")
 EMAIL_PORT = 465
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_USE_SSL = True
 
-# ADMIN_EMAIL = "no-reply@dzskills.com"
-# SUPPORT_EMAIL = "no-reply@dzskills.com"
-
-ADMIN_EMAIL = "boudaakkarnazih@gmail.com"
-SUPPORT_EMAIL = "no-reply@dzskills.com"
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "")
+SUPPORT_EMAIL = os.environ.get("SUPPORT_EMAIL", "")
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
 
